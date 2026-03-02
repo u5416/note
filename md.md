@@ -1,3 +1,7 @@
+# 速查表
+
+<https://www.markdown.cn/docs/cheat-sheet>
+
 # 基本语法
 
 ## 标题语法
