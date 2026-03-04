@@ -122,7 +122,9 @@ git switch  -c 分支名
 1. git branch 分支名
 1. git switch 分支名
 
-git branch  查看有什么分支，并且在当前分支前带有*
+git branch  查看本地自己的分支，并且在当前分支前带有*
+git branch -r 查看本地缓存的origin分支
+git branch -a 查看本地全部分支
 
 git merge 分支名    命令用于合并指定分支到当前分支
 
@@ -155,3 +157,40 @@ git stash list  看存在哪些stash
 +   git stash pop（恢复并删除）
 
 git cherry-pick ，复制一个特定的提交到当前分支
+
+### feature分支
+
+如果要丢弃一个没有被合并过的分支，可以通过git branch -D 分支名强行删除
+
+### 多人协作
+
+查看远程库 git remote 或者用git remote -v显示更详细的信息
+
+显示了可以抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
+
+#### 推送分支
+
+推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上。
+
+本地新建的分支如果不推送到远程，对其他人就是不可见的。
+
+#### 抓取分支
+
+git pull
+
+#### 小结
+
+多人协作的工作模式通常是这样：
+
+首先，可以尝试用git push origin <branch-name>推送自己的修改；
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+如果合并有冲突，则解决冲突，并在本地提交；
+没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。
+
+### Rebase
+
+git rebase 
+rebase操作可以把本地未push的分叉提交历史整理成直线；
+rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
