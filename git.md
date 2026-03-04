@@ -107,3 +107,44 @@ git clone 仓库名
 ## 分支管理
 
 ### 创建与合并分支
+<<<<<<< HEAD
+=======
+
+git checkout -b 分支名
+创建并切换到分支
+相当于
+
+1. git branch 分支名
+1. git checkout 分支名
+
+git switch  -c 分支名
+创建并切换到分支
+相当于
+
+1. git branch 分支名
+1. git switch 分支名
+
+git branch  查看有什么分支，并且在当前分支前带有*
+
+git merge 分支名    命令用于合并指定分支到当前分支
+
+Fast-forward: 快进模式，也就是直接把master指向dev的当前提交
+
+git branch -d 分支名    删除分支
+
+### 解决冲突
+
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+
+用git log --graph命令可以看到分支合并图
+
+### 分支管理策略
+
+通常，合并分支时，如果可能，Git会用Fast forward模式，但这种模式下，删除分支后，会丢掉分支信息。
+
+如果要强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
+
+git merge --no-ff -m "XXX"
+
+这是一个测试，ff模式。
+>>>>>>> branch_1
