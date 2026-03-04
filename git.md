@@ -192,5 +192,125 @@ git pull
 ### Rebase
 
 git rebase 
+
 rebase操作可以把本地未push的分叉提交历史整理成直线；
 rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+
+缺点是本地的分叉提交已经被修改过了。
+
+## 标签管理
+
+### 创建标签
+
+1. 切换到要打标签的分支
+1. git tag 标签名
+
+默认标签是打在最新提交的commit上的。
+
+如果忘了打标签，只需要找到要打标签的commit id。
+git tag 标签名 commit id
+
+git tag 查看所有标签（字母排列）
+
+git show tag_name   查看标签信息
+
+还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字：
+
+$ git tag -a v0.1 -m "version 0.1 released" commit id
+
+### 操作标签
+
+因为创建的标签都只存储在本地，不会自动推送到远程。所以，打错的标签可以在本地安全删除。
+
+#### 推送标签
+
++ git push origin 标签名
++ git push origin --tag
+
+#### 删除标签
+
+##### 删除本地标签
+
+git tag -d 标签名
+
+##### 删除远程标签
+
+1. 先删本地
+1. 删远程：git push origin :refs/tags/标签名
+
+## 自定义git
+
+<!-- ### 颜色
+
+git config --global color.ui true -->
+
+### 忽略特殊文件
+
+在Git工作区的根目录下创建一个特殊的.gitignore文件，然后把要忽略的文件名填进去，Git就会自动忽略这些文件。
+
+不需要从头写.gitignore文件，GitHub已经为我们准备了各种配置文件，只需要组合一下就可以使用了。所有配置文件可以直接在线浏览：[GitHub/gitignore](https://github.com/github/gitignore)
+
+忽略文件的原则是：
+
+1. 忽略操作系统自动生成的文件，比如缩略图等；
+1. 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的.class文件；
+1. 忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。
+
+git add -f 文件名   强制添加文件
+
+git check-ignore -v 文件名  查看冲突在哪里发生
+
+```
+# 排除所有.开头的隐藏文件:
+.*
+# 排除所有.class文件:
+*.class
+
+# 不排除.gitignore和App.class:
+!.gitignore
+!App.class
+```
+
+.gitignore文件放在哪个目录下，就对哪个目录（包括子目录）起作用。
+
+### 配置别名
+
+git config --global alias.别名 操作(如有空格则带上一对单引号)
+
+--global 针对当前用户 不加则只针对当前仓库
+
+#### 配置文件
+
+每个仓库的Git配置文件都放在.git/config文件。
+
+而当前用户的Git配置文件放在用户主目录下的一个隐藏文件.gitconfig。
+
+别名就在[alias]后面，要删除别名，直接把对应的行删掉即可。
+
+## 搭建git服务器
+
+https://liaoxuefeng.com/books/git/customize/server/index.html
+
+搭建Git服务器需要准备一台运行Linux的机器（Ubuntu或Debian）
+有sudo权限的用户账号
+
+1. 安装git：sudo apt install git
+1. 创建一个git用户，用来运行git服务：sudo adduser git
+1. 创建证书登录：收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+1. 初始化Git仓库：
+    1. 先选定一个目录作为Git仓库，假定是/srv/sample.git，在/srv目录下输入命令：sudo git init --bare sample.git。Git就会创建一个裸仓库，裸仓库没有工作区，因为服务器上的Git仓库纯粹是为了共享，所以不让用户直接登录到服务器上去改工作区，并且服务器上的Git仓库通常都以.git结尾。
+    2. 然后，把owner改为git：sudo chown -R git:git sample.git
+1. 禁用shell登录：
+    出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。
+
+    找到类似下面的一行：git:x:1001:1001:,,,:/home/git:/bin/bash
+    改为：git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+
+    这样，git用户可以正常通过ssh使用git，但无法登录shell，因为我们为git用户指定的git-shell每次一登录就自动退出。
+1. 克隆远程仓库：现在，可以通过git clone命令克隆远程仓库了，在各自的电脑上运行：git clone git@server:/srv/sample.git
+
+### 管理密钥
+
+如果团队很小，把每个人的公钥收集起来放到服务器的/home/git/.ssh/authorized_keys文件里就是可行的。如果团队有几百号人，就没法这么玩了，这时，可以用[Gitosis](https://github.com/res0nat0r/gitosis)来管理公钥。
+
+## https://git-scm.com/
