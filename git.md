@@ -1,4 +1,6 @@
-# 创建版本库
+# git
+
+## 创建版本库
 
 git init    把当前目录初始化为本地仓库
 
@@ -10,12 +12,12 @@ git commit -m "改动说明"    把暂存区保存到本地仓库
 + Git命令必须在Git仓库目录内执行（git init除外），在仓库目录外执行是没有意义的。
 + 添加某个文件时，该文件必须在当前目录下存在，用ls或者dir命令查看当前目录的文件，看看文件是否存在。
 
-# 时光机穿梭
+## 时光机穿梭
 
 git status  查看仓库状态
 git diff 文件名   查看不同
 
-## 版本回退
+### 版本回退
 
 git log 查看提交日志
 如果嫌输出信息太多，看得眼花缭乱的，可以试试加上`pretty=oneline`参数
@@ -25,6 +27,7 @@ git log 查看提交日志
 git reset XX1 XX2
 
 XX1:
+
 |选项|功能|
 |:---:|:---:|
 |--hard|回退到上个版本的已提交状态|
@@ -35,11 +38,11 @@ XX2: HEAD之类的或者GPL
 
 git reflog  查看历史命令
 
-## 工作区与暂存区
+### 工作区与暂存区
 
-## 管理修改
+### 管理修改
 
-## 撤销修改
+### 撤销修改
 
 git checkout -- 文件名  把文件在工作区的修改全部撤销
 
@@ -50,12 +53,12 @@ git checkout -- 文件名  把文件在工作区的修改全部撤销
 
 git reset HEAD 文件名 可以把暂存区的修改撤销掉，重新放回工作区。
 
-## 删除文件
+### 删除文件
 
 1. git rm 文件名
 1. git commit
 
-# 远程仓库
+## 远程仓库
 
 由于你的本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置：
 
@@ -70,12 +73,11 @@ $ ssh-keygen -t rsa -C "`youremail@example.com`"
 
 然后，点“Add SSH Key”，填上任意Title，在Key文本框里粘贴id_rsa.pub文件的内容：
 
-点“Add Key”，你就应该看到已经添加的Key：
-
+点“Add Key”，你就应该看到已经添加的Key。
 
 为什么GitHub需要SSH Key呢？因为GitHub需要识别出你推送的提交确实是你推送的，而不是别人冒充的，而Git支持SSH协议，所以，GitHub只要知道了你的公钥，就可以确认只有你自己才能推送。
 
-## 添加远程库
+### 添加远程库
 
 git remote add origin 仓库名  建立联系
 
@@ -94,12 +96,14 @@ git push -u origin 分支名
 
 git pull 拉取
 
-## 删除远程库
+### 删除远程库
 
 git remote rm origin
 
-## 克隆远程库
+### 克隆远程库
 
 git clone 仓库名
 
-# 分支管理
+## 分支管理
+
+### 创建与合并分支
