@@ -144,7 +144,7 @@ git branch -d 分支名    删除分支
 
 如果要强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
 
-git merge --no-ff -m "XXX"
+git merge --no-ff -m "XXX"  分支名
 
 这是一个测试，ff模式。
 >>>>>>> branch_1
