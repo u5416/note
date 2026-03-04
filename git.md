@@ -107,8 +107,6 @@ git clone 仓库名
 ## 分支管理
 
 ### 创建与合并分支
-<<<<<<< HEAD
-=======
 
 git checkout -b 分支名
 创建并切换到分支
@@ -146,5 +144,14 @@ git branch -d 分支名    删除分支
 
 git merge --no-ff -m "XXX"  分支名
 
-这是一个测试，ff模式。
->>>>>>> branch_1
+### bug分支
+
+git stash   暂存
+
+git stash list  看存在哪些stash
+
++   1. git stash apply（恢复）
+    1. git stash drop（删除）
++   git stash pop（恢复并删除）
+
+git cherry-pick ，复制一个特定的提交到当前分支
