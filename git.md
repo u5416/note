@@ -156,6 +156,8 @@ git stash list  看存在哪些stash
     1. git stash drop（删除）
 +   git stash pop（恢复并删除）
 
+后面加上 "stash@{<index>}"
+
 git cherry-pick ，复制一个特定的提交到当前分支
 
 ### feature分支
