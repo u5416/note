@@ -2,4 +2,4 @@
 
 - [markdown](md.md)
 - [git](git.md)
-- [java](硅谷Java.md)
+- [java](java.md)
