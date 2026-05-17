@@ -67,8 +67,10 @@ jvm：实习跨平台性，自动内存管理（GC自动回收）（还是可能
 #### 1.2.1 数据类型
 
 数据类型：
-基本数据类型：整型(byte\short\int默认\long(L\l后缀))，浮点型(float(F\f后缀)\double默认)，布尔值boolean(true/false)，字符型(char)
-引用数据类型：类class，数组array，接口interface，枚举enum，注解annotaction，记录record。
+
+- 基本数据类型：整型(byte\short\int默认\long(L\l后缀))，浮点型(float(F\f后缀)\double默认)，布尔值boolean(true/false)，字符型(char)
+
+- 引用数据类型：类class，数组array，接口interface，枚举enum，注解annotaction，记录record。
 
 区别：栈区中，基本数据类型变量存的是值，而引用数据类型的变量中存储的是对象的地址，或者说指向堆中对象的首地址。
 
@@ -93,8 +95,6 @@ char 可以直接用unicode编码 \uxxx
 #### 1.2.4 变量
 
 定义：数据类型 变量名 = 值;
-
-this 该对象的地址
 
 ##### 1.2.4.1 自动类型提升
 
@@ -532,7 +532,7 @@ java.util.Arrays类，即操作数组的工具类。包括了用来操作数组�
 
 数组元素拼接：
 
-- `tatic String toString(int[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。形式为：[元素1，元素2，元素3。。。]。
+- `static String toString(int[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。形式为：[元素1，元素2，元素3。。。]。
 - `static String toString(Object[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。元素将自动调用自己从Object继承的toString方法将对象转为字符串进行拼接，如果没有重写，则返回类型@hash值，如果重写则按重写返回的字符串进行拼接。
 
 数组排序：
@@ -758,7 +758,6 @@ new出来的对象都在堆区。
 将功能封装为方法的目的是，可以实现代码重用，减少冗余，简化代码。
 
 Java里的方法不能独立存在，所有的方法必须定义在类里。
-举例1：
 
 ##### 2.1.6.1 声明方法
 
@@ -1064,7 +1063,7 @@ UML（Unified Modeling Language，统一建模语言），用来描述软件模�
 
 ### 2.2 进阶
 
-#### 2.2.1 this关键字
+#### 2.2.1 this 关键字
 
 ##### 2.2.1.1 使用场景
 
@@ -1182,7 +1181,1506 @@ this(实参列表)：调用本类的有参构造器
 
 此外，子类与父类中同名同参数的方法必须同时声明为非static的(即为重写)，或者同时声明为static的（不是重写）。因为static方法是属于类的，子类无法覆盖父类的方法。
 
+#### 2.2.3 super 关键字
+
+##### 2.2.3.1 理解
+
+在Java类中使用super来调用父类中的指定操作：
+
+- super可用于访问父类中定义的属性
+- super可用于调用父类中定义的成员方法
+- super可用于在子类构造器中调用父类的构造器
+
+注意：
+
+- 尤其当子父类出现同名成员时，可以用super表明调用的是父类中的成员
+- super的追溯不仅限于直接父类
+- super和this的用法相像，this代表本类对象的引用，super代表父类的内存空间的标识
+
+##### 2.2.3.2 使用场景
+
+###### 2.2.3.2.1 子类中调用父类被重写的方法
+
+1. 如果子类没有重写父类的方法，只要权限修饰符允许，在子类中完全可以直接调用父类的方法；
+1. 如果子类重写了父类的方法，在子类中需要通过super.才能调用父类被重写的方法，否则默认调用的子类重写的方法
+
+调用方法时，如果没有super，先在本类找，如果没找到，再往父类追溯。如果有super，则直接往父类追溯。
+
+###### 2.2.3.2.2 子类中调用父类中同名的成员变量
+
+如果实例变量与局部变量重名，可以在实例变量前面加this.进行区别
+
+如果子类实例变量和父类实例变量重名，并且父类的该实例变量在子类仍然可见，在子类中要访问父类声明的实例变量需要在父类实例变量前加super.，否则默认访问的是子类自己声明的实例变量
+
+如果父子类实例变量没有重名，只要权限修饰符允许，在子类中完全可以直接访问父类中声明的实例变量，也可以用this.实例访问，也可以用super.实例变量访问
+
+- 变量，先从局部找，再从本类找，最后追溯父类找。
+- 如果有this，先在本类找，再追溯父类找
+- 如果有super，直接追溯父类找。
+
+特别注意：**应该避免子类声明和父类重名的成员变量**
+
+###### 2.2.3.2.3 子类构造器中调用父类构造器
+
+1. 子类继承父类时，不会继承父类的构造器。只能通过“super(形参列表)”的方式调用父类指定的构造器。
+1. 规定：“super(形参列表)”，必须声明在构造器的首行。
+1. 我们前面讲过，在构造器的首行可以使用"this(形参列表)"，调用本类中重载的构造器，  结合②，结论：在构造器的首行，"this(形参列表)" 和 "super(形参列表)"只能二选一。
+1. 如果在子类构造器的首行既没有显示调用"this(形参列表)"，也没有显式调用"super(形参列表)"，  则子类此构造器默认调用"super()"，即调用父类中空参的构造器。
+1. 由③和④得到结论：子类的任何一个构造器中，要么会调用本类中重载的构造器，要么会调用父类的构造器。  只能是这两种情况之一。
+1. 由⑤得到：一个类中声明有n个构造器，最多有n-1个构造器中使用了"this(形参列表)"，则剩下的那个一定使用"super(形参列表)"。
+
+开发中常见错误：
+如果子类构造器中既未显式调用父类或本类的构造器，且父类中又没有空参的构造器，则编译出错。
+
+###### 2.2.3.4 小结this与super
+
+1、this和super的意义
+
+this：当前对象
+
+- 在构造器和非静态代码块中，表示正在new的对象
+- 在实例方法中，表示调用当前方法的对象
+
+super：引用父类声明的成员
+
+2、this和super的使用格式
+
+this
+
+- this.成员变量：表示当前对象的某个成员变量，而不是局部变量
+- this.成员方法：表示当前对象的某个成员方法，完全可以省略this.
+- this()或this(实参列表)：调用另一个构造器协助当前对象的实例化，只能在构造器首行，只会找本类的构造器，找不到就报错
+
+super
+
+- super.成员变量：表示当前对象的某个成员变量，该成员变量在父类中声明的
+- super.成员方法：表示当前对象的某个成员方法，该成员方法在父类中声明的
+- super()或super(实参列表)：调用父类的构造器协助当前对象的实例化，只能在构造器首行，只会找直接父类的对应构造器，找不到就报错
+
+#### 2.2.4 面向对象特征之三——多态
+
+##### 2.2.4.1 多态的形式与体现
+
+###### 2.2.4.1.1  对象的多态性
+
+多态性，是面向对象中最重要的概念，在Java中的体现：`对象的多态性：父类的引用指向子类的对象`
+
+格式：（父类类型：指子类继承的父类类型，或者实现的接口类型）
+`父类类型 变量名 = 子类对象；`
+
+###### 2.2.4.1.2 多态的理解
+
+Java引用变量有两个类型：编译时类型和运行时类型。编译时类型由声明该变量时使用的类型决定，运行时类型由实际赋给该变量的对象决定。简称：编译时，看左边；运行时，看右边。
+
+- 若编译时类型和运行时类型不一致，就出现了对象的多态性(Polymorphism)
+- 多态情况下，“看左边”：看的是父类的引用（父类中不具备子类特有的方法）  “看右边”：看的是子类的对象（实际运行的是子类重写父类的方法）
+
+多态的使用前提：① 类的继承关系 ② 方法的重写
+
+###### 2.2.4.1.3 体现
+
+- 方法内局部变量的赋值体现多态
+- 方法的形参声明体现多态
+- 方法返回值类型体现多态
+
+##### 2.2.4.2 多态的好处和弊端
+
+- 好处：变量引用的子类对象不同，执行的方法就不同，实现动态绑定。代码编写更灵活、功能更强大，可维护性和扩展性更好了。
+- 弊端：一个引用类型变量如果声明为父类的类型，但实际引用的是子类对象，那么该变量就不能再访问子类中添加的属性和方法
+
+开发中：使用父类做方法的形参，是多态使用最多的场合。即使增加了新的子类，方法也无需改变，提高了扩展性，符合开闭原则。
+
+##### 2.2.4.3 虚方法调用(Virtual Method Invocation)
+
+在Java中虚方法是指在编译阶段不能确定方法的调用入口地址，在运行阶段才能确定的方法，即可能被重写的方法。
+
+```java
+Person e = new Student();
+e.getInfo();//调用Student类的getInfo()方法
+```
+
+子类中定义了与父类同名同参数的方法，在多态情况下，将此时父类的方法称为虚方法，父类根据赋给它的不同子类对象，动态调用属于子类的该方法。这样的方法调用在编译期是无法确定的。
+
+执行：多态的情况下，调用对象的方法，实际执行的是子类重写的方法。
+
+##### 2.2.4.4 静态链接与动态链接
+
+- 静态链接（或早起绑定）：当一个字节码文件被装载进JVM内部时，如果被调用的目标方法在编译期可知，且运行期保持不变时。这种情况下将调用方法的符号引用转换为直接引用的过程称之为静态链接。那么调用这样的方法，就称为非虚方法调用。比如调用静态方法、私有方法、final方法、父类构造器、本类重载构造器等。
+- 动态链接（或晚期绑定）：如果被调用的方法在编译期无法被确定下来，也就是说，只能够在程序运行期将调用方法的符号引用转换为直接引用，由于这种引用转换过程具备动态性，因此也就被称之为动态链接。调用这样的方法，就称为虚方法调用。比如调用重写的方法（针对父类）、实现的方法（针对接口）。
+
+##### 2.2.4.5 成员变量没有多态性
+
+- 若子类重写了父类方法，就意味着子类里定义的方法彻底覆盖了父类里的同名方法，系统将不可能把父类里的方法转移到子类中。
+- 对于实例变量则不存在这样的现象，即使子类里定义了与父类完全相同的实例变量，这个实例变量依然不可能覆盖父类中定义的实例变量
+
+##### 2.2.4.6 向下转型与向上转型
+
+因为多态，就一定会有把子类对象赋值给父类变量的时候，这个时候，在编译期间，就会出现类型转换的现象。
+
+但是，使用父类变量接收了子类对象之后，我们就不能调用子类拥有，而父类没有的方法了。这也是多态给我们带来的一点"小麻烦"。所以，想要调用子类特有的方法，必须做类型转换，使得编译通过。
+
+向上转型：变量类型为父类，对象为子类。
+
+- 编译时，对象转变为父类类型，只能用父类有的方法。
+- 执行时，仍是对象本身类型，按照父类的子类重写的方法。
+
+向下转型：前提是已经完成向上转型的变量。
+
+- 不是所有通过编译的向下转型都是正确的，可能会发生ClassCastException，为了安全，可以通过isInstanceof关键字进行判断。
+
+格式：
+`向上转型：自动完成`
+`向下转型：（子类类型）父类变量`
+
+##### 2.2.4.7 instanceof 关键字
+
+检验对象a是否是数据类型A的对象，返回值为boolean型。
+`对象a instanceof 数据类型A`
+
+`C extends B;B extends A;a = new C();`
+a无论与谁instanceof都是true。
+
+#### 2.2.5 Object类的使用
+
+##### 2.2.5.1 Object类的理解
+
+类 java.lang.Object是类层次结构的根类，即所有其它类的父类。每个类都使用 Object 作为超类。
+
+Object类型的变量与除Object以外的任意引用数据类型的对象都存在多态引用。
+
+```java
+method(Object obj){…} //可以接收任何类作为其参数
+Person o = new Person();  
+method(o);
+```
+
+##### 2.2.5.2 Object类的方法
+
+根据JDK源代码及Object类的API文档，Object类当中包含的方法有11个。这里我们主要关注其中的6个：
+
+由于每个类都直接间接继承了Object类，那只要是Object类支持重写的方法，在每个类中都可以重写。
+
+1. `equal()`或者`==`
+
+    ```java
+    public boolean equals(Object obj) {
+    return this == obj;
+    }
+    ```
+
+    **基本数据类型比较数值。**
+
+    **在没有重写的情况下，引用数据类型比较栈区的值，即是否指向同一个对象。**
+
+    `==`不能重写，功能还是上面那样的。
+
+    格式:`obj1.equals(obj2)`
+
+    特例：当用equals()方法进行比较时，对类File、String、Date及包装类（Wrapper Class）来说，是比较类型及内容而不考虑引用的是否是同一个对象；
+
+    原因：在这些类中重写了Object类的equals()方法。
+
+    当自定义使用equals()时，可以重写。用于比较两个对象的“内容”是否都相等
+
+    重写equals()方法的原则：
+
+    - 对称性：如果x.equals(y)返回是“true”，那么y.equals(x)也应该返回是“true”。
+    - 自反性：x.equals(x)必须返回是“true”。
+    - 传递性：如果x.equals(y)返回是“true”，而且y.equals(z)返回是“true”，那么z.equals(x)也应该返回是“true”。
+    - 一致性：如果x.equals(y)返回是“true”，只要x和y内容一直不变，不管你重复x.equals(y)多少次，返回都是“true”。
+    - 任何情况下，x.equals(null)，永远返回是“false”；
+    - x.equals(和x不同类型的对象)永远返回是“false”。
+
+1. `toString()`
+
+    方法签名：public String toString()
+
+    所有对象都能调用。默认返回`执行时类型@hachcode`。
+
+    ```java
+    public String toString() {
+    return getClass().getName() + "@" + Integer.toHexString(hashCode());
+    }
+    ```
+
+    作用：
+    把对象转成字符串，方便：打印对象信息、日志输出、看对象里面有什么属性。
+
+    自动调用
+
+    - System.out.println (对象)
+    - 拼接字符串时自动调用
+
+1. `clone()`
+
+    `protected native Object clone() throws CloneNotSupportedException;`
+
+    - 浅克隆（默认 super.clone () 就是浅克隆）基本数据类型：复制值引用类型（数组、自定义对象）：只复制引用地址，不复制里面内容。克隆后，引用类型还是共用同一个内部对象
+    - 深克隆，把内部引用对象也重新克隆一份，完全独立，互不干扰。
+    需要手动自己写逻辑，或用序列化实现。
+
+    使用 clone () 必须满足两个条件
+    - 实体类 实现 Cloneable 接口（标记接口，空的，没有方法）
+    - 重写 Object 的 clone() 方法，改成 public
+
+1. `finalize()`
+
+    `protected void finalize() throws Throwable`
+
+    当对象被回收时，系统自动调用该对象的 finalize() 方法。（不是垃圾回收器调用的，是本类对象调用的）
+
+    永远不要主动调用某个对象的finalize方法，应该交给垃圾回收机制调用。
+
+    什么时候被回收：当某个对象没有任何引用时，JVM就认为这个对象是垃圾对象，就会在之后不确定的时间使用垃圾回收机制来销毁该对象，在销毁该对象前，会先调用 finalize()方法。
+
+    子类可以重写该方法，目的是在对象被清理之前执行必要的清理操作。比如，在方法内断开相关连接资源。
+
+    如果重写该方法，让一个新的引用变量重新引用该对象，则会重新激活对象。
+
+    1. 对象没有任何引用指向它（变成垃圾）
+    1. GC 决定要回收它
+    1. 回收前一瞬间 自动调用 finalize()
+    1. 执行完，对象才被真正销毁、释放内存
+
+1. `getClass()`
+
+    所有对象都能调用，返回对象真正new出来的本体。
+
+    ||||
+    |:---:|:---:|:---:|
+    |对象.getClass()|拿到类的本体对象|Class<Student\>|
+    |getClass().getName()|全类名 (包名 + 类名)|com.test.Student|
+    |getClass().getSimpleName()|只拿简单类名，不要包名|Student|
+
+1. `hashcode()`
+
+    `public native int hashCode();`
+
+    默认作用（不重写时）
+    默认规则：根据对象内存地址，算出一个int 数字。每个新对象，默认哈希码几乎都不一样。
+
+    Java 硬性规定：
+
+    - 如果两个对象 equals () 相等 → 它们的 hashCode 必须相等
+    - 如果两个对象 hashCode 相等 → equals 不一定相等（哈希碰撞）
+
+#### 2.2.6 native 关键字
+
+使用native关键字说明这个方法是原生函数，也就是这个方法是用C/C++等非Java语言实现的，并且被编译成了DLL，由Java去调用。
+
+- 本地方法是有方法体的，用c语言编写。由于本地方法的方法体源码没有对我们开源，所以我们看不到方法体
+- 在Java中定义一个native方法时，并不提供实现体。
+
+native 只能修饰方法，而且被修饰的方法只能有方法头。
+
 ### 2.3 高级
+
+#### 2.3.1 static 关键字
+
+**static与类绑定，不需要与对象绑定，不需要引用类**而**static与对象绑定，需要引用类**
+
+某些特定的数据在内存空间里只有一份。
+有些方法的调用者和当前类的对象无关，这样的方法通常被声明为类方法，由于不需要创建对象就可以调用类方法，从而简化了方法的调用。
+
+如果想让一个成员变量被类的所有实例所共享，就用static修饰即可，称为类变量（或类属性）。
+
+这里的类变量、类方法，只需要使用static修饰即可。所以也称为静态变量、静态方法。
+
+使用范围：
+
+- 在Java类中，可用static修饰属性、方法、代码块、内部类
+- 被修饰后的成员具备以下特点：
+- 随着类的加载而加载
+- 优先于对象存在
+- 修饰的成员，被所有对象所共享
+- 访问权限允许时，可不创建对象，直接被类调用
+
+##### 2.3.1.1 静态变量
+
+语法格式：
+
+使用static修饰的成员变量就是静态变量（或类变量、类属性）
+
+```java
+[修饰符] class 类{
+    [其他修饰符] static 数据类型 变量名;
+}
+```
+
+静态变量的特点
+
+- 静态变量的默认值规则和实例变量一样。
+- 静态变量值是所有对象共享。
+- 静态变量在本类中，可以在任意方法、代码块、构造器中直接使用。
+- 如果权限修饰符允许，在其他类中可以通过“**类名.静态变量**”直接访问，也可以通过“对象.静态变量”的方式访问（但是更推荐使用类名.静态变量的方式）。
+- 静态变量的get/set方法也静态的，当局部变量与静态变量重名时，使用“类名.静态变量”进行区分。
+
+##### 2.3.1.2 静态方法
+
+语法格式：
+
+用static修饰的成员方法就是静态方法。
+
+```java
+[修饰符] class 类{
+    [其他修饰符] static 返回值类型 方法名(形参列表){
+        方法体
+    }
+}
+```
+
+静态方法的特点
+
+- 静态方法在本类的任意方法、代码块、构造器中都可以直接被调用。
+- 只要权限修饰符允许，静态方法在其他类中可以通过“**类名.静态方法**“的方式调用。也可以通过”对象.静态方法“的方式调用（但是更推荐使用类名.静态方法的方式）。
+- 在static方法内部只能访问类的static修饰的属性或方法，不能访问类的非static的结构。
+- **静态方法可以被子类继承，但不能被子类重写。**
+- **静态方法的调用都只看编译时类型。**
+- 因为不需要实例就可以访问static方法，因此**static方法内部不能有this，也不能有super**。如果有重名问题，使用“类名.”进行区别。
+
+#### 2.3.2 单例(Singleton)设计模式
+
+##### 2.3.2.1 设计模式概况
+
+设计模式是在大量的实践中总结和理论化之后优选的代码结构、编程风格、以及解决问题的思考方式。设计模式免去我们自己再思考和摸索。就像是经典的棋谱，不同的棋局，我们用不同的棋谱。
+
+经典的设计模式共有23种。每个设计模式均是特定环境下特定问题的处理方法。
+
+![工厂模式](java\\工厂模式.jpg)
+
+简单工厂模式并不是23中经典模式的一种，是其中工厂方法模式的简化版。
+
+对软件设计模式的研究造就了一本可能是面向对象设计方面最有影响的书籍：《设计模式》：《Design Patterns: Elements of Reusable Object-Oriented Software》（即后述《设计模式》一书），由 Erich Gamma、Richard Helm、Ralph Johnson 和 John Vlissides 合著（Addison-Wesley，1995）。这几位作者常被称为"四人组（Gang of Four）"，而这本书也就被称为"四人组（或 GoF）"书。
+
+##### 2.3.2.2 何为单例模式
+
+所谓类的单例设计模式，就是**采取一定的方法**保证在整个的软件系统中，**对某个类只能存在一个对象实例，并且该类只提供一个取得其对象实例的方法**。
+
+##### 2.3.2.3 实现思路
+
+如果我们要让类在一个虚拟机中只能产生一个对象，我们首先必须将**类的构造器的访问权限设置为private**，这样，就不能用new操作符在类的外部产生类的对象了，但在**类内部仍可以产生该类的对象**。因为在类的外部开始还无法得到类的对象，只能调用该类的某个**静态方法以返回类内部创建的对象**，静态方法只能访问类中的静态成员变量，所以，指向类内部产生的该类对象的**变量也必须定义成静态的**。
+
+##### 2.3.2.4 两种实现方式
+
+```java
+// 饿汉式
+class Singleton {
+    // 1.私有化构造器
+    private Singleton() {
+    }
+    // 2.内部提供一个当前类的实例
+    // 4.此实例也必须静态化
+    private static Singleton single = new Singleton();
+
+    // 3.提供公共的静态的方法，返回当前类的对象
+    public static Singleton getInstance() {
+        return single;
+    }
+}
+
+// 懒汉式
+class Singleton {
+    // 1.私有化构造器
+    private Singleton() {
+    }
+    // 2.内部提供一个当前类的实例
+    // 4.此实例也必须静态化
+    private static Singleton single;
+    // 3.提供公共的静态的方法，返回当前类的对象
+    public static Singleton getInstance() {
+        if(single == null) {
+            single = new Singleton();
+        }
+        return single;
+    }
+}
+```
+
+饿汉式：
+
+- 特点：立即加载，即在使用类的时候已经将对象创建完毕。
+- 优点：实现起来简单；没有多线程安全问题。
+- 缺点：当类被加载的时候，会初始化static的实例，静态变量被创建并分配内存空间，从这以后，这个static的实例便一直占着这块内存，直到类被卸载时，静态变量被摧毁，并释放所占有的内存。因此在某些特定条件下会耗费内存。
+
+懒汉式：
+
+- 特点：延迟加载，即在调用静态方法时实例才被创建。
+- 优点：实现起来比较简单；当类被加载的时候，static的实例未被创建并分配内存空间，当静态方法第一次被调用时，初始化实例变量，并分配内存，因此在某些特定条件下会节约内存。
+- 缺点：在多线程环境中，这种实现方法是完全错误的，线程不安全，根本不能保证单例的唯一性。
+
+    说明：在多线程章节，会将懒汉式改造成线程安全的模式。
+
+##### 2.3.2.5 应用场景
+
+由于单例模式只生成一个实例，减少了系统性能开销，当一个对象的产生需要比较多的资源时，如读取配置、产生其他依赖对象时，则可以通过在应用启动时直接产生一个单例对象，然后永久驻留内存的方式来解决。
+
+- Windows的Task Manager (任务管理器)就是很典型的单例模式
+- Windows的Recycle Bin (回收站)也是典型的单例应用。在整个系统运行过程中，回收站一直维护着仅有的一个实例。
+- Application 也是单例的典型应用
+- 应用程序的日志应用，一般都使用单例模式实现，这一般是由于共享的日志文件一直处于打开状态，因为只能有一个实例去操作，否则内容不好追加。
+- 数据库连接池的设计一般也是采用单例模式，因为数据库连接是一种数据库资源。
+
+#### 2.3.3 理解main方法
+
+由于JVM需要调用类的main()方法，所以该方法的访问权限必须是public，又因为JVM在执行main()方法时不必创建对象，所以该方法必须是static的，该方法接收一个String类型的数组参数，该数组中保存执行Java命令时传递给所运行的类的参数。
+
+又因为main() 方法是静态的，我们不能直接访问该类中的非静态成员，必须创建该类的一个实例对象后，才能通过这个对象去访问类中的非静态成员。
+
+#### 2.3.4 类成员之四——代码块
+
+如果成员变量想要初始化的值不是一个硬编码的常量值，而是**需要通过复杂的计算或读取文件、或读取运行环境信息等方式**才能获取的一些值。此时，可以考虑代码块（或初始化块）。
+
+代码块(或初始化块)的作用：对Java类或对象进行初始化
+
+##### 2.3.4.1 静态代码块
+
+如果想要为静态变量初始化，可以直接在静态变量的声明后面直接赋值，也可以使用静态代码块。
+
+语法格式：
+
+在代码块的前面加static，就是静态代码块。
+
+```java
+【修饰符】 class 类{
+    static{
+        静态代码块
+    }
+}
+```
+
+静态代码块的特点
+
+- 可以有输出语句。
+- 可以对类的属性、类的声明进行初始化操作。
+- 不可以对非静态的属性初始化。即：不可以调用非静态的属性和方法。
+- 若有多个静态的代码块，那么按照从上到下的顺序依次执行。
+- 静态代码块的执行要先于非静态代码块。
+- 静态代码块随着类的加载而加载，且只执行一次。
+
+##### 2.3.4.2 非静态代码块
+
+语法格式：
+
+```java
+【修饰符】 class 类{
+    {
+        非静态代码块
+    }
+    【修饰符】 构造器名(){
+        // 实例初始化代码
+    }
+    【修饰符】 构造器名(参数列表){
+        // 实例初始化代码
+    }
+}
+```
+
+作用与构造器一样，都是实例变量的初始化等操作。
+
+非静态代码块的意义：
+如果多个重载的构造器有公共代码，并且这些代码都是先于构造器其他代码执行的，那么可以将这部分代码抽取到非静态代码块中，减少冗余代码。
+
+非静态代码块的执行特点：
+
+- 可以有输出语句。
+- 可以对类的属性、类的声明进行初始化操作。
+- 除了调用非静态的结构外，还可以调用静态的变量或方法。
+- 若有多个非静态的代码块，那么按照从上到下的顺序依次执行。
+- 每次创建对象的时候，都会执行一次。且先于构造器执行。
+
+#### 2.3.5 final 关键字
+
+- final修饰类：表示这个类不能被继承，没有子类。提高安全性，提高程序的可读性。
+- final修饰方法：表示这个方法不能被子类重写。
+- final修饰变量：final修饰某个变量（成员变量或局部变量），一旦赋值，它的值就不能被修改，即常量，常量名建议使用大写字母。
+
+    如果某个成员变量用final修饰后，没有set方法，并且必须初始化(多选一)（可以显式赋值、或在初始化块赋值、实例变量还可以在构造器中赋值）
+
+#### 2.3.6 抽象类与抽象方法(abstract 关键字)
+
+##### 2.3.6.1 理论
+
+- 抽象方法：只有方法签名，没有方法体。
+- 抽象类：没有具体实例。
+
+语法格式：
+
+```java
+// 抽象类
+权限修饰符 abstract class 类名{}
+权限修饰符 abstract class 类名 extends 类名{}
+// 抽象方法
+权限修饰符 abstract 返回值 方法名(参数列表);
+```
+
+实现方法：子类对父类抽象方法的重写操作
+
+注意事项：
+abstract只能修饰方法与类，不能修饰变量、代码块、构造器，也不能修饰私有方法、static方法、final方法、final类。
+
+1. 抽象类不能创建对象，否则编译不通过而报错。
+1. 子类必须重写全部抽象方法，否则子类仍为抽象类。
+1. 抽象类也有构造器，用来初始化抽象类中的成员变量。
+1. 有抽象方法一定是抽象类，抽象类可以没有抽象方法。
+
+##### 2.3.6.2 模板方法设计模式
+
+抽象类体现的就是一种模板模式的设计，抽象类作为多个子类的通用模板，子类在抽象类的基础上进行扩展、改造，但子类总体上会保留抽象类的行为方式。
+
+解决的问题：
+
+- 当功能内部一部分实现是确定的，另一部分实现是不确定的。这时可以把不确定的部分暴露出去，让子类去实现。
+- 换句话说，在软件开发中实现一个算法时，整体步骤很固定、通用，这些步骤已经在父类中写好了。但是某些部分易变，易变部分可以抽象出来，供不同子类实现。这就是一种模板模式。
+
+例子：
+
+```java
+package com.atguigu.java;
+//抽象类的应用：模板方法的设计模式
+public class TemplateMethodTest {
+
+    public static void main(String[] args) {
+        BankTemplateMethod btm = new DrawMoney();
+        btm.process();
+
+        BankTemplateMethod btm2 = new ManageMoney();
+        btm2.process();
+    }
+}
+abstract class BankTemplateMethod {
+    // 具体方法
+    public void takeNumber() {
+        System.out.println("取号排队");
+    }
+
+    public abstract void transact(); // 办理具体的业务 //钩子方法
+
+    public void evaluate() {
+        System.out.println("反馈评分");
+    }
+
+    // 模板方法，把基本操作组合到一起，子类一般不能重写
+    public final void process() {
+        this.takeNumber();
+
+        this.transact();// 像个钩子，具体执行时，挂哪个子类，就执行哪个子类的实现代码
+
+        this.evaluate();
+    }
+}
+
+class DrawMoney extends BankTemplateMethod {
+    public void transact() {
+        System.out.println("我要取款！！！");
+    }
+}
+
+class ManageMoney extends BankTemplateMethod {
+    public void transact() {
+        System.out.println("我要理财！我这里有2000万美元!!");
+    }
+}
+```
+
+模板方法设计模式是编程中经常用得到的模式。各个框架、类库中都有他的影子，比如常见的有：
+
+- 数据库访问的封装
+- Junit单元测试
+- JavaWeb的Servlet中关于doGet/doPost方法调用
+- Hibernate中模板程序
+- Spring中JDBCTemlate、HibernateTemplate等
+
+#### 2.3.7 接口(interface 关键字)
+
+##### 2.3.7.1 理解
+
+接口，多个相似类抽象出来的规范，本质是契约、标准、规范，是一种引用数据类型。会被编译为`.class`
+
+##### 2.3.7.2 语法格式
+
+```java
+[修饰符] interface 接口名{
+    //接口的成员列表：
+    // 公共的静态常量
+    // 公共的抽象方法
+    
+    // 公共的默认方法（JDK1.8以上）
+    // 公共的静态方法（JDK1.8以上）
+    // 私有方法（JDK1.9以上）
+}
+```
+
+接口定义位置：
+
+1. 和类写在一个文件里（最简单）
+1. 新建一个.java文件（标准规范写法）
+1. 写在类内部（内部接口）
+
+##### 2.3.7.3 成员说明
+
+1. 公共的静态常量：
+    `public static final 变量名 = 值`也按照static、final的规则，其中`public static final`可以省略。
+1. 公共的抽象方法：
+    `public abstract 方法名(参数表);`也按照abstract的规则，其中`public abstract`可以省略。
+1. 公共的默认方法1.8+：
+    `public default 方法名(参数表)`default表示这个方法是默认方法，其中public可省，但是不建议。
+1. 公共的静态方法1.8+：
+    `public static 方法名(参数表)`供接口直接调用，其中public可省，但是不建议。
+1. 私有方法1.9+：
+    `private 方法名(参数表)`由于默认方法与静态方法的抽象，可以抽象出相似的部分，作为私有方法。
+
+除此之外，接口中没有构造器，没有初始化块，因为接口中没有成员变量需要动态初始化。
+
+##### 2.3.7.4 接口使用规则
+
+1. **类实现接口(implements)、接口实现多个类**
+
+    接口不能创建对象，但是能被类实现。
+
+    类与接口的关系为实现关系。
+
+    `修饰符 class 实现类名 (extends 父类) implements 接口1、接口2...`
+
+    默认方法的重写程度，决定了类是否为抽象类。如果全部重写，就是非抽象类，否则就是抽象类。非抽象类可以不写default，非抽象类一定要写default。
+1. **接口的继承、接口的多继承**
+
+    接口继承其他接口。
+
+    `修饰符 接口名 extends 接口1、接口2...`
+1. **接口与实现类构成多态引用**
+
+    类似父子类的多态引用
+
+    区别是：
+    - 父子类的静态方法能继承，而接口不能。
+    - 子类只要一个父类，而接口能有多个父接口。
+1. **使用接口的静态方法**
+
+    `接口名.静态方法`，而且接口的静态方法不能继承。
+1. **使用接口的非静态方法**
+
+    必须有实现类的对象才能使用。
+
+#### 2.3.7.5 jdk8中相关冲突问题
+
+##### 2.3.7.5.1 默认方法冲突
+
+1. 父类成员方法与接口的默认方法或抽象方法重名，父类优先。
+1. 多父接口默认方法冲突，解决方法：
+    1. 接口中重写一个默认方法为本类默认方法。
+    1. 指明某个父接口的默认方法为本类默认方法，`父接口名.super.方法名`。
+
+##### 2.3.7.5.2 多父类的公共静态常量冲突
+
+解决方法：
+
+1. 接口中重写一个公共静态常量为本类公共静态常量。建议这个
+1. 要用哪个就用哪个，`父接口名.公共静态常量`，仅限于方法中临时使用。
+
+##### 2.3.7.6 面试题（八股）
+
+1. 为什么接口中只能声明公共的静态的常量？
+
+    因为接口是标准规范，那么在规范中需要声明一些底线边界值，当实现者在实现这些规范时，不能去随意修改和触碰这些底线，否则就有“危险”。
+1. 为什么JDK8.0 之后允许接口定义静态方法和默认方法呢？
+
+    因为它违反了接口作为一个抽象标准定义的概念。
+    1. 静态方法：因为之前的标准类库设计中，有很多Collection/Colletions或者Path/Paths这样成对的接口和类，后面的类中都是静态方法，而这些静态方法都是为前面的接口服务的，那么这样设计一对API，不如把静态方法直接定义到接口中使用和维护更方便。
+    1. 默认方法：
+        1. 我们要在已有的老版接口中提供新方法时，如果添加抽象方法，就会涉及到原来使用这些接口的类就会有问题，那么为了保持与旧版本代码的兼容性，只能允许在接口中定义默认方法实现。比如：Java8中对Collection、List、Comparator等接口提供了丰富的默认方法。
+        1. 当我们接口的某个抽象方法，在很多实现类中的实现代码是一样的，此时将这个抽象方法设计为默认方法更为合适，那么实现类就可以选择重写，也可以选择不重写。
+1. 为什么JDK1.9要允许接口定义私有方法呢？
+
+    因为我们说接口是规范，规范是需要公开让大家遵守的。
+    私有方法：因为有了默认方法和静态方法这样具有具体实现的方法，那么就可能出现多个方法由共同的代码可以抽取，而这些共同的代码抽取出来的方法又只希望在接口内部使用，所以就增加了私有方法。
+
+##### 2.3.7.7 接口与抽象类对比
+
+![接口与抽象类对比](java//接口与抽象类对比.png)
+
+在开发中，常看到一个类不是去继承一个已经实现好的类，而是要么继承抽象类，要么实现接口。
+
+#### 2.3.8 内部类
+
+##### 2.3.8.1 概述
+
+1. **定义**：
+
+    将一个类A定义在另一个类B里面，里面的那个类A就称为内部类（InnerClass），类B则称为外部类（OuterClass）。
+1. **为什么需要内部类**：
+
+    具体来说，当一个事物A的内部，还有一个部分需要一个完整的结构B进行描述，而这个内部的完整的结构B又只为外部事物A提供服务，不在其他地方单独使用，那么整个内部的完整结构B最好使用内部类。
+
+    也就是，内部类B只有A需要使用。
+
+    总的来说，遵循高内聚、低耦合的面向对象开发原则。
+1. **分类**：
+
+    ![内部类分类](java\\内部类分类.png)
+
+##### 2.3.8.2 成员内部类
+
+1. 位置：类内部与方法等成员齐次，也作为类成员。
+1. 外部类中使用内部类成员，静态内部类`内部类.成员`，非静态内部类`内部类对象.成员`。
+1. 实例化**静态内部类**：`静态内部类 变量名 = new 外部类名.静态内部类名()`，静态内部类依附于类，不需要外部类的对象就可以new。
+
+    静态内部类里面有静态方法与实例方法。
+    调用方法：
+    - 静态方法，一般`外部类.内部类.静态方法`、外部类内部可省略外部类、通过内部对象调用（不推荐）。
+    - 实例方法，通过内部对象调用。
+1. 实例化**非静态内部类**：`外部类 变量1 = new 外部类();静态内部类 变量名 = 外部类名.new 静态内部类名()`，非静态内部类依附于对象，需要外部类的对象才可以new。
+
+    非静态内部类里只有实例方法。
+    调用方法：通过内部对象调用。
+
+##### 2.3.8.3 局部内部类
+
+1. 位置：类的成员内部。而且多是继承类和实现接口。不能用权限修饰符。能否访问外部类的成员，取决于所在方法。
+1. 根据有无名称分为**非匿名局部内部类**和**匿名局部内部类**。
+1. **非匿名局部内部类**：与不同的类少了权限操作符。
+    `[final/abstract] class 内部类名{}`用的时候，可以按照对象那样调用。
+1. **匿名局部内部类**：只用一次。`new 接口\类{重写的方法}`。调用方法：
+    1. new完直接.方法；
+    1. 用父接口或父类的数据类型变量多态引用，即`数据类型 变量名 = new完`,随后可以按照对象那样使用，也多次调用。
+    1. 匿名内部类对象作为实参，先有形式参数是父接口或父类的数据类型变量（多态引用）的方法，在另一个方法中调用该方法，在该方法的实参用上new完。
+
+##### 2.3.8.4 编译成独立.class文件
+
+- 静态成员内部类：外部类$类名.class，底层自带this$0。
+- 非静态成员内部类：外部类$类名.class
+- 非匿名内部类：外部类$数字编号$类名.class
+- 匿名内部类：外部类$数字编号.class
+
+数字编号是因为不同方法可以有相同名称的局部内部类。
+
+#### 2.3.9 枚举类
+
+java.lang.Enum
+
+##### 2.3.9.1 概述
+
+枚举类型本质上也是一种类，只不过是这个类的对象是有限的、固定的几个，不能让用户随意创建。
+
+若枚举只有一个对象, 则可以作为一种单例模式的实现方式。
+
+枚举类的实现：
+
+- 在JDK5.0 之前，需要程序员自定义枚举类型。
+- 在JDK5.0 之后，Java支持enum关键字来快速定义枚举类型。
+
+##### 2.3.9.2 定义枚举类
+
+1. jdk5.0之前：
+
+    - 私有化类的构造器，保证不能在类的外部创建其对象。
+    - 类的内部创建枚举类的实例。声明为：public static final ，对外暴露这些常量对象。
+    - 对象如果有实例变量，应该声明为private final（建议，不是必须），并在构造器中初始化。
+
+    ```java
+    class Season{
+    private final String SEASONNAME;//季节的名称
+    private final String SEASONDESC;//季节的描述
+    private Season(String seasonName,String seasonDesc){
+        this.SEASONNAME = seasonName;
+        this.SEASONDESC = seasonDesc;
+    }
+    public static final Season SPRING = new Season("春天", "春暖花开");
+    public static final Season SUMMER = new Season("夏天", "夏日炎炎");
+    public static final Season AUTUMN = new Season("秋天", "秋高气爽");
+    public static final Season WINTER = new Season("冬天", "白雪皑皑");
+
+    @Override
+    public String toString() {
+        return "Season{" +
+                "SEASONNAME='" + SEASONNAME + '\'' +
+                ", SEASONDESC='" + SEASONDESC + '\'' +
+                '}';
+        }
+    }
+    class SeasonTest{
+        public static void main(String[] args) {
+            System.out.println(Season.AUTUMN);
+        }
+    }
+    ```
+
+1. jdk5.0以后：
+
+    ```java
+    【修饰符】 enum 枚举类名{
+        常量对象列表
+    }
+
+    【修饰符】 enum 枚举类名{
+        常量对象列表;
+    
+        对象的实例变量列表;
+    }
+    ```
+
+    enum方式定义的要求和特点：
+
+    - 枚举类的常量对象列表必须在枚举类的首行，因为是常量，所以建议大写。
+    - 列出的实例系统会自动添加 public static final 修饰。
+    - 如果常量对象列表后面没有其他代码，那么“；”可以省略，否则不可以省略“；”。
+    - 编译器给枚举类默认提供的是private的无参构造，如果枚举类需要的是无参构造，就不需要声明，写常量对象列表时也不用加参数
+    - 如果枚举类需要的是有参构造，需要手动定义，有参构造的private可以省略，调用有参构造的方法就是在常量对象名后面加(实参列表)就可以。
+    - 枚举类默认继承的是java.lang.Enum类，因此不能再继承其他的类型。
+    - JDK5.0 之后switch，提供支持枚举类型，case后面可以写枚举常量名，无需添加枚举类作为限定。
+
+    ```java
+    public enum Week {
+    MONDAY("星期一"),
+    TUESDAY("星期二"),
+    WEDNESDAY("星期三"),
+    THURSDAY("星期四"),
+    FRIDAY("星期五"),
+    SATURDAY("星期六"),
+    SUNDAY("星期日");
+
+    private final String description;
+
+    private Week(String description){
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +":"+ description;
+        }
+    }
+    package com.atguigu.enumeration;
+
+    public class TestWeek {
+        public static void main(String[] args) {
+            Week week = Week.MONDAY;
+            System.out.println(week);
+
+            switch (week){
+                case MONDAY:
+                    System.out.println("怀念周末，困意很浓");break;
+                case TUESDAY:
+                    System.out.println("进入学习状态");break;
+                case WEDNESDAY:
+                    System.out.println("死撑");break;
+                case THURSDAY:
+                    System.out.println("小放松");break;
+                case FRIDAY:
+                    System.out.println("又信心满满");break;
+                case SATURDAY:
+                    System.out.println("开始盼周末，无心学习");break;
+                case SUNDAY:
+                    System.out.println("一觉到下午");break;
+            }
+        }
+    }
+    ```
+
+开发中，当需要定义一组常量时，强烈建议使用枚举类。
+
+##### 2.3.9.3 enum中的常用方法
+
+- String toString(): 默认返回的是常量名（对象名），可以继续手动重写该方法！
+- static 枚举类型[] values():返回枚举类型的对象数组。该方法可以很方便地遍历所有的枚举值，是一个静态方法
+- static 枚举类型 valueOf(String name)：可以把一个字符串转为对应的枚举类对象。要求字符串必须是枚举类对象的“名字”。如不是，会有运行时异常：IllegalArgumentException。
+- String name():得到当前枚举常量的名称。建议优先使用toString()。
+- int ordinal():返回当前枚举常量的次序号，默认从0开始
+
+##### 2.3.9.4 实现接口的枚举类
+
+- 和普通 Java 类一样，枚举类可以实现一个或多个接口
+- 若每个枚举值在调用实现的接口方法呈现相同的行为方式，则只要统一实现该方法即可。
+- 若需要每个枚举值在调用实现的接口方法呈现出不同的行为方式，则可以让每个枚举值分别来实现该方法
+
+语法：
+
+```java
+//1、枚举类可以像普通的类一样，实现接口，并且可以多个，但要求必须实现里面所有的抽象方法！
+enum A implements 接口1，接口2{
+    //抽象方法的实现
+}
+
+//2、如果枚举类的常量可以继续重写抽象方法!
+enum A implements 接口1，接口2{
+    常量名1(参数){
+        //抽象方法的实现或重写
+    },
+    常量名2(参数){
+        //抽象方法的实现或重写
+    },
+    //...
+}
+```
+
+#### 2.3.10 注解(Annotation)
+
+java.lang.annotation
+
+##### 2.3.10.1 概述
+
+注解（Annotation）是从JDK5.0开始引入，以“@注解名”在代码中存在。
+
+可以像修饰符一样被使用，可用于修饰包、类、构造器、方法、成员变量、参数、局部变量的声明。还可以添加一些参数值，这些信息被保存在 Annotation 的 “name=value” 对中。
+
+注解可以在类编译、运行时进行加载，体现不同的功能。
+
+注解是写给程序或编译器看的。程序还可以根据注解的不同，做出相应的处理。
+
+**重要性**：
+
+在JavaSE中，注解的使用目的比较简单，例如标记过时的功能，忽略警告等。
+
+在JavaEE/Android中注解占据了更重要的角色，例如用来配置应用程序的任何切面，代替JavaEE旧版中所遗留的繁冗代码和XML配置等。
+
+未来的开发模式都是基于注解的，JPA是基于注解的，Spring2.5以上都是基于注解的，Hibernate3.x以后也是基于注解的，Struts2有一部分也是基于注解的了。注解是一种趋势，一定程度上可以说：框架 = 注解 + 反射 + 设计模式。
+
+##### 2.3.10.2 常见作用
+
+1. 生成文档相关的注解
+
+    @author 标明开发该类模块的作者，多个作者之间使用,分割
+    @version 标明该类模块的版本
+    @see 参考转向，也就是相关主题
+    @since 从哪个版本开始增加的
+    @param 对方法中某参数的说明，如果没有参数就不能写
+    @return 对方法返回值的说明，如果方法的返回值类型是void就不能写
+    @exception 对方法可能抛出的异常进行说明 ，如果方法没有用throws显式抛出的异常就不能写
+
+    ```java
+    package com.annotation.javadoc;
+    public class JavadocTest {
+        /**
+        * 程序的主方法，程序的入口
+        * @param args String[] 命令行参数
+        */
+        public static void main(String[] args) {
+        }
+        
+        /**
+        * 求圆面积的方法
+        * @param radius double 半径值
+        * @return double 圆的面积
+        */
+        public static double getArea(double radius){
+            return Math.PI * radius * radius;
+        }
+    }
+    ```
+
+1. 在编译时进行格式检查(JDK内置的三个基本注解)
+
+    @Override: 限定重写父类方法，该注解只能用于方法
+    @Deprecated: 用于表示所修饰的元素(类，方法等)已过时。通常是因为所修饰的结构危险或存在更好的选择
+    @SuppressWarnings: 抑制编译器警告
+
+    ```java
+    package com.annotation.javadoc;
+    
+    public class AnnotationTest{
+    
+        public static void main(String[] args) {
+            @SuppressWarnings("unused")
+            int a = 10;
+        }
+        @Deprecated
+        public void print(){
+            System.out.println("过时的方法");
+        }
+    
+        @Override
+        public String toString() {
+            return "重写的toString方法()";
+        }
+    }
+    ```
+
+1. 跟踪代码依赖性，实现替代配置文件功能
+    Servlet3.0提供了注解(annotation)，使得不再需要在web.xml文件中进行Servlet的部署。
+
+    ```java
+    @WebServlet("/login")
+    public class LoginServlet extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+        
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) { }
+        
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+            doGet(request, response);
+        }  
+    }
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.servlet.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    spring框架中关于“事务”的管理
+    @Transactional(propagation=Propagation.REQUIRES_NEW,isolation=Isolation.READ_COMMITTED,readOnly=false,timeout=3)
+    public void buyBook(String username, String isbn) {
+        //1.查询书的单价
+        int price = bookShopDao.findBookPriceByIsbn(isbn);
+        //2. 更新库存
+        bookShopDao.updateBookStock(isbn);
+        //3. 更新用户的余额
+        bookShopDao.updateUserAccount(username, price);
+    }
+    <!-- 配置事务属性 -->
+    <tx:advice transaction-manager="dataSourceTransactionManager" id="txAdvice">
+        <tx:attributes>
+        <!-- 配置每个方法使用的事务属性 -->
+        <tx:method name="buyBook" propagation="REQUIRES_NEW" 
+        isolation="READ_COMMITTED"  read-only="false"  timeout="3" />
+        </tx:attributes>
+    </tx:advice>
+    ```
+
+##### 2.3.10.3 三个基本注解
+
+1. @Override
+    - 用于检测被标记的方法为有效的重写方法，如果不是，则报编译错误！
+    - 只能标记在方法上。
+    - 它会被编译器程序读取。
+1. @Deprecated
+    - 用于表示被标记的数据已经过时，不推荐使用。
+    - 可以用于修饰 属性、方法、构造、类、包、局部变量、参数。
+    - 它会被编译器程序读取。
+1. @SuppressWarnings
+    - 抑制编译警告。当我们不希望看到警告信息的时候，可以使用 SuppressWarnings 注解来抑制警告信息
+    - 可以用于修饰类、属性、方法、构造、局部变量、参数
+    - 它会被编译器程序读取。
+    - 可以指定的警告类型有（了解）
+        - all，抑制所有警告
+        - unchecked，抑制与未检查的作业相关的警告
+        - unused，抑制与未用的程式码及停用的程式码相关的警告
+        - deprecation，抑制与淘汰的相关警告
+        - nls，抑制与非 nls 字串文字相关的警告
+        - null，抑制与空值分析相关的警告
+        - rawtypes，抑制与使用 raw 类型相关的警告
+        - static-access，抑制与静态存取不正确相关的警告
+        - static-method，抑制与可能宣告为 static 的方法相关的警告
+        - super，抑制与置换方法相关但不含 super 呼叫的警告
+
+##### 2.3.10.4 元注解
+
+JDK1.5在java.lang.annotation包定义了4个标准的meta-annotation类型，它们被用来提供**对其它 annotation类型作说明**。
+
+1. @Target：用于描述注解的使用范围
+
+    可以通过枚举类型ElementType的10个常量对象来指定TYPE，METHOD，CONSTRUCTOR，PACKAGE.....
+1. @Retention：用于描述注解的生命周期
+    - 可以通过枚举类型RetentionPolicy的3个常量对象来指定SOURCE（源代码）、CLASS（字节码）、RUNTIME（运行时）
+    - 唯有RUNTIME阶段才能被反射读取到。
+1. @Documented：表明这个注解应该被 javadoc工具记录。
+1. @Inherited：允许子类继承父类中的注解
+
+```java
+package java.lang;
+
+import java.lang.annotation.*;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Override {
+}
+
+
+
+package java.lang;
+
+import java.lang.annotation.*;
+import static java.lang.annotation.ElementType.*;
+
+@Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface SuppressWarnings {
+    String[] value();
+}
+
+
+
+package java.lang;
+
+import java.lang.annotation.*;
+import static java.lang.annotation.ElementType.*;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
+public @interface Deprecated {
+}
+```
+
+##### 2.3.10.5 自定义注解
+
+一个完整的注解应该包含三个部分：声明、使用、读取。
+
+1. 声明自定义注解
+
+    ```java
+    【元注解】
+    【修饰符】 @interface 注解名{
+        【成员列表】
+    }
+    ```
+
+    - 自定义注解可以通过四个元注解@Retention,@Target，@Inherited,@Documented，分别说明它的声明周期，使用位置，是否被继承，是否被生成到API文档中。
+    - Annotation 的成员在 Annotation 定义中以无参数有返回值的抽象方法的形式来声明，我们又称为配置参数。返回值类型只能是八种基本数据类型、String类型、Class类型、enum类型、Annotation类型、以上所有类型的数组
+    - 可以使用 default 关键字为抽象方法指定默认返回值
+    - 如果定义的注解含有抽象方法，那么使用时必须指定返回值，除非它有默认值。格式是“方法名 = 返回值”，如果只有一个抽象方法需要赋值，且方法名为value，可以省略“value=”，所以如果注解只有一个抽象方法成员，建议使用方法名value。
+
+    ```java
+    package com.atguigu.annotation;
+
+    import java.lang.annotation.*;
+
+    @Inherited
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Table {
+        String value();
+    }
+    package com.atguigu.annotation;
+
+    import java.lang.annotation.*;
+
+    @Inherited
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Column {
+        String columnName();
+        String columnType();
+    }
+    ```
+
+1. 使用自定义注解
+
+    ```java
+    package com.atguigu.annotation;
+
+    @Table("t_stu")
+    public class Student {
+        @Column(columnName = "sid",columnType = "int")
+        private int id;
+        @Column(columnName = "sname",columnType = "varchar(20)")
+        private String name;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return "Student{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
+    }
+    ```
+
+1. 读取和处理自定义注解
+
+    自定义注解必须配上注解的信息处理流程才有意义。
+
+    我们自己定义的注解，只能使用反射的代码读取。所以自定义注解的声明周期必须是RetentionPolicy.RUNTIME。
+
+##### 2.3.10.6 JUnit单元测试
+
+###### 2.3.10.6.1 介绍
+
+测试
+
+- 黑盒测试：不需要写代码，给输入值，看程序是否能够输出期望的值。
+- 白盒测试：需要写代码的。关注程序具体的执行流程。
+
+JUnit 是由 Erich Gamma 和 Kent Beck 编写的一个测试框架（regression testing framework），供Java开发人员编写单元测试之用。
+
+JUnit测试是程序员测试，即所谓白盒测试，因为程序员知道被测试的软件如何（How）完成功能和完成什么样（What）的功能。
+
+要使用JUnit，必须在项目的编译路径中引入JUnit的库，即相关的.class文件组成的jar包。jar就是一个压缩包，压缩包都是开发好的第三方（Oracle公司第一方，我们自己第二方，其他都是第三方）工具类，都是以class文件形式存在的。
+
+###### 2.3.10.6.2 JUnit.jar
+
+引入本地JUnit.jar。在项目结构加入。
+
+###### 2.3.10.6.3 编写和运行@Test单元测试方法
+
+JUnit4版本，要求@Test标记的方法必须满足如下要求：
+
+- 所在的类必须是public的，非抽象的，包含唯一的无参构造器。
+- @Test标记的方法本身必须是public，非抽象的，非静态的，void无返回值，()无参数的。
+
+```java
+package com.atguigu.junit;
+import org.junit.Test;
+public class TestJUnit {
+    @Test
+    public void test01(){
+        System.out.println("TestJUnit.test01");
+    }
+    @Test
+    public void test02(){
+        System.out.println("TestJUnit.test02");
+    }
+    @Test
+    public void test03(){
+        System.out.println("TestJUnit.test03");
+    }
+}
+```
+
+###### 2.3.10.6.4 设置执行JUnit用例时支持控制台输入
+
+1. 设置数据：
+
+    默认情况下，在单元测试方法中使用Scanner时，并不能实现控制台数据的输入。需要做如下设置：
+    在idea64.exe.vmoptions配置文件中加入下面一行设置，重启idea后生效。`-Deditable.java.test.console=true`
+
+2. idea64.exe.vmoptions位置
+
+    ![idea64.exe.vmoptions](java//idea64.exe.vmoptions位置.png)
+
+###### 2.3.10.6.5 定义测试方法模板
+
+#### 2.3.11 包装类
+
+##### 2.3.11.1 为什么需要
+
+Java提供了两个类型系统，基本数据类型与引用数据类型。使用基本数据类型在于效率，然而当要使用只针对对象设计的API或新特性（例如泛型），怎么办呢？
+
+为基本数据类型分别设立一类。
+
+##### 2.3.11.2 有哪些包装类
+
+Java针对八种基本数据类型定义了相应的引用类型：包装类（封装类）。有了类的特点，就可以调用类中的方法，Java才是真正的面向对象。
+
+![包装类](java//包装类.png)
+
+##### 2.3.11.3 自定义包装类
+
+```java
+public class MyInteger {
+    int value;
+
+    public MyInteger() {
+    }
+
+    public MyInteger(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+}
+```
+
+##### 2.3.11.4 包装类与基本数据类型间的转换
+
+1. 装箱
+
+    基本数据类型->包装类对象
+
+    基本数值---->包装对象
+
+    转为包装类的对象，是为了使用专门为对象设计的API和特性
+
+    ```java
+    Integer obj1 = new Integer(4);//使用构造函数函数
+    Float f = new Float(“4.56”);
+    Long l = new Long(“asdf”);  //NumberFormatException
+
+    Integer obj2 = Integer.valueOf(4);//使用包装类中的valueOf方法
+    ```
+
+1. 拆箱
+
+    包装类对象->基本数据类型
+
+    包装对象---->基本数值
+
+    转为基本数据类型，一般是因为需要运算，Java中的大多数运算符是为基本数据类型设计的。比较、算术等
+
+    ```java
+    Integer obj = new Integer(4);
+    int num1 = obj.intValue();
+    ```
+
+1. 自动装箱与拆箱
+
+    由于我们经常要做基本类型与包装类之间的转换，从JDK5.0开始，基本类型与包装类的装箱、拆箱动作可以自动完成。
+
+    只能与自己对应的类型之间才能实现自动装箱与拆箱。
+
+    ```java
+    Integer i = 4;//自动装箱。相当于Integer i = Integer.valueOf(4);
+    i = i + 5;//等号右边：将i对象转成基本数值(自动拆箱) i.intValue() + 5;
+    //加法运算完成后，再次装箱，把基本数值转成对象。
+
+    Integer i = 1;
+    Double d = 1;//错误的，1是int类型
+    ```
+
+##### 2.3.11.5 基本数据类型、包装类与字符串间的转换
+
+1. 基本数据类型转为字符串
+
+    方式1：调用字符串重载的valueOf()方法
+
+    ```java
+    int a = 10;
+    //String str = a;//错误的
+
+    String str = String.valueOf(a);
+    ```
+
+    方式2：更直接的方式
+
+    ```java
+    int a = 10;
+
+    String str = a + "";
+    ```
+
+1. 字符串转为基本数据类型
+
+    方式1：除了Character类之外，其他所有包装类都具有parseXxx静态方法可以将字符串参数转换为对应的基本类型，例如：
+    - public static int parseInt(String s)：将字符串参数转换为对应的int基本类型。
+    - public static long parseLong(String s)：将字符串参数转换为对应的long基本类型。
+    - public static double parseDouble(String s)：将字符串参数转换为对应的double基本类型。
+
+    方式2：字符串转为包装类，然后可以自动拆箱为基本数据类型
+    - public static Integer valueOf(String s)：将字符串参数转换为对应的Integer包装类，然后可以自动拆箱为int基本类型
+    - public static Long valueOf(String s)：将字符串参数转换为对应的Long包装类，然后可以自动拆箱为long基本类型
+    - public static Double valueOf(String s)：将字符串参数转换为对应的Double包装类，然后可以自动拆箱为double基本类型
+
+    注意:如果字符串参数的内容无法正确转换为对应的基本类型，则会抛出java.lang.NumberFormatException异常。
+
+    方式3：通过包装类的构造器实现
+
+    - int a = Integer.parseInt("整数的字符串");
+    - double d = Double.parseDouble("小数的字符串");
+    - boolean b = Boolean.parseBoolean("true或false");
+
+    - int a = Integer.valueOf("整数的字符串");
+    - double d = Double.valueOf("小数的字符串");
+    - boolean b = Boolean.valueOf("true或false");
+
+    int i = new Integer(“12”);
+
+![包装类的转换小结](java\\包装类的转换小结.png)
+
+##### 2.3.11.6 包装类的其它API
+
+1. 数据类型的最大最小值
+
+    Integer.MAX_VALUE和Integer.MIN_VALUE
+
+    Long.MAX_VALUE和Long.MIN_VALUE
+
+    Double.MAX_VALUE和Double.MIN_VALUE
+
+1. 字符转大小写
+
+    Character.toUpperCase('x');
+
+    Character.toLowerCase('X');
+
+1. 整数转进制
+
+    Integer.toBinaryString(int i)
+
+    Integer.toHexString(int i)
+
+    Integer.toOctalString(int i)
+
+1. 比较的方法
+
+    Double.compare(double d1, double d2)
+
+    Integer.compare(int x, int y)
+
+##### 2.3.11.7 包装类对象的特点
+
+1. 包装类缓存对象
+
+    提前在推中创建一起固定对象(缓存池)。后面再创建相同数值的包装对象是，不再创建新的对象，而是让变量指向缓存池已有的对象。节省内存，减少重复new。
+
+    |包装类|缓存对象|
+    |:---:|:---:|
+    |Byte|-128~127|
+    |Short|-128~127|
+    |Integer|-128~127|
+    |Long|-128~127|
+    |Float|没有|
+    |Double|没有|
+    |Character|0~127|
+    |Boolean|true和false|
+
+    小数没有是因为，小数有无穷个，存不完。
+1. 类型转换问题
+
+    Integer i = 1000;
+    double j = 1000;
+    System.out.println(i==j);//true  
+    会先将i自动拆箱为int，然后根据基本数据类型“自动类型转换”规则，转为double比较
+
+    Integer i = 1000;
+    int j = 1000;
+    System.out.println(i==j);//true
+    会自动拆箱，按照基本数据类型进行比较
+
+    Integer i = 1;
+    Double d = 1.0
+    System.out.println(i==d);//编译报错
+
+1. 包装类对象不可变
+
+    这类Integer等包装类对象是“不可变”对象，即一旦修改，就是新对象，和实参就无关了。
+
+    方法里，如果包装类对象发生改变，jvm会自动return，改变变量指向。但是如果要改变实参，就需要return，再接收。
+
+    ```java
+    public class TestExam {
+        public static void main(String[] args) {
+
+            int i = 1;
+            Integer j = new Integer(2);
+            Circle c = new Circle();
+            Change(i,j,c);
+            System.out.println("i = " + i);//1
+        System.out.println("j = " + j);//2
+        System.out.println("c.radius = " + c.radius);//10.0
+        }
+
+        public static void change(int a ,Integer b,Circle c ){
+            a += 10;
+            b += 10;//等价于  b = new Integer(b+10);
+            c.radius += 10;
+            /*c = new Circle();
+            c.radius+=10;*/
+        }
+    }
+    class Circle{
+        double radius;
+    }
+    ```
 
 ## 3 高级应用
 
@@ -1238,7 +2736,7 @@ java.util.Arrays类，即操作数组的工具类。包括了用来操作数组�
 
 数组元素拼接：
 
-- `tatic String toString(int[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。形式为：[元素1，元素2，元素3。。。]。
+- `static String toString(int[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。形式为：[元素1，元素2，元素3。。。]。
 - `static String toString(Object[] a)`：字符串表示形式由数组的元素列表组成，括在方括号（"[]"）中。相邻元素用字符 ", "（逗号加空格）分隔。元素将自动调用自己从Object继承的toString方法将对象转为字符串进行拼接，如果没有重写，则返回类型@hash值，如果重写则按重写返回的字符串进行拼接。
 
 数组排序：
@@ -1270,6 +2768,16 @@ java.util.Arrays类，即操作数组的工具类。包括了用来操作数组�
 - `static void fill(Object[] a,Object val)`：用val对象填充整个a数组
 - `static void fill(int[] a, int fromIndex, int toIndex, int val)`：将a数组[fromIndex,toIndex)部分填充为val值
 - `static void fill(Object[] a, int fromIndex, int toIndex, Object val)`：将a数组[fromIndex,toIndex)部分填充为val对象
+
+### Object类的getClass()与拓展
+
+所有对象都能调用，返回对象真正new出来的本体。
+
+||||
+|:---:|:---:|:---:|
+|对象.getClass()|拿到类的本体对象|Class<Student\>|
+|getClass().getName()|全类名 (包名 + 类名)|com.test.Student|
+|getClass().getSimpleName()|只拿简单类名，不要包名|Student|
 
 ## 琐碎
 
@@ -1374,10 +2882,19 @@ MVC设计模式将整个程序分为三个层次：视图模型(Viewer)层，控
 
 - 栈：方法运行时使用的内存
 - 堆：存储对象或数组，new建立的
-- 方法区：存储可以运行的class文件
+- 方法区：存储可以运行的class文件和静态方法静态变量
 - 本地方法栈：JVM在使用操作系统功能时使用
 - 寄存器：给CPU使用
 
 （堆与方法区连一起）
 
 **JDK8开始，取消方法区，新增元空间，把全赖的方法区的多种功能进行拆分，有的功能在堆区，有的功能在元空间。**
+
+### 7 开闭原则OCP
+
+对扩展开放，对修改关闭
+通俗解释：软件系统中的各种组件，如模块（Modules）、类（Classes）以及功能（Functions）等，应该在不修改现有代码的基础上，引入新功能
+
+### 8 一个.java文件要求
+
+一个java文件只能有一个public引用数据类型
