@@ -2686,13 +2686,1781 @@ public class MyInteger {
 
 ### 3.1 异常处理
 
+#### 3.1.1 异常
+
+异常：指的是程序在执行过程中，出现的非正常情况，如果不处理最终会导致JVM的非正常停止。
+
+异常指的并不是语法错误和逻辑错误。语法错了，编译不通过，不会产生字节码文件，根本不能运行。
+
+#### 3.1.2 异常体系
+
+**异常Throwable，分类为Error和Exception。**
+
+1. Throwable异常
+
+    - public void printStackTrace()：打印异常的详细信息。包含了异常的类型、异常的原因、异常出现的位置、在开发和调试阶段都得使用printStackTrace。
+    - public String getMessage()：获取发生异常的原因。
+
+1. Error是java.lang.Error类
+
+    Error：虚拟机无法解决的严重问题。如：JVM系统内部错误、资源耗尽等严重情况。一般不编写针对性的代码进行处理。
+
+    Error最常见的就是VirtualMachineError，它有两个经典的子类：StackOverflowError（栈内存溢出）、OutOfMemoryError（堆内存溢出，简称OOM）。
+
+1. Exception是java.lang.Exception类
+
+    Exception：其它因编程错误或偶然的外在因素导致的一般性问题，需要使用针对性的代码进行处理，使程序继续运行。否则一旦发生异常，程序也会挂掉。例如：
+    - 空指针访问
+    - 试图读取不存在的文件
+    - 网络连接中断
+    - 数组角标越界
+
+说明：
+    无论是Error还是Exception，还有很多子类，异常的类型非常丰富。当代码运行出现异常时，特别是我们不熟悉的异常时，不要紧张，把异常的简单类名，拷贝到API中去查去认识它即可。
+
+#### 3.1.3 编译时异常和运行时异常
+
+Java程序的执行过程分为编译时过程和运行时过程。
+
+编译时，**Java代码源程序(.java)**通过`javac.exe`这个工具，变为**字节码文件(.class)**。
+
+运行时，**字节码文件(.class)**通过`java.exe`这个工具，在内存中加载运行类。
+
+- 编译时期异常（即checked异常、受检异常）：在代码编译阶段，编译器就能明确警示当前代码可能发生（不是一定发生）xx异常，并明确督促程序员提前编写处理它的代码。如果程序员没有编写对应的异常处理代码，则编译器就会直接判定编译失败，从而不能生成字节码文件。通常，这类异常的发生不是由程序员的代码引起的，或者不是靠加简单判断就可以避免的，例如：FileNotFoundException（文件找不到异常）。
+- 运行时期异常（即runtime异常、unchecked异常、非受检异常）：在代码编译阶段，编译器完全不做任何检查，无论该异常是否会发生，编译器都不给出任何提示。只有等代码运行起来并确实发生了xx异常，它才能被发现。通常，这类异常是由程序员的代码编写不当引起的，只要稍加判断，或者细心检查就可以避免。
+
+    java.lang.RuntimeException:类及它的子类都是运行时异常。比如：ArrayIndexOutOfBoundsException:数组下标越界异常，ClassCastException类型转换异常。
+
+#### 3.1.4 异常处理
+
+在编写程序时，经常要在可能出现错误的地方加上检测的代码，如进行x/y运算时，要检测分母为0，数据为空，输入的不是数据而是字符等。过多的if-else分支会导致程序的代码加长、臃肿，可读性差，程序员需要花很大的精力“堵漏洞”。因此采用异常处理机制。
+
+Java异常处理:
+
+Java采用的异常处理机制，是将异常处理的程序代码集中在一起，与正常的程序代码分开，使得程序简洁、优雅，并易于维护。
+
+Java提供了异常处理的抓抛模型。
+
+- 前面提到，Java程序的执行过程中如出现异常，会生成一个异常类对象，该异常对象将被提交给Java运行时系统，这个过程称为抛出(throw)异常。
+- 如果一个方法内抛出异常，该异常对象会被抛给调用者方法中处理。如果异常没有在调用者方法中处理，它继续被抛给这个调用方法的上层方法。这个过程将一直继续下去，直到异常被处理。这一过程称为捕获(catch)异常。
+- 如果一个异常回到main()方法，并且main()也不处理，则程序运行终止。
+
+
+Java异常处理的方式：
+
+- 方式一：try-catch-finally
+- 方式二：throws + 异常类型
+
+##### 3.1.4.1 try-catch-finally
+
+语法
+
+```java
+try{
+    ......//可能产生异常的代码
+}
+catch( 异常类型1 e ){
+    ......//当产生异常类型1型异常时的处置措施
+}
+catch( 异常类型2 e ){
+    ......//当产生异常类型2型异常时的处置措施
+}  
+finally{
+    ...... //无论是否发生异常，都无条件执行的语句
+} 
+```
+
+1. 整体执行过程
+    - 如果在程序运行时，try块中的代码没有发生异常，那么catch所有的分支都不执行。
+    - 如果在程序运行时，try块中的代码发生了异常，根据异常对象的类型，将从上到下选择第一个匹配的catch分支执行。此时try中发生异常的语句下面的代码将不执行，而整个try...catch之后的代码可以继续运行。
+    - 如果在程序运行时，try块中的代码发生了异常，但是所有catch分支都无法匹配（捕获）这个异常，那么JVM将会终止当前方法的执行，并把异常对象“抛”给调用者。如果调用者不处理，程序就挂了。
+
+1. try
+    捕获异常的第一步是用try{…}语句块选定捕获异常的范围，将可能出现异常的业务逻辑代码放在try语句块中。
+
+1. catch
+
+    - catch分支，分为两个部分，catch()中编写异常类型和异常参数名，{}中编写如果发生了这个异常，要做什么处理的代码。
+
+        如果明确知道产生的是何种异常，可以用该异常类作为catch的参数；也可以用其父类作为catch的参数。
+
+        比如：可以用ArithmeticException类作为参数的地方，就可以用RuntimeException类作为参数，或者用所有异常的父类Exception类作为参数。但不能是与ArithmeticException类无关的异常，如NullPointerException（catch中的语句将不会执行）。
+
+    - 每个try语句块可以伴随一个或多个catch语句，用于处理可能产生的不同类型的异常对象。
+
+        如果有多个catch分支，并且多个异常类型有父子类关系，必须保证小的子异常类型在上，大的父异常类型在下。否则，报错。
+
+    - catch中常用异常处理的方式
+
+        - public String getMessage()：获取异常的描述信息，返回字符串
+
+        - public void printStackTrace()：打印异常的跟踪栈信息并输出到控制台。包含了异常的类型、异常的原因、还包括异常出现的位置，在开发和调试阶段，都得使用printStackTrace()。
+
+1. finally
+
+    - 因为异常会引发程序跳转，从而会导致有些语句执行不到。而程序中有一些特定的代码无论异常是否发生，都需要执行。例如，数据库连接、输入流输出流、Socket连接、Lock锁的关闭等，这样的代码通常就会放到finally块中。所以，我们通常将一定要被执行的代码声明在finally中。
+    - 唯一的例外，使用 **System.exit(0)** 来终止当前正在运行的 Java 虚拟机。
+    - 不论在try代码块中是否发生了异常事件，catch语句是否执行，catch语句是否有异常，catch语句中是否有return，finally块中的语句都会被执行。
+    - finally语句和catch语句是可选的，但finally不能单独使用。
+
+##### 3.1.4.2 throws + 异常类型
+
+在方法头中，加入`throws 异常类型1,异常类型2,...`，表明这个方法可能会抛出的异常类型。
+
+重写的时候，如果没有异常处理，就一定不能有。如果有异常处理，就一定要不少于原先的异常类型。
+
+抛出异常
+
+1. JVM自动抛出。
+1. 在方法内throw new 异常类型(message)。这个异常类型Throwable及其子类。
+
+#### 3.1.5 自定义异常
+
+1. 要继承一个异常类型
+    自定义一个编译时异常类型：自定义类继承java.lang.Exception。
+    自定义一个运行时异常类型：自定义类继承java.lang.RuntimeException。
+1. 提供至少两个构造器，一个是无参构造，一个是(String message)构造器。
+1. 自定义异常需要提供serialVersionUID
+
+注意：
+
+1. 自定义的异常只能通过throw抛出。
+1. 自定义异常最重要的是异常类的名字和message属性。当异常出现时，可以根据名字判断异常类型。比如：TeamException("成员已满，无法添加");TeamException("该员工已是某团队成员");
+1. 自定义异常对象只能手动抛出。抛出后由try..catch处理，也可以甩锅throws给调用者处理。
+
 ### 3.2 多线程
+
+#### 3.2.1 相关概念
+
+程序(program)，进程(process)，线程(thread)。
+
+注意：不同的进程之间是共享堆、不共享内存的。进程之间的数据交换和通信的成本很高。
+
+单核与多核CPU、并行(parallel)、并发(concurrency)。
+
+线程调度
+
+- 分时调度：所有线程轮流使用 CPU 的使用权，并且平均分配每个线程占用 CPU 的时间。
+
+- 抢占式调度：让优先级高的线程以较大的概率优先使用 CPU。如果线程的优先级相同，那么会随机选择一个(线程随机性)，Java使用的为抢占式调度。
+
+多线程优点：
+
+1. 提高应用程序的响应。对图形化界面更有意义，可增强用户体验。
+1. 提高计算机系统CPU的利用率
+1. 改善程序结构。将既长又复杂的进程分为多个线程，独立运行，利于理解和修改
+
+#### 3.2.2 创建和启动线程
+
+1. 如果自己手动调用run()方法，那么就只是普通方法，没有启动多线程模式。
+2. run()方法由JVM调用，什么时候调用，执行的过程控制都有操作系统的CPU调度决定。
+3. 想要启动多线程，必须调用start方法。
+4. 一个线程对象只能调用一次start()方法启动，如果重复调用了，则将抛出以上的异常“IllegalThreadStateException”。
+
+
+##### 3.2.2.1 概述
+
+Java语言的JVM允许程序运行多个线程，使用java.lang.Thread类代表线程，所有的线程对象都必须是Thread类或其子类的实例。
+
+Thread类的特性
+
+- 每个线程都是通过某个特定Thread对象的run()方法来完成操作的，因此把run()方法体称为线程执行体。
+- 通过该Thread对象的start()方法来启动这个线程，而非直接调用run()
+- 要想实现多线程，必须在主线程中创建新的线程对象。
+
+##### 3.2.2.2 方式一：继承Thread类
+
+1. 定义Thread类的子类，并重写该类的run()方法，该run()方法的方法体就代表了线程需要完成的任务
+1. 创建Thread子类的实例，即创建了线程对象
+1. 调用线程对象的start()方法来启动该线程
+
+Thread类实际上也是实现了Runnable接口的类。
+
+##### 3.2.2.3 方式二：实现Runnable接口
+
+1. 定义Runnable接口的实现类，并重写该接口的run()方法，该run()方法的方法体同样是该线程的线程执行体。
+1. 创建Runnable实现类的实例，并以此实例作为Thread的target参数来创建Thread对象，该Thread对象才是真正 的线程对象。`new Thread(target,message)`
+1. 调用线程对象的start()方法，启动线程。调用Runnable接口实现类的run方法。
+
+##### 3.2.2.4 方式三：实现Callanble接口
+
+1. 定义Callable接口的实现类，并重写该接口的call()方法，该call()方法的方法体同样是该线程的线程执行体。
+1. 创建Callable实现类的实例，并以此实例作为Future的参数来创建Future对象，再以此实例作为Thread的target参数来创建Thread对象，该Thread对象才是真正 的线程对象。`new Thread(target,message)`
+1. 调用线程对象的start()方法，启动线程。
+1. 获取Callable中call方法的返回值。Future实例的get()返回值即为Future构造器参数Callable实现类重写的call()的返回值。
+
+优点，可以用Future的变量接收进程结果。
+
+在获取分线程执行结果的时候，当前线程（或是主线程）受阻塞，效率较低。
+
+#### 3.2.3 Thread常用结构
+
+构造器：
+
+- public Thread() :分配一个新的线程对象。
+- public Thread(String name) :分配一个指定名字的新的线程对象。
+- public Thread(Runnable target) :指定创建线程的目标对象，它实现了Runnable接口中的run方法
+- public Thread(Runnable target,String name) :分配一个带有指定目标新的线程对象并指定名字。
+
+常用方法系列1
+
+- public void run() :此线程要执行的任务在此处定义代码。
+- public void start() :导致此线程开始执行; Java虚拟机调用此线程的run方法。
+- public String getName() :获取当前线程名称。
+- public void setName(String name)：设置该线程名称。
+- public static Thread currentThread() :返回对当前正在执行的线程对象的引用。在Thread子类中就是this，通常用于主线程和Runnable实现类
+- public static void sleep(long millis) :使当前正在执行的线程以指定的毫秒数暂停（暂时停止执行）。
+- public static void yield()：yield只是让当前线程暂停一下，让系统的线程调度器重新调度一次，希望优先级与当前线程相同或更高的其他线程能够获得执行机会，但是这个不能保证，完全有可能的情况是，当某个线程调用了yield方法暂停之后，线程调度器又将其调度出来重新执行。
+
+常用方法系列2
+
+- public final boolean isAlive()：测试线程是否处于活动状态。如果线程已经启动且尚未终止，则为活动状态。
+- void join() ：等待该线程终止。 
+- void join(long millis) ：等待该线程终止的时间最长为 millis 毫秒。如果millis时间到，将不再等待。 
+- void join(long millis, int nanos) ：等待该线程终止的时间最长为 millis 毫秒 + nanos 纳秒。 
+- public final void stop()：已过时，不建议使用。强行结束一个线程的执行，直接进入死亡状态。run()即刻停止，可能会导致一些清理性的工作得不到完成，如文件，数据库等的关闭。同时，会立即释放该线程所持有的所有的锁，导致数据得不到同步的处理，出现数据不一致的问题。
+- void suspend() / void resume() : 这两个操作就好比播放器的暂停和恢复。二者必须成对出现，否则非常容易发生死锁。suspend()调用会导致线程暂停，但不会释放任何锁资源，导致其它线程都无法访问被它占用的锁，直到调用resume()。已过时，不建议使用。
+
+常用方法系列3
+
+每个线程都有一定的优先级，同优先级线程组成先进先出队列（先到先服务），使用分时调度策略。优先级高的线程采用抢占式策略，获得较多的执行机会。每个线程默认的优先级都与创建它的父线程具有相同的优先级。
+
+- Thread类的三个优先级常量：
+
+    1. MAX_PRIORITY（10）：最高优先级
+    1. MIN_PRIORITY （1）：最低优先级
+    1. NORM_PRIORITY （5）：普通优先级，默认情况下main线程具有普通优先级。
+- public final int getPriority() ：返回线程优先级
+- public final void setPriority(int newPriority) ：改变线程的优先级，范围在[1,10]之间。
+
+#### 3.2.4 守护线程
+
+- 调用setDaemon(true)方法可将指定线程设置为守护线程。必须在线程启动之前设置，否则会报IllegalThreadStateException异常。
+- 调用isDaemon()可以判断线程是否是守护线程。
+
+#### 3.2.5 多线程的生命周期
+
+JDK1.5之前：5种状态。
+
+线程的生命周期有五种状态：新建（New）、就绪（Runnable）、运行（Running）、阻塞（Blocked）、死亡（Dead）。CPU需要在多条线程之间切换，于是线程状态会多次在运行、阻塞、就绪之间切换。
+
+程序只能对新建状态的线程调用start()，并且只能调用一次，如果对非新建状态的线程，如已启动的线程或已死亡的线程调用start()都会报错IllegalThreadStateException异常。
+
+DK1.5及之后：6种状态
+在java.lang.Thread.State的枚举类中这样定义：
+
+```java
+public enum State {
+	NEW,
+	RUNNABLE,
+	BLOCKED,
+	WAITING,
+	TIMED_WAITING,
+	TERMINATED;
+}
+```
+
+- NEW（新建）：线程刚被创建，但是并未启动。还没调用start方法。
+- RUNNABLE（可运行）：这里没有区分就绪和运行状态。因为对于Java对象来说，只能标记为可运行，至于什么时候运行，不是JVM来控制的了，是OS来进行调度的，而且时间非常短暂，因此对于Java对象的状态来说，无法区分。
+- Teminated（被终止）：表明此线程已经结束生命周期，终止运行。
+
+重点说明，根据Thread.State的定义，阻塞状态分为三种：BLOCKED、WAITING、TIMED_WAITING。
+
+- BLOCKED（锁阻塞）：在API中的介绍为：一个正在阻塞、等待一个监视器锁（锁对象）的线程处于这一状态。只有获得锁对象的线程才能有执行机会。
+比如，线程A与线程B代码中使用同一锁，如果线程A获取到锁，线程A进入到Runnable状态，那么线程B就进入到Blocked锁阻塞状态。
+- TIMED_WAITING（计时等待）：在API中的介绍为：一个正在限时等待另一个线程执行一个（唤醒）动作的线程处于这一状态。
+
+  - 当前线程执行过程中遇到Thread类的sleep或join，Object类的wait，LockSupport类的park方法，并且在调用这些方法时，设置了时间，那么当前线程会进入TIMED_WAITING，直到时间到，或被中断。
+- WAITING（无限等待）：在API中介绍为：一个正在无限期等待另一个线程执行一个特别的（唤醒）动作的线程处于这一状态。
+
+    当前线程执行过程中遇到遇到Object类的wait，Thread类的join，LockSupport类的park方法，并且在调用这些方法时，没有指定时间，那么当前线程会进入WAITING状态，直到被唤醒。
+
+  - 通过Object类的wait进入WAITING状态的要有Object的notify/notifyAll唤醒；
+  - 通过Condition的await进入WAITING状态的要有Condition的signal方法唤醒；
+  - 通过LockSupport类的park方法进入WAITING状态的要有LockSupport类的unpark方法唤醒
+  - 通过Thread类的join进入WAITING状态，只有调用join方法的线程对象结束才能让当前线程恢复；
+
+说明：当从WAITING或TIMED_WAITING恢复到Runnable状态时，如果发现当前线程没有得到监视器锁，那么会立刻转入BLOCKED状态。
+
+#### 3.2.6 线程安全问题
+
+不同对象的实例变量不共享、静态变量是共享的、同一个对象的实例变量共享。
+
+##### 3.2.6.1 同步机制(synchronized)解决线程安全问题**
+
+原理：同步机制的原理，其实就相当于给某段代码加“锁”，任何线程想要执行这段代码，都要先获得“锁”，我们称它为同步锁。因为Java对象在堆中的数据分为分为对象头、实例变量、空白的填充。而对象头中包含：
+
+- Mark Word：记录了和当前对象有关的GC、锁标记等信息。
+- 指向类的指针：每一个对象需要记录它是由哪个类创建出来的。
+- 数组长度（只有数组对象才有）
+哪个线程获得了“同步锁”对象之后，”同步锁“对象就会记录这个线程的ID，这样其他线程就只能等待了，除非这个线程”释放“了锁对象，其他线程才能重新获得/占用”同步锁“对象。
+
+##### 3.2.6.2 同步代码块与同步方法
+
+同步代码块：synchronized 关键字可以用于某个区块前面，表示只对这个区块的资源实行互斥访问。 格式:
+synchronized(同步锁){
+     需要同步操作的代码
+}
+同步方法：synchronized 关键字直接修饰方法，表示同一时刻只有一个线程能进入这个方法，其他线程在外面等着。
+public synchronized void method(){
+    可能会产生线程安全问题的代码
+}
+
+##### 3.2.6.3 synchronized的锁是什么
+
+同步锁对象可以是任意类型，但是必须保证竞争“同一个共享资源”的多个线程必须使用同一个“同步锁对象”。
+对于同步代码块来说，同步锁对象是由程序员手动指定的（很多时候也是指定为this或类名.class），但是对于同步方法来说，同步锁对象只能是默认的：
+
+- 静态方法：当前类的Class对象（类名.class）
+- 非静态方法：this
+
+```java
+示例一：静态方法加锁
+package com.atguigu.safe;
+
+class TicketSaleThread extends Thread{
+    private static int ticket = 100;
+    public void run(){//直接锁这里，肯定不行，会导致，只有一个窗口卖票
+        while (ticket > 0) {
+            saleOneTicket();
+        }
+    }
+
+    public synchronized static void saleOneTicket(){//锁对象是TicketSaleThread类的Class对象，而一个类的Class对象在内存中肯定只有一个
+        if(ticket > 0) {//不加条件，相当于条件判断没有进入锁管控，线程安全问题就没有解决
+            System.out.println(Thread.currentThread().getName() + "卖出一张票，票号:" + ticket);
+            ticket--;
+        }
+    }
+}
+public class SaleTicketDemo3 {
+    public static void main(String[] args) {
+        TicketSaleThread t1 = new TicketSaleThread();
+        TicketSaleThread t2 = new TicketSaleThread();
+        TicketSaleThread t3 = new TicketSaleThread();
+
+        t1.setName("窗口1");
+        t2.setName("窗口2");
+        t3.setName("窗口3");
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+示例二：非静态方法加锁
+package com.atguigu.safe;
+
+
+public class SaleTicketDemo4 {
+    public static void main(String[] args) {
+        TicketSaleRunnable tr = new TicketSaleRunnable();
+        Thread t1 = new Thread(tr, "窗口一");
+        Thread t2 = new Thread(tr, "窗口二");
+        Thread t3 = new Thread(tr, "窗口三");
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+
+class TicketSaleRunnable implements Runnable {
+    private int ticket = 100;
+
+    public void run() {//直接锁这里，肯定不行，会导致，只有一个窗口卖票
+        while (ticket > 0) {
+            saleOneTicket();
+        }
+    }
+
+    public synchronized void saleOneTicket() {//锁对象是this，这里就是TicketSaleRunnable对象，因为上面3个线程使用同一个TicketSaleRunnable对象，所以可以
+        if (ticket > 0) {//不加条件，相当于条件判断没有进入锁管控，线程安全问题就没有解决
+            System.out.println(Thread.currentThread().getName() + "卖出一张票，票号:" + ticket);
+            ticket--;
+        }
+    }
+}
+示例三：同步代码块
+package com.atguigu.safe;
+
+
+public class SaleTicketDemo5 {
+    public static void main(String[] args) {
+        //2、创建资源对象
+        Ticket ticket = new Ticket();
+
+        //3、启动多个线程操作资源类的对象
+        Thread t1 = new Thread("窗口一") {
+            public void run() {//不能给run()直接加锁，因为t1,t2,t3的三个run方法分别属于三个Thread类对象，
+                // run方法是非静态方法，那么锁对象默认选this，那么锁对象根本不是同一个
+                while (true) {
+                    synchronized (ticket) {
+                        ticket.sale();
+                    }
+                }
+            }
+        };
+        Thread t2 = new Thread("窗口二") {
+            public void run() {
+                while (true) {
+                    synchronized (ticket) {
+                        ticket.sale();
+                    }
+                }
+            }
+        };
+        Thread t3 = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    synchronized (ticket) {
+                        ticket.sale();
+                    }
+                }
+            }
+        }, "窗口三");
+
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+
+//1、编写资源类
+class Ticket {
+    private int ticket = 1000;
+
+    public void sale() {//也可以直接给这个方法加锁，锁对象是this，这里就是Ticket对象
+        if (ticket > 0) {
+            System.out.println(Thread.currentThread().getName() + "卖出一张票，票号:" + ticket);
+            ticket--;
+        } else {
+            throw new RuntimeException("没有票了");
+        }
+    }
+
+    public int getTicket() {
+        return ticket;
+    }
+}
+```
+
+##### 3.2.6.4 单例模式的线程安全问题
+
+饿汉式无线程安全问题、懒汉式有安全问题。
+
+解决方法
+
+1. 使用内部类，在内部类中创建对象。
+1. 加锁
+
+##### 3.2.6.5 死锁问题
+
+诱发死锁的原因：
+
+- 互斥条件
+- 占用且等待
+- 不可抢夺（或不可抢占）
+- 循环等待
+
+以上4个条件，同时出现就会触发死锁。
+
+解决死锁：
+死锁一旦出现，基本很难人为干预，只能尽量规避。可以考虑打破上面的诱发条件。
+
+- 针对条件1：互斥条件基本上无法被破坏。因为线程需要通过互斥解决安全问题。
+- 针对条件2：可以考虑一次性申请所有所需的资源，这样就不存在等待的问题。
+- 针对条件3：占用部分资源的线程在进一步申请其他资源时，如果申请不到，就主动释放掉已经占用的资源。
+- 针对条件4：可以将资源改为线性顺序。申请资源时，先申请序号较小的，这样避免循环等待问题。
+
+##### 3.2.6.6 JDK新特性Lock锁
+
+JDK5.0的新增功能，保证线程的安全。与采用synchronized相比，Lock可提供多种锁方案，更灵活、更强大。Lock通过显式定义同步锁对象来实现同步。同步锁使用Lock对象充当。
+
+`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。锁提供了对共享资源的独占访问，每次只能有一个线程对Lock对象加锁，线程开始访问共享资源之前应先获得Lock对象。
+
+在实现线程安全的控制中，比较常用的是ReentrantLock，可以显式加锁、释放锁。
+
+ReentrantLock类实现了 Lock 接口，它拥有与 synchronized 相同的并发性和内存语义，但是添加了类似锁投票、定时锁等候和可中断锁等候的一些特性。此外，它还提供了在激烈争用情况下更佳的性能。
+
+Lock锁也称同步锁，加锁与释放锁方法，如下：
+
+- public void lock() :加同步锁。
+- public void unlock() :释放同步锁。
+
+```java
+class Window implements Runnable{
+    int ticket = 100;
+    //1. 创建Lock的实例，必须确保多个线程共享同一个Lock实例
+    private final ReentrantLock lock = new ReentrantLock();
+    public void run(){
+
+        while(true){
+            try{
+                //2. 调动lock()，实现需共享的代码的锁定
+                lock.lock();
+                if(ticket > 0){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(ticket--);
+                }else{
+                    break;
+                }
+            }finally{
+                //3. 调用unlock()，释放共享代码的锁定
+                lock.unlock();
+            }
+        }
+    }
+}
+
+public class ThreadLock {
+    public static void main(String[] args) {
+        Window t = new Window();
+        Thread t1 = new Thread(t);
+        Thread t2 = new Thread(t);
+
+        t1.start();
+        t2.start();
+    }
+}
+
+```
+
+##### 3.2.6.7 synchronized与Lock的对比
+
+1. Lock是显式锁（手动开启和关闭锁，别忘记关闭锁），synchronized是隐式锁，出了作用域、遇到异常等自动解锁
+2. Lock只有代码块锁，synchronized有代码块锁和方法锁
+3. 使用Lock锁，JVM将花费较少的时间来调度线程，性能更好。并且具有更好的扩展性（提供更多的子类），更体现面向对象。
+4. （了解）Lock锁可以对读不加锁，对写加锁，synchronized不可以
+5. （了解）Lock锁可以有多种获取锁的方式，可以从sleep的线程中抢到锁，synchronized不可以
+
+说明：开发建议中处理线程安全问题优先使用顺序为：
+Lock ----> 同步代码块 ----> 同步方法
+
+#### 3.2.7 线程池
+
+1. 好处：
+
+    - 提高响应速度（减少了创建新线程的时间）
+    - 降低资源消耗（重复利用线程池中线程，不需要每次都创建）
+    - 便于线程管理
+
+1. 主要参数
+
+    - corePoolSize：核心线程数
+    - maximumPoolSize：最大线程数
+    - keepAliveTime：非核心线程没有任务时最多保持多长时间后会终止
+    - unit：存活时间的单位时间
+    - workQueue：任务列表
+    - threadFactory：线程工厂
+    - handle：拒绝策略
+
+1. 线程池相关API
+
+    JDK5.0之前，我们必须手动自定义线程池。从JDK5.0开始，Java内置线程池相关的API。在java.util.concurrent包下提供了线程池相关API：ExecutorService 和 Executors。
+
+    1. ExecutorService：真正的线程池接口。
+
+        常见子类ThreadPoolExecutor
+
+        - void execute(Runnable command) ：执行任务/命令，没有返回值，一般用来执行Runnable
+        - \<T> Future\<T> submit(Callable\<T> task)：执行任务，有返回值，一般又来执行Callable
+        - void shutdown() ：关闭连接池
+
+    1. Executors：一个线程池的工厂类，通过此类的静态工厂方法可以创建多种类型的线程池对象。
+
+        - Executors.newCachedThreadPool()：创建一个可根据需要创建新线程的线程池
+        - Executors.newFixedThreadPool(int nThreads); 创建一个可重用固定线程数的线程池
+        - Executors.newSingleThreadExecutor() ：创建一个只有一个线程的线程池
+        - Executors.newScheduledThreadPool(int corePoolSize)：创建一个线程池，它可安排在给定延迟后运行命令或者定期地执行。
+
+1. 拒绝策略
+
+    线程池内置4种拒绝策略。
+
+    1. AbortPolicy：默认的拒绝策略，会抛RejectedExecutionException异常
+    1. CallerRunsPolicy：让提交人物的线程自己来执行这个任务
+    1. DiscardOldestPolicy：丢弃任务队列中最老的任务，然后执行该任务
+    1. DiscardPolicy：丢弃被拒绝的任务，不处理不抛出异常
 
 ### 3.3 常用类和基础API
 
+#### 3.3.1 字符串相关类之不可变字符序列：String
+
+##### 3.3.1.1 String的特性
+
+java.lang.String 类代表字符串。Java程序中所有的字符串文字（例如"hello" ）都可以看作是实现此类的实例。
+
+字符串是常量，用双引号引起来表示。它们的值在创建之后不能更改。
+
+字符串String类型本身是final声明的，意味着我们不能继承String。
+
+String对象的字符内容是存储在一个字符数组value[]中的。"abc" 等效于 char[] data={'h','e','l','l','o'}。
+
+- private意味着外面无法直接获取字符数组，而且String没有提供value的get和set方法。
+- final意味着字符数组的引用不可改变，而且String也没有提供方法来修改value数组某个元素值
+- 因此字符串的字符数组内容也不可变的，即String代表着不可变的字符序列。即，一旦对字符串进行修改，就会产生新对象。
+- JDK9只有，底层使用byte[]数组。
+
+Java 语言提供对字符串串联符号（"+"）以及将其他对象转换为字符串的特殊支持（toString()方法）。
+
+##### 3.3.1.2 String的内存结构
+
+![String内存结构](java//String内存结构.png)
+
+1. 常量+常量：结果是常量池。且常量池中不会存在相同内容的常量。
+1. 常量与变量 或 变量与变量：结果在堆中
+1. 拼接后调用intern方法：返回值在常量池中
+1. concat方法拼接，哪怕是两个常量对象拼接，结果也是在堆。
+
+##### 3.3.1.3 String常用API
+
+1. 构造器
+
+    - `public String()`：初始化新创建的 String对象，以使其表示空字符序列。
+    - `String(String original)`： 初始化一个新创建的 String 对象，使其表示一个与参数相同的字符序列；换句话说，新创建的字符串是该参数字符串的副本。
+    - `public String(char[] value)`：通过当前参数中的字符数组来构造新的String。
+    - `public String(char[] value,int offset, int count)`：通过字符数组的一部分来构造新的String。
+    - `public String(byte[] bytes,int offset, int length, String charsetName) `：通过使用平台的默认字符集解码当前参数中的字节数组、使用指定的字符集解码当前参数中的字节数组来构造新的String。
+
+1. String的常用API-1
+
+    String 类包括的方法可用于检查序列的单个字符、比较字符串、搜索字符串、提取子字符串、创建字符串副本并将所有字符全部转换为大写或小写。
+    1. 常用方法
+        - `boolean isEmpty()`：字符串是否为空
+        - `int length()`：返回字符串的长度
+        - `String concat(xx)`：拼接
+        - `boolean equals(Object obj)`：比较字符串是否相等，区分大小写
+        - `boolean equalsIgnoreCase(Object obj)`：比较字符串是否相等，不区分大小写
+        - `int compareTo(String other)`：比较字符串大小，区分大小写，按照Unicode编码值比较大小
+        - `int compareToIgnoreCase(String other)`：比较字符串大小，不区分大小写 
+        - `String toLowerCase()`：将字符串中大写字母转为小写
+        - `String toUpperCase()`：将字符串中小写字母转为大写
+        - `String trim()`：去掉字符串前后空白符 
+        - `public String intern()`：结果在常量池中共享
+    1. 查找方法
+        - `boolean contains(xx)`：是否包含xx
+        - `int indexOf(xx)`：从前往后找当前字符串中xx，即如果有返回第一次出现的下标，要是没有返回-1
+        - `int indexOf(String str, int fromIndex)`：返回指定子字符串在此字符串中第一次出现处的索引，从指定的索引开始
+        - `int lastIndexOf(xx)`：从后往前找当前字符串中xx，即如果有返回最后一次出现的下标，要是没有返回-1
+        - `int lastIndexOf(String str, int fromIndex)`：返回指定子字符串在此字符串中最后一次出现处的索引，从指定的索引开始反向搜索。
+    1. 截取方法
+        - `String substring(int beginIndex)`：返回一个新的字符串，它是此字符串的从beginIndex开始截取到最后的一个子字符串。
+        - `String substring(int beginIndex, int endIndex)`：返回一个新字符串，它是此字符串从beginIndex开始截取到endIndex(不包含)的一个子字符串。
+    1. 字符/字符数组相关方法
+        - `char charAt(index)`：返回[index]位置的字符
+        - `char[] toCharArray()`： 将此字符串转换为一个新的字符数组返回
+        - `static String valueOf(char[] data)`：返回指定数组中表示该字符序列的 String
+        - `static String valueOf(char[] data, int offset, int count)`： 返回指定数组中表示该字符序列的 String
+        - `static String copyValueOf(char[] data)`： 返回指定数组中表示该字符序列的 String
+        - `static String copyValueOf(char[] data, int offset, int count)`：返回指定数组中表示该字符序列的 String
+    1. 判断开头与结尾方法
+    - `boolean startsWith(xx)`：测试此字符串是否以指定的前缀开始
+    - `boolean startsWith(String prefix, int toffset)`：测试此字符串从指定索引开始的子字符串是否以指定前缀开始
+    - `boolean endsWith(xx)`：测试此字符串是否以指定的后缀结束
+    1. 替换
+    - `String replace(char oldChar, char newChar)`：返回一个新的字符串，它是通过用 newChar 替换此字符串中出现的所有 oldChar 得到的。 不支持正则。
+    - `String replace(CharSequence target, CharSequence replacement)`：使用指定的字面值替换序列替换此字符串所有匹配字面值目标序列的子字符串。
+    - `String replaceAll(String regex, String replacement)`：使用给定的 replacement 替换此字符串所有匹配给定的正则表达式的子字符串。
+    - `String replaceFirst(String regex, String replacement)`：使用给定的 replacement 替换此字符串匹配给定的正则表达式的第一个子字符串。
+
+##### 3.3.1.4 String与其他结构间的转换
+
+字符串 --> 基本数据类型、包装类：
+
+- `Integer包装类的public static int parseInt(String s)`：可以将由“数字”字符组成的字符串转换为整型。
+类似地，使用java.lang包中的Byte、Short、Long、Float、Double类调相应的类方法可以将由“数字”字符组成的字符串，转化为相应的基本数据类型。
+
+基本数据类型、包装类 --> 字符串：
+
+- 调用`String类的public String valueOf(int n)`可将int型转换为字符串
+- 相应的valueOf(byte b)、valueOf(long l)、valueOf(float f)、valueOf(double d)、valueOf(boolean b)可由参数的相应类型到字符串的转换。
+
+字符数组 --> 字符串：
+
+- String 类的构造器：`String(char[])` 和 String(char[]，int offset，int length) 分别用字符数组中的全部字符和部分字符创建字符串对象。
+
+字符串 --> 字符数组：
+
+- `public char[] toCharArray()`：将字符串中的全部字符存放在一个字符数组中的方法。
+- `public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)`：提供了将指定索引范围内的字符串存放到数组中的方法。
+
+字符串 --> 字节数组：（编码）
+
+- public byte[] getBytes() ：使用平台的默认字符集将此 String 编码为 byte 序列，并将结果存储到一个新的 byte 数组中。
+- public byte[] getBytes(String charsetName) ：使用指定的字符集将此 String 编码到 byte 序列，并将结果存储到新的 byte 数组。
+
+字节数组 --> 字符串：（解码）
+
+- String(byte[])：通过使用平台的默认字符集解码指定的 byte 数组，构造一个新的 String。
+- String(byte[]，int offset，int length) ：用指定的字节数组的一部分，即从数组起始位置offset开始取length个字节构造一个字符串对象。
+- String(byte[], String charsetName ) 或 new String(byte[], int, int,String charsetName )：解码，按照指定的编码方式进行解码
+
+#### 3.3.2 字符串相关类之可变字符序列：StringBuffer、StringBuilder
+
+##### 3.3.2.1 理解
+
+StringBuilder 和 StringBuffer 非常类似，均代表可变的字符序列，而且提供相关功能的方法也一样。
+
+区分String、StringBuffer、StringBuilder
+
+- String:不可变的字符序列； 底层使用char[]数组存储(JDK8.0中)
+- StringBuffer:可变的字符序列；线程安全（方法有synchronized修饰），效率低；底层使用char[]数组存储 (JDK8.0中)
+- StringBuilder:可变的字符序列； jdk1.5引入，线程不安全的，效率高；底层使用char[]数组存储(JDK8.0中)
+
+##### 3.3.2.2 StringBuilder、StringBuffer的API
+
+StringBuilder、StringBuffer的API是完全一致的，并且很多方法与String相同。
+
+1. 常用API
+
+    - `StringBuffer append(xx)`：提供了很多的append()方法，用于进行字符串追加的方式拼接
+    - `StringBuffer delete(int start, int end)`：删除[start,end)之间字符
+    - `StringBuffer deleteCharAt(int index)`：删除[index]位置字符
+    - `StringBuffer replace(int start, int end, String str)`：替换[start,end)范围的字符序列为str
+    - `void setCharAt(int index, char c)`：替换[index]位置字符
+    - `char charAt(int index)`：查找指定index位置上的字符
+    - `StringBuffer insert(int index, xx)`：在[index]位置插入xx
+    - `int length()`：返回存储的字符数据的长度
+    - `StringBuffer reverse()`：反转
+
+    当append和insert时，如果原来value数组长度不够，可扩容。
+1. 其他API
+
+    - `int indexOf(String str)`：在当前字符序列中查询str的第一次出现下标
+    - `int indexOf(String str, int fromIndex)`：在当前字符序列[fromIndex,最后]中查询str的第一次出现下标
+    - `int lastIndexOf(String str)`：在当前字符序列中查询str的最后一次出现下标
+    - `int lastIndexOf(String str, int fromIndex)`：在当前字符序列[fromIndex,最后]中查询str的最后一次出现下标
+    - `String substring(int start)`：截取当前字符序列[start,最后]
+    - `String substring(int start, int end)`：截取当前字符序列[start,end)
+    - `String toString()`：返回此序列中数据的字符串表示形式
+    - `void setLength(int newLength)`：设置当前字符序列长度为newLength
+
+#### 3.3.3 JDK8之前：日期时间API
+
+##### 3.3.3.1 java.lang.System类
+
+- System类提供的`public static long currentTimeMillis()`：用来返回当前时间与1970年1月1日0时0分0秒之间以毫秒为单位的时间差。
+此方法适于计算时间差。
+
+##### 3.3.3.2 java.util.Date类
+
+表示特定的瞬间，精确到毫秒。
+
+1. 构造器：
+
+    - `Date()`：使用无参构造器创建的对象可以获取本地当前时间。
+    - `Date(long 毫秒数)`：把该毫秒值换算成日期时间对象
+
+1. 常用方法
+
+    - `getTime()`: 返回自 1970 年 1 月 1 日 00:00:00 GMT 以来此 Date 对象表示的毫秒数。
+    - `toString()`: 把此 Date 对象转换为以下形式的 String： dow mon dd hh:mm:ss zzz yyyy 其中： dow 是一周中的某一天 (Sun, Mon, Tue, Wed, Thu, Fri, Sat)，zzz是时间标准。
+    - 其它很多方法都过时了。
+
+##### 3.3.3.3 java.text.SimpleDateFormat类
+
+java.text.SimpleDateFormat类是一个不与语言环境有关的方式来格式化和解析日期的具体类。
+
+可以进行格式化：日期 --> 文本
+
+可以进行解析：文本 --> 日期
+
+构造器：
+
+- `SimpleDateFormat()`：默认的模式和语言环境创建对象
+- `public SimpleDateFormat(String pattern)`：该构造方法可以用参数pattern指定的格式创建一个对象
+
+格式化：
+
+- `public String format(Date date)`：方法格式化时间对象date
+
+解析：
+
+- `public Date parse(String source)`：从给定字符串的开始解析文本，以生成一个日期。
+
+##### 3.3.3.4 java.util.Calendar(日历)类
+
+Date类的API大部分被废弃了，替换为Calendar。
+
+Calendar 类是一个抽象类，主用用于完成日期字段之间相互操作的功能。
+
+获取Calendar实例的方法
+
+1. 使用Calendar.getInstance()方法
+
+    ![获取Calendar实例](java//获取Calendar实例.png)
+
+1. 调用它的子类GregorianCalendar（公历）的构造器。
+
+一个Calendar的实例是系统时间的抽象表示，可以修改或获取 YEAR、MONTH、DAYOFWEEK、HOUROFDAY 、MINUTE、SECOND等 日历字段对应的时间值。
+
+- `public int get(int field)`：返回给定日历字段的值
+- `public void set(int field,int value)`：将给定的日历字段设置为指定的值
+- `public void add(int field,int amount)`：根据日历的规则，为给定的日历字段添加或者减去指定的时间量
+- `public final Date getTime()`：将Calendar转成Date对象
+- `public final void setTime(Date date)`：使用指定的Date对象重置Calendar的时间
+
+常用字段
+![Calendar常用字段](java//Calendar常用字段.png)
+
+注意：
+
+- 获取月份时：一月是0，二月是1，以此类推，12月是11
+- 获取星期时：周日是1，周二是2 ， 。。。。周六是7
+
+#### 3.3.4 JDK8：新的日期时间API
+
+我们希望时间与昼夜和四季有关，于是事情就变复杂了。JDK 1.0中包含了一个java.util.Date类，但是它的大多数方法已经在JDK 1.1引入Calendar类之后被弃用了。而Calendar并不比Date好多少。它们面临的问题是：
+
+- 可变性：像日期和时间这样的类应该是不可变的。
+- 偏移性：Date中的年份是从1900开始的，而月份都从0开始。
+- 格式化：格式化只对Date有用，Calendar则不行。
+- 此外，它们也不是线程安全的；不能处理闰秒等。
+
+  闰秒，是指为保持协调世界时接近于世界时时刻，由国际计量局统一规定在年底或年中（也可能在季末）对协调世界时增加或减少1秒的调整。由于地球自转的不均匀性和长期变慢性（主要由潮汐摩擦引起的），会使世界时（民用时）和原子时之间相差超过到±0.9秒时，就把协调世界时向前拨1秒（负闰秒，最后一分钟为59秒）或向后拨1秒（正闰秒，最后一分钟为61秒）； 闰秒一般加在公历年末或公历六月末。
+
+  目前，全球已经进行了27次闰秒，均为正闰秒。
+
+总结：对日期和时间的操作一直是Java程序员最痛苦的地方之一。
+
+第三次引入的API是成功的，并且Java 8中引入的java.time API 已经纠正了过去的缺陷，将来很长一段时间内它都会为我们服务。
+
+Java 8 以一个新的开始为 Java 创建优秀的 API。新的日期时间API包含：
+
+- java.time – 包含值对象的基础包
+- java.time.chrono – 提供对不同的日历系统的访问。
+- java.time.format – 格式化和解析时间和日期
+- java.time.temporal – 包括底层框架和扩展特性
+- java.time.zone – 包含时区支持的类
+
+说明：新的 java.time 中包含了所有关于时钟（Clock），本地日期（LocalDate）、本地时间（LocalTime）、本地日期时间（LocalDateTime）、时区（ZonedDateTime）和持续时间（Duration）的类。
+
+##### 3.3.4.1 本地日期时间：LocalDate、LocalTime、LocalDateTime
+
+import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
+import java.time.LocalTime;
+
+- `now()/ now(ZoneId zone)`：静态方法，根据当前时间创建对象/指定时区的对象
+- `of(xx,xx,xx,xx,xx,xxx)`：静态方法，根据指定日期/时间创建对象
+- `getDayOfMonth()/getDayOfYear()`：获得月份天数(1-31) /获得年份天数(1-366)
+- `getDayOfWeek()`：获得星期几(返回一个 DayOfWeek 枚举值)
+- `getMonth()`：获得月份, 返回一个 Month 枚举值
+- `getMonthValue() / getYear()`：获得月份(1-12) /获得年份
+- `getHours()/getMinute()/getSecond()`：获得当前对象对应的小时、分钟、秒
+- `withDayOfMonth()/withDayOfYear()/withMonth()/withYear()`：将月份天数、年份天数、月份、年份修改为指定的值并返回新的对象
+- `with(TemporalAdjuster t)`：将当前日期时间设置为校对器指定的日期时间
+- `plusDays(), plusWeeks(), plusMonths(), plusYears(),plusHours()`：向当前对象添加几天、几周、几个月、几年、几小时
+- `minusMonths() / minusWeeks()/minusDays()/minusYears()/minusHours()`：从当前对象减去几月、几周、几天、几年、几小时
+- `plus(TemporalAmount t)/minus(TemporalAmount t)`：添加或减少一个 Duration 或 Period
+- `isBefore()/isAfter()`：比较两个 LocalDate
+- `isLeapYear()`：判断是否是闰年（在LocalDate类中声明）
+- `format(DateTimeFormatter t)`：格式化本地日期、时间，返回一个字符串
+- `parse(Charsequence text)`：将指定格式的字符串解析为日期、时间
+
+##### 3.3.4.2 瞬时：Instant
+
+java.time.Instant;
+
+Instant：时间线上的一个瞬时点。 这可能被用来记录应用程序中的事件时间戳。
+
+时间戳是指格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。
+
+java.time.Instant表示时间线上的一点，而不需要任何上下文信息，例如，时区。概念上讲，它只是简单的表示自1970年1月1日0时0分0秒（UTC）开始的秒数。
+
+- `now()`：静态方法，返回默认UTC时区的Instant类的对象
+- `ofEpochMilli(long epochMilli)`：静态方法，返回在1970-01-01 00:00:00基础上加上指定毫秒数之后的Instant类的对象
+- `atOffset(ZoneOffset offset)`：结合即时的偏移来创建一个 OffsetDateTime
+- `toEpochMilli()`：返回1970-01-01 00:00:00到当前时间的毫秒数，即为时间戳
+
+##### 3.3.4.3 日期时间格式化：DateTimeFormatter
+
+该类提供了三种格式化方法：
+
+- (了解)预定义的标准格式。如：ISOLOCALDATETIME、ISOLOCALDATE、ISOLOCAL_TIME
+- (了解)本地化相关的格式。如：ofLocalizedDate(FormatStyle.LONG)
+
+```java
+// 本地化相关的格式。如：ofLocalizedDateTime()
+// FormatStyle.MEDIUM / FormatStyle.SHORT :适用于LocalDateTime
+
+// 本地化相关的格式。如：ofLocalizedDate()
+// FormatStyle.FULL / FormatStyle.LONG / FormatStyle.MEDIUM / FormatStyle.SHORT : 适用于LocalDate
+```
+
+- 自定义的格式。如：ofPattern(“yyyy-MM-dd hh:mm:ss”)
+
+- `ofPattern(String pattern)`：静态方法，返回一个指定字符串格式的DateTimeFormatter
+- `format(TemporalAccessor t)`：格式化一个日期、时间，返回字符串
+- `parse(CharSequence text)`：将指定格式的字符序列解析为一个日期、时间
+
+```java
+import org.junit.Test;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
+public class TestDatetimeFormatter {
+    @Test
+    public void test1(){
+        // 方式一：预定义的标准格式。如：ISO_LOCAL_DATE_TIME;ISO_LOCAL_DATE;ISO_LOCAL_TIME
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        // 格式化:日期-->字符串
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String str1 = formatter.format(localDateTime);
+        System.out.println(localDateTime);
+        System.out.println(str1);//2022-12-04T21:02:14.808
+
+        // 解析：字符串 -->日期
+        TemporalAccessor parse = formatter.parse("2022-12-04T21:02:14.808");
+        LocalDateTime dateTime = LocalDateTime.from(parse);
+        System.out.println(dateTime);
+    }
+
+    @Test
+    public void test2(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        // 方式二：
+        // 本地化相关的格式。如：ofLocalizedDateTime()
+        // FormatStyle.LONG / FormatStyle.MEDIUM / FormatStyle.SHORT :适用于LocalDateTime
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG);
+        
+        // 格式化
+        String str2 = formatter1.format(localDateTime);
+        System.out.println(str2);// 2022年12月4日 下午09时03分55秒
+
+        // 本地化相关的格式。如：ofLocalizedDate()
+        // FormatStyle.FULL / FormatStyle.LONG / FormatStyle.MEDIUM / FormatStyle.SHORT : 适用于LocalDate
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+        // 格式化
+        String str3 = formatter2.format(LocalDate.now());
+        System.out.println(str3);// 2022年12月4日 星期日
+    }
+
+    @Test
+    public void test3(){
+        //方式三：自定义的方式（关注、重点）
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        //格式化
+        String strDateTime = dateTimeFormatter.format(LocalDateTime.now());
+        System.out.println(strDateTime); //2022/12/04 21:05:42
+        //解析
+        TemporalAccessor accessor = dateTimeFormatter.parse("2022/12/04 21:05:42");
+        LocalDateTime localDateTime = LocalDateTime.from(accessor);
+        System.out.println(localDateTime); //2022-12-04T21:05:42
+    }
+}
+
+```
+
+#### 3.3.5 其它API
+
+##### 3.3.5.1 定时区日期时间：ZondId和ZonedDateTime
+
+- ZoneId：该类中包含了所有的时区信息，一个时区的ID，如 Europe/Paris
+- ZonedDateTime：一个在ISO-8601日历系统时区的日期时间，如 2007-12-03T10:15:30+01:00 Europe/Paris。
+
+其中每个时区都对应着ID，地区ID都为“{区域}/{城市}”的格式，例如：Asia/Shanghai等
+
+常见时区ID：
+
+- Asia/Shanghai
+- UTC
+- America/New_York
+
+可以通过ZondId获取所有可用的时区ID：
+
+##### 3.3.5.2 持续日期/时间：Period和Duration
+
+- 持续时间：Duration，用于计算两个“时间”间隔
+- 日期间隔：Period，用于计算两个“日期”间隔
+
+##### 3.3.5.3 Clock：使用时区提供对当前即时、日期和时间的访问的时钟
+
+##### 3.3.5.4 TemporalAdjuster : 时间校正器
+
+有时我们可能需要获取例如：将日期调整到“下一个工作日”等操作。 TemporalAdjusters : 该类通过静态方法(firstDayOfXxx()/lastDayOfXxx()/nextXxx())提供了大量的常用 TemporalAdjuster 的实现。
+
+#### 3.3.6 与传统日期处理的转换
+
+|类|To 遗留类|From 遗留类|
+|:---:|:---:|:---:|
+|java.time.Instant与java.util.Date|Date.from(instant)|date.toInstant()|
+|java.time.Instant与java.sql.Timestamp|Timestamp.from(instant)|timestamp.toInstant()|
+|java.time.ZonedDateTime与java.util.GregorianCalendar|GregorianCalendar.from(zonedDateTime)|cal.toZonedDateTime()|
+|java.time.LocalDate与java.sql.Time|Date.valueOf(localDate)|date.toLocalDate()|
+|java.time.LocalTime与java.sql.Time|Date.valueOf(localDate)|date.toLocalTime()|
+|java.time.LocalDateTime与java.sql.Timestamp|Timestamp.valueOf(localDateTime)|timestamp.toLocalDateTime()|
+|java.time.ZoneId与java.util.TimeZone|Timezone.getTimeZone(id)|timeZone.toZoneId()|
+|java.time.format.DateTimeFormatter与java.text.DateFormat|formatter.toFormat()|无|
+
+#### 3.3.7 比较器
+
+Java实现对象排序的方式有两种：
+
+- 自然排序：java.lang.Comparable
+- 定制排序：java.util.Comparator
+
+##### 3.3.7.1 自然排序：java.lang.Comparable
+
+Comparable接口强行对实现它的每个类的对象进行整体排序。这种排序被称为类的自然排序。
+
+实现 Comparable 的类必须实现 compareTo(Object obj)方法，两个对象即通过 compareTo(Object obj) 方法的返回值来比较大小。如果当前对象this大于形参对象obj，则返回正整数，如果当前对象this小于形参对象obj，则返回负整数，如果当前对象this等于形参对象obj，则返回零。
+
+实现Comparable接口的对象列表（和数组）可以通过 Collections.sort 或 Arrays.sort进行自动排序。实现此接口的对象可以用作有序映射中的键或有序集合中的元素，无需指定比较器。
+
+对于类 C 的每一个 e1 和 e2 来说，当且仅当 e1.compareTo(e2) == 0 与 e1.equals(e2) 具有相同的 boolean 值时，类 C 的自然排序才叫做与 equals 一致。建议（虽然不是必需的）最好使自然排序与 equals 一致。
+
+Comparable 的典型实现：(默认都是从小到大排列的)
+
+- String：按照字符串中字符的Unicode值进行比较
+- Character：按照字符的Unicode值来进行比较
+- 数值类型对应的包装类以及BigInteger、BigDecimal：按照它们对应的数值大小进行比较
+- Boolean：true 对应的包装类实例大于 false 对应的包装类实例
+- Date、Time等：后面的日期时间比前面的日期时间大
+
+##### 3.3.7.2 定制排序：java.util.Comparator
+
+当元素的类型没有实现java.lang.Comparable接口而又不方便修改代码（例如：一些第三方的类，你只有.class文件，没有源文件）
+
+如果一个类，实现了Comparable接口，也指定了两个对象的比较大小的规则，但是此时此刻我不想按照它预定义的方法比较大小，但是我又不能随意修改，因为会影响其他地方的使用，怎么办？
+
+JDK在设计类库之初，也考虑到这种情况，所以又增加了一个java.util.Comparator接口。强行对多个对象进行整体排序的比较。
+
+重写compare(Object o1,Object o2)方法，比较o1和o2的大小：如果方法返回正整数，则表示o1大于o2；如果返回0，表示相等；返回负整数，表示o1小于o2。
+
+可以将 Comparator 传递给 sort 方法（如 Collections.sort 或 Arrays.sort），从而允许在排序顺序上实现精确控制。
+
+#### 3.3.8 系统相关类
+
+##### 3.3.8.1 System类
+
+System类代表系统，系统级的很多属性和控制方法都放置在该类的内部。该类位于java.lang包
+
+由于该类的构造器是private的，所以无法创建该类的对象。其内部的成员变量和成员方法都是static的，所以也可以很方便的进行调用。
+
+成员变量 Scanner scan = new Scanner(System.in);
+System类内部包含in、out和err三个成员变量，分别代表标准输入流(键盘输入)，标准输出流(显示器)和标准错误输出流(显示器)。
+
+成员方法
+
+- `native long currentTimeMillis()`： 该方法的作用是返回当前的计算机时间，时间的表达格式为当前计算机时间和GMT时间(格林威治时间)1970年1月1号0时0分0秒所差的毫秒数。
+- `void exit(int status)`： 该方法的作用是退出程序。其中status的值为0代表正常退出，非零代表异常退出。使用该方法可以在图形界面编程中实现程序的退出功能等。
+- `void gc()`： 该方法的作用是请求系统进行垃圾回收。至于系统是否立刻回收，则取决于系统中垃圾回收算法的实现以及系统执行时的情况。
+- `String getProperty(String key)`： 该方法的作用是获得系统中属性名为key的属性对应的值。系统中常见的属性名以及属性的作用如下表所示：
+![系统中常见属性名以及属性作用.png](java//系统中常见属性名以及属性作用.png)
+
+##### 3.3.8.2 java.lang.Runtime类
+
+每个 Java 应用程序都有一个 Runtime 类实例，使应用程序能够与其运行的环境相连接。
+
+- `public static Runtime getRuntime()`： 返回与当前 Java 应用程序相关的运行时对象。应用程序不能创建自己的 Runtime 类实例。
+- `public long totalMemory()`：返回 Java 虚拟机中初始化时的内存总量。此方法返回的值可能随时间的推移而变化，这取决于主机环境。默认为物理电脑内存的1/64。
+- `public long maxMemory()`：返回 Java 虚拟机中最大程度能使用的内存总量。默认为物理电脑内存的1/4。
+- `public long freeMemory()`：回 Java 虚拟机中的空闲内存量。调用 gc 方法可能导致 freeMemory 返回值的增加。
+
+#### 3.3.9 和数学相关的类
+
+##### 3.3.9.1 java.lang.Math
+
+java.lang.Math 类包含用于执行基本数学运算的方法，如初等指数、对数、平方根和三角函数。类似这样的工具类，其所有方法均为静态方法，并且不会创建对象，调用起来非常简单。
+
+- `public static double abs(double a)`：返回 double 值的绝对值。
+- `public static double ceil(double a)`：返回大于等于参数的最小的整数。
+- `public static double floor(double a)`：返回小于等于参数最大的整数。
+- `public static long round(double a)`：返回最接近参数的 long。(相当于四舍五入方法)
+- `public static double pow(double a,double b)`：返回a的b幂次方法
+- `public static double sqrt(double a)`：返回a的平方根
+- `public static double random()`：返回[0,1)的随机值
+- `public static final double PI`：返回圆周率
+- `public static double max(double x, double y)`：返回x,y中的最大值
+- `public static double min(double x, double y)`：返回x,y中的最小值
+- 其它：acos,asin,atan,cos,sin,tan 三角函数
+
+##### 3.3.9.2 java.math包
+
+###### 3.3.9.2.1 BigInteger
+
+Integer类作为int的包装类，能存储的最大整型值为2^31-1，Long类也是有限的，最大为2^63-1。如果要表示再大的整数，不管是基本数据类型还是他们的包装类都无能为力，更不用说进行运算了。
+
+java.math包的BigInteger可以表示不可变的任意精度的整数。BigInteger 提供所有 Java 的基本整数操作符的对应物，并提供 java.lang.Math 的所有相关方法。
+
+另外，BigInteger 还提供以下运算：模算术、GCD 计算、质数测试、素数生成、位操作以及一些其他操作。
+
+构造器
+
+- BigInteger(String val)：根据字符串构建BigInteger对象
+
+方法
+
+- `public BigInteger abs()`：返回此 BigInteger 的绝对值的 BigInteger。
+- `BigInteger add(BigInteger val)`：返回其值为 (this + val) 的 BigInteger
+- `BigInteger subtract(BigInteger val)`：返回其值为 (this - val) 的 BigInteger
+- `BigInteger multiply(BigInteger val)`：返回其值为 (this * val) 的 BigInteger
+- `BigInteger divide(BigInteger val)`：返回其值为 (this / val) 的 BigInteger。整数相除只保留整数部分。
+- `BigInteger remainder(BigInteger val)`：返回其值为 (this % val) 的 BigInteger。
+- `BigInteger[] divideAndRemainder(BigInteger val)`：返回包含 (this / val) 后跟 (this % val) 的两个 BigInteger 的数组。
+- `BigInteger pow(int exponent)`：返回其值为 (this^exponent) 的 BigInteger。
+
+###### 3.3.9.2.2 BigDecimal
+
+一般的Float类和Double类可以用来做科学计算或工程计算，但在商业计算中，要求数字精度比较高，故用到java.math.BigDecimal类。
+
+BigDecimal类支持不可变的、任意精度的有符号十进制定点数。
+
+构造器
+
+- `public BigDecimal(double val)`
+- `public BigDecimal(String val)` --> 推荐
+
+常用方法
+
+- `public BigDecimal add(BigDecimal augend)`
+- `public BigDecimal subtract(BigDecimal subtrahend)`
+- `public BigDecimal multiply(BigDecimal multiplicand)`
+- `public BigDecimal divide(BigDecimal divisor, int scale, int roundingMode)`：divisor是除数，scale指明保留几位小数，roundingMode指明舍入模式（ROUNDUP :向上加1、ROUNDDOWN :直接舍去、ROUNDHALFUP:四舍五入）
+
+###### 3.3.9.2.3 java.util.Random用于产生随机数
+
+- `boolean nextBoolean()`：返回下一个伪随机数，它是取自此随机数生成器序列的均匀分布的 boolean 值。
+- `void nextBytes(byte[] bytes)`：生成随机字节并将其置于用户提供的 byte 数组中。
+- `double nextDouble()`：返回下一个伪随机数，它是取自此随机数生成器序列的、在 0.0 和 1.0 之间均匀分布的 double 值。
+- `float nextFloat()`：返回下一个伪随机数，它是取自此随机数生成器序列的、在 0.0 和 1.0 之间均匀分布的 float 值。
+- `double nextGaussian()`：返回下一个伪随机数，它是取自此随机数生成器序列的、呈高斯（“正态”）分布的 double 值，其平均值是 0.0，标准差是 1.0。
+- `int nextInt()`：返回下一个伪随机数，它是此随机数生成器的序列中均匀分布的 int 值。
+- `int nextInt(int n)`：返回一个伪随机数，它是取自此随机数生成器序列的、在 0（包括）和指定值（不包括）之间均匀分布的 int 值。
+- `long nextLong()`：返回下一个伪随机数，它是取自此随机数生成器序列的均匀分布的 long 值。
+
 ### 3.4 集合框架
 
+#### 3.4.1 Java集合框架体系
+
+Java 集合可分为 Collection 和 Map 两大体系：
+
+- Collection接口：用于存储一个一个的数据，也称单列数据集合。
+  - List子接口：用来存储有序的、可以重复的数据（主要用来替换数组，"动态"数组）
+
+    实现类：ArrayList(主要实现类)、LinkedList、Vector
+
+  - Set子接口：用来存储无序的、不可重复的数据（类似于高中讲的"集合"）
+
+    实现类：HashSet(主要实现类)、LinkedHashSet、TreeSet
+
+- Map接口：用于存储具有映射关系“key-value对”的集合，即一对一对的数据，也称双列数据集合。(类似于高中的函数、映射。(x1,y1),(x2,y2) ---> y = f(x) )
+
+  - HashMap(主要实现类)、LinkedHashMap、TreeMap、Hashtable、Properties
+
+JDK提供的集合API位于java.util包内
+
+![集合框架全图](java//集合框架全图.png)
+![Collection接口继承树](java//Collection接口继承树.png)
+![Map接口继承树](java//Map接口继承树.png)
+
+#### 3.4.2 Collection接口及其方法
+
+JDK不提供此接口的任何直接实现，而是提供更具体的子接口（如：Set和List）去实现。
+
+Collection 接口是 List和Set接口的父接口，该接口里定义的方法既可用于操作 Set 集合，也可用于操作 List 集合。方法如下：
+
+##### 3.4.2.1 添加
+
+- `add(E obj)`：添加元素对象到当前集合中
+- `addAll(Collection other)`：添加other集合中的所有元素对象到当前集合中，即this = this ∪ other
+
+add是作为一个添加，addAll是逐个添加。
+
+##### 3.4.2.2 判断
+
+- `int size()`：获取当前集合中实际存储的元素个数
+- `boolean isEmpty()`：判断当前集合是否为空集合
+- `boolean contains(Object obj)`：判断当前集合中是否存在一个与obj对象equals返回true的元素
+- `boolean containsAll(Collection coll)`：判断coll集合中的元素是否在当前集合中都存在。即coll集合是否是当前集合的“子集”
+- `boolean equals(Object obj)`：判断当前集合与obj是否相等
+
+##### 3.4.2.3 删除
+
+- `void clear()`：清空集合元素
+- `boolean remove(Object obj)`：从当前集合中删除第一个找到的与obj对象equals返回true的元素。
+- `boolean removeAll(Collection coll)`：从当前集合中删除所有与coll集合中相同的元素。即this = this - this ∩ coll
+- `boolean retainAll(Collection coll)`：从当前集合中删除两个集合中不同的元素，使得当前集合仅保留与coll集合中的元素相同的元素，即当前集合中仅保留两个集合的交集，即this = this ∩ coll；
+
+##### 3.4.2.4 其它
+
+- `Object[] toArray()`：返回包含当前集合中所有元素的数组
+- `hashCode()`：获取集合对象的哈希值
+- `iterator()`：返回迭代器对象，用于集合遍历
+
+#### 3.4.3 Iterator(迭代器)接口
+
+##### 3.4.3.1 Iterator接口
+
+在程序开发中，经常需要遍历集合中的所有元素。针对这种需求，JDK专门提供了一个接口java.util.Iterator。Iterator接口也是Java集合中的一员，但它与Collection、Map接口有所不同。
+
+Collection接口与Map接口主要用于存储元素。
+
+Iterator，被称为迭代器接口，本身并不提供存储对象的能力，主要用于遍历Collection中的元素
+
+Collection接口继承了java.lang.Iterable接口，该接口有一个iterator()方法，那么所有实现了Collection接口的集合类都有一个iterator()方法，用以返回一个实现了Iterator接口的对象。
+
+- `public Iterator iterator()`: 获取集合对应的迭代器，用来遍历集合中的元素的。
+
+集合对象每次调用iterator()方法都得到一个全新的迭代器对象，默认游标都在集合的第一个元素之前。
+
+Iterator接口的常用方法如下：
+
+- `public E next()`:返回迭代的下一个元素。
+- `public boolean hasNext()`:如果仍有元素可以迭代，则返回 true。
+
+注意：在调用it.next()方法之前必须要调用it.hasNext()进行检测。若不调用，且下一条记录无效，直接调用it.next()会抛出NoSuchElementException异常。
+
+##### 3.4.3.2 迭代器的执行原理
+
+Iterator迭代器对象在遍历集合时，内部采用指针的方式来跟踪集合中的元素，可使用Iterator迭代器删除元素：java.util.Iterator迭代器中有一个方法：`void remove()`;
+
+Iterator可以删除集合的元素，但是遍历过程中通过迭代器对象的remove方法，不是集合对象的remove方法。
+
+如果还未调用next()或在上一次调用 next() 方法之后已经调用了 remove() 方法，再调用remove()都会报IllegalStateException。
+
+Collection已经有remove(xx)方法了，为什么Iterator迭代器还要提供删除方法呢？因为迭代器的remove()可以按指定的条件进行删除。
+
+##### 3.4.3.3 foreach循环
+
+foreach循环（也称增强for循环）是 JDK5.0 中定义的一个高级for循环，专门用来遍历数组和集合的。
+
+foreach循环的语法格式：
+
+```java
+for(元素的数据类型 局部变量 : Collection集合或数组){ 
+    //操作局部变量的输出操作
+}
+```
+
+#### 3.4.4 Collection子接口1：List
+
+##### 3.4.4.1 List接口特点
+
+- 鉴于Java中数组用来存储数据的局限性，我们通常使用java.util.List替代数组
+- List集合类中元素有序、且可重复，集合中的每个元素都有其对应的顺序索引。
+
+JDK API中List接口的实现类常用的有：ArrayList、LinkedList和Vector。
+
+##### 3.4.4.2 List接口方法
+
+List除了从Collection集合继承的方法外，List 集合里添加了一些根据索引来操作集合元素的方法。
+
+插入元素
+
+- `void add(int index, Object ele)`:在index位置插入ele元素
+- `boolean addAll(int index, Collection eles)`:从index位置开始将eles中的所有元素添加进来
+
+获取元素
+
+- `Object get(int index)`:获取指定index位置的元素
+- `List subList(int fromIndex, int toIndex)`:返回从fromIndex到toIndex位置的子集合
+
+获取元素索引
+
+- `int indexOf(Object obj)`:返回obj在集合中首次出现的位置
+- `int lastIndexOf(Object obj)`:返回obj在当前集合中末次出现的位置
+
+删除和替换元素
+
+- `Object remove(int index)`:移除指定index位置的元素，并返回此元素
+- `Object set(int index, Object ele)`:设置指定index位置的元素为ele
+
+##### 3.4.4.3 List接口主要实现类：ArrayList
+
+ArrayList 是 List 接口的主要实现类
+
+本质上，ArrayList是对象引用的一个”变长”数组
+
+Arrays.asList(…) 方法返回的 List 集合，既不是 ArrayList 实例，也不是 Vector 实例。
+
+Arrays.asList(…) 返回值是一个固定长度的 List 集合
+
+##### 3.4.4.4 List的实现类之二：LinkedList
+
+对于频繁的插入或删除元素的操作，建议使用LinkedList类，效率较高。这是由底层采用链表（双向链表）结构存储数据决定的。
+
+特有方法：
+
+- `void addFirst(Object obj)`
+- `void addLast(Object obj)`
+- `Object getFirst()`
+- `Object getLast()`
+- `Object removeFirst()`
+- `Object removeLast()`
+
+##### 3.4.4.5 List的实现类之三：Vector
+
+Vector 是一个古老的集合，JDK1.0就有了。大多数操作与ArrayList相同，区别之处在于Vector是线程安全的。
+
+在各种List中，最好把ArrayList作为默认选择。当插入、删除频繁时，使用LinkedList；Vector总是比ArrayList慢，所以尽量避免使用。
+
+特有方法：
+
+- `void addElement(Object obj)`
+- `void insertElementAt(Object obj,int index)`
+- `void setElementAt(Object obj,int index)`
+- `void removeElement(Object obj)`
+- `void removeAllElements()`
+
+#### 3.4.5 Collection子接口2：Set
+
+##### 3.4.5.1 Set接口概述
+
+Set接口是Collection的子接口，Set接口相较于Collection接口没有提供额外的方法
+
+Set 集合不允许包含相同的元素，如果试把两个相同的元素加入同一个 Set 集合中，则添加操作失败。
+
+Set集合支持的遍历方式和Collection集合一样：foreach和Iterator。
+
+Set的常用实现类有：HashSet、TreeSet、LinkedHashSet。
+
+##### 3.4.5.2 et主要实现类：HashSet
+
+###### 3.4.5.2.1 HashSet概述
+
+HashSet 是 Set 接口的主要实现类，大多数时候使用 Set 集合时都使用这个实现类。
+
+HashSet 按 Hash 算法来存储集合中的元素，因此具有很好的存储、查找、删除性能。
+
+HashSet 具有以下特点：
+
+- 不能保证元素的排列顺序
+- HashSet 不是线程安全的
+- 集合元素可以是 null
+
+HashSet 集合判断两个元素相等的标准：两个对象通过 hashCode() 方法得到的哈希值相等，并且两个对象的 equals()方法返回值为true。
+
+对于存放在Set容器中的对象，对应的类一定要重写hashCode()和equals(Object obj)方法，以实现对象相等规则。即：“相等的对象必须具有相等的散列码”。
+
+HashSet集合中元素的无序性，不等同于随机性。这里的无序性与元素的添加位置有关。具体来说：我们在添加每一个元素到数组中时，具体的存储位置是由元素的hashCode()调用后返回的hash值决定的。导致在数组中每个元素不是依次紧密存放的，表现出一定的无序性。
+
+###### 3.4.5.2.2 HashSet中添加元素的过程
+
+1. 当向 HashSet 集合中存入一个元素时，HashSet 会调用该对象的 hashCode() 方法得到该对象的 hashCode值，然后根据 hashCode值，通过某个散列函数决定该对象在 HashSet 底层数组中的存储位置。
+1. 如果要在数组中存储的位置上没有元素，则直接添加成功。
+1. 如果要在数组中存储的位置上有元素，则继续比较：
+    - 如果两个元素的hashCode值不相等，则添加成功；
+    - 如果两个元素的hashCode()值相等，则会继续调用equals()方法：
+      - 如果equals()方法结果为false，则添加成功。
+      - 如果equals()方法结果为true，则添加失败。
+
+    第2步添加成功，元素会保存在底层数组中。
+
+    第3步两种添加成功的操作，由于该底层数组的位置已经有元素了，则会通过链表的方式继续链接，存储。
+
+###### 3.4.5.2.3 重写 hashCode() 方法的基本原则
+
+在程序运行时，同一个对象多次调用 hashCode() 方法应该返回相同的值。
+
+当两个对象的 equals() 方法比较返回 true 时，这两个对象的 hashCode() 方法的返回值也应相等。
+
+对象中用作 equals() 方法比较的 Field，都应该用来计算 hashCode 值。
+
+注意：如果两个元素的 equals() 方法返回 true，但它们的 hashCode() 返回值不相等，hashSet 将会把它们存储在不同的位置，但依然可以添加成功。
+
+###### 3.4.5.2.4 重写equals()方法的基本原则
+
+重写equals方法的时候一般都需要同时复写hashCode方法。通常参与计算hashCode的对象的属性也应该参与到equals()中进行计算。
+
+推荐：开发中直接调用Eclipse/IDEA里的快捷键自动重写equals()和hashCode()方法即可。
+
+为什么用Eclipse/IDEA复写hashCode方法，有31这个数字？
+
+1. 首先，选择系数的时候要选择尽量大的系数。因为如果计算出来的hash地址越大，所谓的“冲突”就越少，查找起来效率也会提高。（减少冲突）
+
+1. 其次，31只占用5bits,相乘造成数据溢出的概率较小。
+
+1. 再次，31可以 由i*31== (i<<5)-1来表示,现在很多虚拟机里面都有做相关优化。（提高算法效率）
+
+1. 最后，31是一个素数，素数作用就是如果我用一个数字来乘以这个素数，那么最终出来的结果只能被素数本身和被乘数还有1来整除！(减少冲突)
+
+##### 3.4.5.3 Set实现类之二：LinkedHashSet
+
+LinkedHashSet 是 HashSet 的子类，不允许集合元素重复。
+
+LinkedHashSet 根据元素的 hashCode 值来决定元素的存储位置，但它同时使用双向链表维护元素的次序，这使得元素看起来是以添加顺序保存的。
+
+LinkedHashSet插入性能略低于 HashSet，但在迭代访问 Set 里的全部元素时有很好的性能。
+
+##### 3.4.5.4 Set实现类之三：TreeSet
+
+###### 3.4.5.4.1 TreeSet概述
+
+TreeSet 是 SortedSet 接口的实现类，TreeSet 可以按照添加的元素的指定的属性的大小顺序进行遍历。
+
+TreeSet底层使用红黑树结构存储数据
+
+新增的方法如下： (了解)
+
+- `Comparator comparator()`
+- `Object first()`
+- `Object last()`
+- `Object lower(Object e)`
+- `Object higher(Object e)`
+- `SortedSet subSet(fromElement, toElement)`
+- `SortedSet headSet(toElement)`
+- `SortedSet tailSet(fromElement)`
+
+TreeSet特点：不允许重复、实现排序（自然排序或定制排序）
+
+TreeSet 两种排序方法：自然排序和定制排序。默认情况下，TreeSet 采用自然排序。
+
+- 自然排序：TreeSet 会调用集合元素的 compareTo(Object obj) 方法来比较元素之间的大小关系，然后将集合元素按升序(默认情况)排列。
+
+  如果试图把一个对象添加到 TreeSet 时，则该对象的类必须实现 Comparable 接口。
+
+  实现 Comparable 的类必须实现 compareTo(Object obj) 方法，两个对象即通过 compareTo(Object obj) 方法的返回值来比较大小。
+
+- 定制排序：如果元素所属的类没有实现Comparable接口，或不希望按照升序(默认情况)的方式排列元素或希望按照其它属性大小进行排序，则考虑使用定制排序。定制排序，通过Comparator接口来实现。需要重写compare(T o1,T o2)方法。
+
+    利用int compare(T o1,T o2)方法，比较o1和o2的大小：如果方法返回正整数，则表示o1大于o2；如果返回0，表示相等；返回负整数，表示o1小于o2。
+
+    要实现定制排序，需要将实现Comparator接口的实例作为形参传递给TreeSet的构造器。
+
+    因为只有相同类的两个实例才会比较大小，所以向 TreeSet 中添加的应该是同一个类的对象。
+
+    对于 TreeSet 集合而言，它判断两个对象是否相等的唯一标准是：两个对象通过 compareTo(Object obj) 或compare(Object o1,Object o2)方法比较返回值。返回值为0，则认为两个对象相等。
+
+#### 3.4.6 Map接口
+
+现实生活与开发中，我们常会看到这样的一类集合：用户ID与账户信息、学生姓名与考试成绩、IP地址与主机名等，这种一一对应的关系，就称作映射。Java提供了专门的集合框架用来存储这种映射关系的对象，即java.util.Map接口。
+
+##### 3.4.6.1 Map接口概述
+
+Map与Collection并列存在。用于保存具有映射关系的数据：key-value
+
+Collection集合称为单列集合，元素是孤立存在的（理解为单身）。
+Map集合称为双列集合，元素是成对存在的(理解为夫妻)。
+
+Map 中的 key 和 value 都可以是任何引用类型的数据。但常用String类作为Map的“键”。
+
+Map接口的常用实现类：HashMap、LinkedHashMap、TreeMap和`Properties。其中，HashMap是 Map 接口使用频率最高的实现类。
+
+##### 3.4.6.2 Map中key-value特点
+
+这里主要以HashMap为例说明。HashMap中存储的key、value的特点如下：
+
+![Map特点](java//Map特点.png)
+
+Map 中的 key用Set来存放，不允许重复，即同一个 Map 对象所对应的类，须重写hashCode()和equals()方法
+
+![Map结构](java//Map结构.png)
+
+key 和 value 之间存在单向一对一关系，即通过指定的 key 总能找到唯一的、确定的 value，不同key对应的value可以重复。value所在的类要重写equals()方法。
+
+key和value构成一个entry。所有的entry彼此之间是无序的、不可重复的。
+
+##### 3.4.6.3 Map接口的常用方法
+
+添加、修改操作：
+
+- `Object put(Object key,Object value)`：将指定key-value添加到(或修改)当前map对象中
+- `void putAll(Map m)`:将m中的所有key-value对存放到当前map中
+
+###### 3.4.6.3.1 删除操作
+
+- `Object remove(Object key)`：移除指定key的key-value对，并返回value
+- `void clear()`：清空当前map中的所有数据
+
+###### 3.4.6.3.2 元素查询的操作
+
+- `Object get(Object key)`：获取指定key对应的value
+- `boolean containsKey(Object key)`：是否包含指定的key
+- `boolean containsValue(Object value)`：是否包含指定的value
+- `int size()`：返回map中key-value对的个数
+- `boolean isEmpty()`：判断当前map是否为空
+- `boolean equals(Object obj)`：判断当前map和参数对象obj是否相等
+
+###### 3.4.6.3.3 元视图操作的方法
+
+- `Set keySet()`：返回所有key构成的Set集合
+- `Collection values()`：返回所有value构成的Collection集合
+- `Set entrySet()`：返回所有key-value对构成的Set集合
+
+##### 3.4.6.4 Map的主要实现类：HashMap
+
+HashMap是 Map 接口使用频率最高的实现类。
+
+HashMap是线程不安全的。允许添加 null 键和 null 值。
+
+存储数据采用的哈希表结构，底层使用一维数组+单向链表+红黑树进行key-value数据的存储。与HashSet一样，元素的存取顺序不能保证一致。
+
+HashMap 判断两个key相等的标准是：两个 key 的hashCode值相等，通过 equals() 方法返回 true。
+
+HashMap 判断两个value相等的标准是：两个 value 通过 equals() 方法返回 true。
+
+#### 3.4.6.5 Map实现类之二：LinkedHashMap
+
+LinkedHashMap 是 HashMap 的子类
+
+存储数据采用的哈希表结构+链表结构，在HashMap存储结构的基础上，使用了一对双向链表来记录添加元素的先后顺序，可以保证遍历元素时，与添加的顺序一致。
+
+通过哈希表结构可以保证键的唯一、不重复，需要键所在类重写hashCode()方法、equals()方法。
+
+#### 3.4.6.6 Map实现类之三：TreeMap
+
+TreeMap存储 key-value 对时，需要根据 key-value 对进行排序。TreeMap 可以保证所有的 key-value 对处于有序状态。
+
+TreeSet底层使用红黑树结构存储数据
+
+TreeMap 的 Key 的排序：
+
+- 自然排序：TreeMap 的所有的 Key 必须实现 Comparable 接口，而且所有的 Key 应该是同一个类的对象，否则将会抛出 ClasssCastException
+- 定制排序：创建 TreeMap 时，构造器传入一个 Comparator 对象，该对象负责对 TreeMap 中的所有 key 进行排序。此时不需要 Map 的 Key 实现 Comparable 接口
+
+TreeMap判断两个key相等的标准：两个key通过compareTo()方法或者compare()方法返回0。
+
+#### 3.4.6.7 Map实现类之四：Hashtable
+
+Hashtable是Map接口的古老实现类，JDK1.0就提供了。不同于HashMap，Hashtable是线程安全的。
+
+Hashtable实现原理和HashMap相同，功能相同。底层都使用哈希表结构（数组+单向链表），查询速度快。
+
+与HashMap一样，Hashtable 也不能保证其中 Key-Value 对的顺序
+
+Hashtable判断两个key相等、两个value相等的标准，与HashMap一致。
+
+与HashMap不同，Hashtable 不允许使用 null 作为 key 或 value。
+
+#### 3.4.6.8 Map实现类之五：Properties
+
+Properties 类是 Hashtable 的子类，该对象用于处理属性文件
+
+由于属性文件里的 key、value 都是字符串类型，所以 Properties 中要求 key 和 value 都是字符串类型
+
+存取数据时，建议使用setProperty(String key,String value)方法和getProperty(String key)方法
+
+#### 3.4.7 Collections工具类
+
+参考操作数组的工具类：Arrays，Collections 是一个操作 Set、List 和 Map 等集合的工具类。
+
+Collections 中提供了一系列静态的方法对集合元素进行排序、查询和修改等操作，还提供了对集合对象设置不可变、对集合对象实现同步控制等方法（均为static方法）
+
+##### 3.4.7.1 排序
+
+- `reverse(List)`：反转 List 中元素的顺序
+- `shuffle(List)`：对 List 集合元素进行随机排序
+- `sort(List)`：根据元素的自然顺序对指定 List 集合元素按升序排序
+- `sort(List，Comparator)`：根据指定的 Comparator 产生的顺序对 List 集合元素进行排序
+- `swap(List，int， int)`：将指定 list 集合中的 i 处元素和 j 处元素进行交换
+
+##### 3.4.7.2 查找
+
+- `Object max(Collection)`：根据元素的自然顺序，返回给定集合中的最大元素
+- `Object max(Collection，Comparator)`：根据 Comparator 指定的顺序，返回给定集合中的最大元素
+- `Object min(Collection)`：根据元素的自然顺序，返回给定集合中的最小元素
+- `Object min(Collection，Comparator)`：根据 Comparator 指定的顺序，返回给定集合中的最小元素
+- `int binarySearch(List list,T key)`：在List集合中查找某个元素的下标，但是List的元素必须是T或T的子类对象，而且必须是可比较大小的，即支持自然排序的。而且集合也事先必须是有序的，否则结果不确定。
+- `int binarySearch(List list,T key,Comparator c)`在List集合中查找某个元素的下标，但是List的元素必须是T或T的子类对象，而且集合也事先必须是按照c比较器规则进行排序过的，否则结果不确定。
+- `int frequency(Collection c，Object o)`：返回指定集合中指定元素的出现次数
+
+##### 3.4.7.3 复制、替换
+
+- `void copy(List dest,List src)`：将src中的内容复制到dest中
+- `boolean replaceAll(List list，Object oldVal，Object newVal)`：使用新值替换 List 对象的所有旧值
+- 提供了多个unmodifiableXxx()方法，该方法返回指定 Xxx的不可修改的视图。
+
+##### 3.4.7.4 添加
+
+- `boolean addAll(Collection c,T... elements)`将所有指定元素添加到指定 collection 中。
+
+##### 3.4.7.5 同步
+
+Collections 类中提供了多个 synchronizedXxx() 方法，该方法可使将指定集合包装成线程同步的集合，从而可以解决多线程并发访问集合时的线程安全问题：
+
+![Collection类的同步方法](java//Collection类的同步方法.png)
+
 ### 3.5 泛型
+
+#### 3.5.1 概念
+
+JDK1.5设计了泛型的概念。泛型即为“类型参数”，这个类型参数在声明它的类、接口或方法中，代表未知的某种通用类型。
+
+所谓泛型，就是允许在定义类、接口时通过一个标识表示类中某个属性的类型或者是某个方法的返回值或参数的类型。这个类型参数将在使用时（例如，继承或实现这个接口、创建对象或调用方法时）确定（即传入实际的类型参数，也称为类型实参）。
+
+把一个集合中的内容限制为一个特定的数据类型，这就是generic背后的核心思想。
+
+相关使用说明：在创建集合对象的时候，可以指明泛型的类型。
+
+具体格式为：List\<String> list = new ArrayList\<String>();
+
+JDK7.0时，有新特性，可以简写为：
+List\<String> list = new ArrayList<>(); //类型推断
+
+泛型，也称为泛型参数，即参数的类型，只能使用引用数据类型进行赋值。（不能使用基本数据类型，可以使用包装类替换）
+
+集合声明时，声明泛型参数。在使用集合时，可以具体指明泛型的类型。一旦指明，类或接口内部，凡是使用泛型参数的位置，都指定为具体的参数类型。如果没有指明的话，看做是Object类型。
+
+#### 3.5.2 自定义泛型
+
+##### 3.5.2.1 位置与格式
+
+位置：声明类或接口时，在类名或接口名后面声明泛型类型，我们把这样的类或接口称为泛型类或泛型接口。
+声明方法时，在【修饰符】与返回值类型之间声明类型变量，我们把声明了类型变量的方法，称为泛型方法。
+
+泛型类型的变量不能被static修饰。
+
+```java
+【修饰符】 class 类名<类型变量列表> 【extends 父类】 【implements 接口们】{
+    
+}
+【修饰符】 interface 接口名<类型变量列表> 【implements 接口们】{
+    
+}
+【修饰符】 <类型变量列表> 返回值类型 方法名(【形参列表】)【throws 异常列表】{
+    //...
+}
+
+```
+
+##### 3.5.2.2 自定义泛型类或泛型接口
+
+当我们在类或接口中定义某个成员时，该成员的相关类型是不确定的，而这个类型需要在使用这个类或接口时才可以确定，那么我们可以使用泛型类、泛型接口。
+
+###### 3.5.2.2.1 说明
+
+- 我们在声明完自定义泛型类以后，可以在类的内部（比如：属性、方法、构造器中）使用类的泛型。
+- 我们在创建自定义泛型类的对象时，可以指明泛型参数类型。一旦指明，内部凡是使用类的泛型参数的位置，都具体化为指定的类的泛型类型。
+- 如果在创建自定义泛型类的对象时，没有指明泛型参数类型，那么泛型将被擦除，泛型对应的类型均按照Object处理，但不等价于Object。也就是，如果创建泛型类对象时不写泛型参数（比如不写<>, 或者写List list = new ArrayList();），那么编译时会把泛型擦除掉，所有泛型位置都按Object处理，但它又和List\<Object>不是一回事。
+
+经验：泛型要使用一路都用。要不用，一路都不要用。
+
+- 泛型的指定中必须使用引用数据类型。不能使用基本数据类型，此时只能使用包装类替换。
+- 除创建泛型类对象外，子类继承泛型类时、实现类实现泛型接口时，也可以确定泛型结构中的泛型参数。
+如果我们在给泛型类提供子类时，子类也不确定泛型的类型，则可以继续使用泛型参数。
+
+我们还可以在现有的父类的泛型参数的基础上，新增泛型参数。
+
+###### 3.5.2.2.2 注意
+
+- 泛型类可能有多个参数，此时应将多个参数一起放在尖括号内。比如：<E1,E2,E3>
+- JDK7.0 开始，泛型的简化操作：ArrayList flist = new ArrayList<>();
+- 如果泛型结构是一个接口或抽象类，则不可创建泛型类的对象。
+- 不能使用new E[]。但是可以：E[] elements = (E[])new Object[capacity];
+  参考：ArrayList源码中声明：Object[] elementData，而非泛型参数类型数组。
+- 在类/接口上声明的泛型，在本类或本接口中即代表某种类型，但不可以在静态方法中使用类的泛型。
+- 异常类不能是带泛型的。
+
+##### 3.5.2.3 自定义泛型方法
+
+如果我们定义类、接口时没有使用<泛型参数>，但是某个方法形参类型不确定时，这个方法可以单独定义<泛型参数>。
+
+3.3.1 说明
+
+方法，也可以被泛型化，与其所在的类是否是泛型类没有关系。
+
+泛型方法中的泛型参数在方法被调用时确定。
+
+泛型方法可以根据需要，声明为static的。
+
+#### 3.5.4 泛型在继承上的体现
+
+如果B是A的一个子类型（子类或者子接口），而G是具有泛型声明的类或接口，G并不是G的子类型！
+
+比如：String是Object的子类，但是List\<String>并不是List\<Object>的子类。
+
+#### 3.5.5  通配符的使用
+
+当我们声明一个变量/形参时，这个变量/形参的类型是一个泛型类或泛型接口，例如：Comparator类型，但是我们仍然无法确定这个泛型类或泛型接口的类型变量的具体类型，此时我们考虑使用类型通配符 `?`
+
+##### 3.5.5.1 通配符的理解
+
+使用类型通配符：？
+
+比如：List\<?>，Map\<?,?>
+ List<?>是List\<String>、List\<Object>等各种泛型List的父类。
+
+作用：
+
+1. 免去重复重载
+
+    不用为 Integer、Double、Number 各写一个求和方法，一个通配符方法全收下
+
+    ```java
+    // 接收所有数字子类集合
+    public static double sum(List<? extends Number> list){
+        double total = 0;
+        for(Number n : list) total += n.doubleValue();
+        return total;
+    }
+    // 调用都合法
+    sum(new ArrayList<Integer>());
+    sum(new ArrayList<Double>());
+    ```
+
+1. 通用工具方法
+
+    任意类型集合都能遍历打印，一套代码通用
+
+    ```java
+    public static void print(List<?> list){
+        for(Object o : list) System.out.println(o);
+    }
+    ```
+
+1. 批量存入子类对象
+
+    父类容器统一收纳各类子类数据
+
+    ```java
+    public static void fill(List<? super Integer> list){
+        list.add(1);
+        list.add(99);
+    }
+    ```
+
+1. 适配框架多类型返回
+
+    不确定具体泛型，用通配符承接返回值，保证代码兼容
+
+##### 3.5.5.2 写操作
+
+将任意元素加入到其中不是类型安全的：
+
+Collection<?> c = new ArrayList\<String\>();
+
+c.add(new Object()); // 编译时错误
+
+因为我们不知道c的元素类型，我们不能向其中添加对象。add方法有类型参数E作为集合的元素类型。我们传给add的任何参数都必须是一个未知类型的子类。因为我们不知道那是什么类型，所以我们无法传任何东西进去。
+
+唯一可以插入的元素是null，因为它是所有引用类型的默认值。
+
+##### 3.5.5.3 读操作
+
+另一方面，读取List<?>的对象list中的元素时，永远是安全的，因为不管 list 的真实类型是什么，它包含的都是Object。
+
+##### 3.5.5.4 使用注意点
+
+1. 注意点1：编译错误：不能用在泛型方法声明上，返回值类型前面<>不能使用?
+
+    public static \<?> void test(ArrayList<?> list){}
+1. 注意点2：编译错误：不能用在泛型类的声明上
+
+    class GenericTypeClass\<?>{}
+1. 注意点3：编译错误：不能用在创建对象上，右边属于创建集合对象
+
+    ArrayList\<?> list2 = new ArrayList<?>();
+
+##### 3.5.5.6 有限制的通配符
+
+\<?>：允许所有泛型的引用调用(读安全，只能写null)
+
+通配符指定上限：\<? extends 类/接口 >：使用时指定的类型必须是继承某个类，或者实现某个接口，即<=。(读安全，只能写null)
+
+通配符指定下限：\<? super 类/接口 >：使用时指定的类型必须是操作的类或接口，或者是操作的类的父类或接口的父接口，即>=。(写安全，读只能用Object接收)
 
 ### 3.6 数据结构与集合源码
 
@@ -2898,3 +4666,26 @@ MVC设计模式将整个程序分为三个层次：视图模型(Viewer)层，控
 ### 8 一个.java文件要求
 
 一个java文件只能有一个public引用数据类型
+
+### 9 时间标准
+
+计算世界时间的主要标准有：
+
+- UTC(Coordinated Universal Time)
+- GMT(Greenwich Mean Time)
+- CST(Central Standard Time)
+
+在国际无线电通信场合，为了统一起见，使用一个统一的时间，称为通用协调时(UTC, Universal Time Coordinated)。UTC与格林尼治平均时(GMT, Greenwich Mean Time)一样，都与英国伦敦的本地时相同。这里，UTC与GMT含义完全相同。
+
+### 10 Hashtable和HashMap的区别
+
+HashMap:底层是一个哈希表（jdk7:数组+链表;jdk8:数组+链表+红黑树）,是一个线程不安全的集合,执行效率高
+Hashtable:底层也是一个哈希表（数组+链表）,是一个线程安全的集合,执行效率低
+
+HashMap集合:可以存储null的键、null的值
+Hashtable集合,不能存储null的键、null的值
+
+Hashtable和Vector集合一样,在jdk1.2版本之后被更先进的集合(HashMap,ArrayList)取代了。所以HashMap是Map的主要实现类，Hashtable是Map的古老实现类。
+
+Hashtable的子类Properties（配置文件）依然活跃在历史舞台
+Properties集合是一个唯一和IO流相结合的集合
