@@ -2745,7 +2745,6 @@ Java提供了异常处理的抓抛模型。
 - 如果一个方法内抛出异常，该异常对象会被抛给调用者方法中处理。如果异常没有在调用者方法中处理，它继续被抛给这个调用方法的上层方法。这个过程将一直继续下去，直到异常被处理。这一过程称为捕获(catch)异常。
 - 如果一个异常回到main()方法，并且main()也不处理，则程序运行终止。
 
-
 Java异常处理的方式：
 
 - 方式一：try-catch-finally
@@ -2857,7 +2856,6 @@ finally{
 3. 想要启动多线程，必须调用start方法。
 4. 一个线程对象只能调用一次start()方法启动，如果重复调用了，则将抛出以上的异常“IllegalThreadStateException”。
 
-
 ##### 3.2.2.1 概述
 
 Java语言的JVM允许程序运行多个线程，使用java.lang.Thread类代表线程，所有的线程对象都必须是Thread类或其子类的实例。
@@ -2915,9 +2913,9 @@ Thread类实际上也是实现了Runnable接口的类。
 常用方法系列2
 
 - public final boolean isAlive()：测试线程是否处于活动状态。如果线程已经启动且尚未终止，则为活动状态。
-- void join() ：等待该线程终止。 
-- void join(long millis) ：等待该线程终止的时间最长为 millis 毫秒。如果millis时间到，将不再等待。 
-- void join(long millis, int nanos) ：等待该线程终止的时间最长为 millis 毫秒 + nanos 纳秒。 
+- void join() ：等待该线程终止。
+- void join(long millis) ：等待该线程终止的时间最长为 millis 毫秒。如果millis时间到，将不再等待。
+- void join(long millis, int nanos) ：等待该线程终止的时间最长为 millis 毫秒 + nanos 纳秒。
 - public final void stop()：已过时，不建议使用。强行结束一个线程的执行，直接进入死亡状态。run()即刻停止，可能会导致一些清理性的工作得不到完成，如文件，数据库等的关闭。同时，会立即释放该线程所持有的所有的锁，导致数据得不到同步的处理，出现数据不一致的问题。
 - void suspend() / void resume() : 这两个操作就好比播放器的暂停和恢复。二者必须成对出现，否则非常容易发生死锁。suspend()调用会导致线程暂停，但不会释放任何锁资源，导致其它线程都无法访问被它占用的锁，直到调用resume()。已过时，不建议使用。
 
@@ -2951,12 +2949,12 @@ DK1.5及之后：6种状态
 
 ```java
 public enum State {
-	NEW,
-	RUNNABLE,
-	BLOCKED,
-	WAITING,
-	TIMED_WAITING,
-	TERMINATED;
+    NEW,
+    RUNNABLE,
+    BLOCKED,
+    WAITING,
+    TIMED_WAITING,
+    TERMINATED;
 }
 ```
 
@@ -3326,7 +3324,7 @@ Java 语言提供对字符串串联符号（"+"）以及将其他对象转换为
     - `String(String original)`： 初始化一个新创建的 String 对象，使其表示一个与参数相同的字符序列；换句话说，新创建的字符串是该参数字符串的副本。
     - `public String(char[] value)`：通过当前参数中的字符数组来构造新的String。
     - `public String(char[] value,int offset, int count)`：通过字符数组的一部分来构造新的String。
-    - `public String(byte[] bytes,int offset, int length, String charsetName) `：通过使用平台的默认字符集解码当前参数中的字节数组、使用指定的字符集解码当前参数中的字节数组来构造新的String。
+    - `public String(byte[] bytes,int offset, int length, String charsetName)`：通过使用平台的默认字符集解码当前参数中的字节数组、使用指定的字符集解码当前参数中的字节数组来构造新的String。
 
 1. String的常用API-1
 
@@ -3338,10 +3336,10 @@ Java 语言提供对字符串串联符号（"+"）以及将其他对象转换为
         - `boolean equals(Object obj)`：比较字符串是否相等，区分大小写
         - `boolean equalsIgnoreCase(Object obj)`：比较字符串是否相等，不区分大小写
         - `int compareTo(String other)`：比较字符串大小，区分大小写，按照Unicode编码值比较大小
-        - `int compareToIgnoreCase(String other)`：比较字符串大小，不区分大小写 
+        - `int compareToIgnoreCase(String other)`：比较字符串大小，不区分大小写
         - `String toLowerCase()`：将字符串中大写字母转为小写
         - `String toUpperCase()`：将字符串中小写字母转为大写
-        - `String trim()`：去掉字符串前后空白符 
+        - `String trim()`：去掉字符串前后空白符
         - `public String intern()`：结果在常量池中共享
     1. 查找方法
         - `boolean contains(xx)`：是否包含xx
@@ -3383,7 +3381,7 @@ Java 语言提供对字符串串联符号（"+"）以及将其他对象转换为
 
 字符数组 --> 字符串：
 
-- String 类的构造器：`String(char[])` 和 String(char[]，int offset，int length) 分别用字符数组中的全部字符和部分字符创建字符串对象。
+- String 类的构造器：`String(char[])` 和 `String(char[]，int offset，int length)` 分别用字符数组中的全部字符和部分字符创建字符串对象。
 
 字符串 --> 字符数组：
 
@@ -3392,14 +3390,14 @@ Java 语言提供对字符串串联符号（"+"）以及将其他对象转换为
 
 字符串 --> 字节数组：（编码）
 
-- public byte[] getBytes() ：使用平台的默认字符集将此 String 编码为 byte 序列，并将结果存储到一个新的 byte 数组中。
-- public byte[] getBytes(String charsetName) ：使用指定的字符集将此 String 编码到 byte 序列，并将结果存储到新的 byte 数组。
+- `public byte[] getBytes()`：使用平台的默认字符集将此 String 编码为 byte 序列，并将结果存储到一个新的 byte 数组中。
+- `public byte[] getBytes(String charsetName)`：使用指定的字符集将此 String 编码到 byte 序列，并将结果存储到新的 byte 数组。
 
 字节数组 --> 字符串：（解码）
 
-- String(byte[])：通过使用平台的默认字符集解码指定的 byte 数组，构造一个新的 String。
-- String(byte[]，int offset，int length) ：用指定的字节数组的一部分，即从数组起始位置offset开始取length个字节构造一个字符串对象。
-- String(byte[], String charsetName ) 或 new String(byte[], int, int,String charsetName )：解码，按照指定的编码方式进行解码
+- `String(byte[])`：通过使用平台的默认字符集解码指定的 byte 数组，构造一个新的 String。
+- `String(byte[]，int offset，int length)`：用指定的字节数组的一部分，即从数组起始位置offset开始取length个字节构造一个字符串对象。
+- `String(byte[], String charsetName )`或 new String(byte[], int, int,String charsetName )：解码，按照指定的编码方式进行解码
 
 #### 3.3.2 字符串相关类之可变字符序列：StringBuffer、StringBuilder
 
@@ -4466,15 +4464,1860 @@ c.add(new Object()); // 编译时错误
 
 ### 3.7 File类与IO流
 
+#### 3.7.1 File类
+
+##### 3.7.1.1 概述
+
+File类及本章下的各种流，都定义在java.io包下。
+
+一个File对象代表硬盘或网络中可能存在的一个文件或者文件目录（俗称文件夹），与平台无关。（体会万事万物皆对象）
+
+File 能新建、删除、重命名文件和目录，但 File 不能访问文件内容本身。如果需要访问文件内容本身，则需要使用输入/输出流。
+
+File对象可以作为参数传递给流的构造器。
+
+想要在Java程序中表示一个真实存在的文件或目录，那么必须有一个File对象，但是Java程序中的一个File对象，可能没有一个真实存在的文件或目录。
+
+##### 3.7.1.2 构造器
+
+- `public File(String pathname)`：以pathname为路径创建File对象，可以是绝对路径或者相对路径，如果pathname是相对路径，则默认的当前路径在系统属性user.dir中存储
+- `public File(String parent, String child)`：以parent为父路径，child为子路径创建File对象。
+- `public File(File parent, String child)`：根据一个父File对象和子文件路径创建File对象
+
+1. 无论该路径下是否存在文件或者目录，都不影响File对象的创建。
+1. window的路径分隔符使用“\”，而Java程序中的“\”表示转义字符，所以在Windows中表示路径，需要用“\”。或者直接使用“/”也可以，Java程序支持将“/”当成平台无关的路径分隔符。或者直接使用File.separator常量值表示。比如：
+
+    File file2 = new File("d:" + File.separator + "atguigu" + File.separator + "info.txt");
+1. 当构造路径是绝对路径时，那么getPath和getAbsolutePath结果一样
+1. 当构造路径是相对路径时，那么getAbsolutePath的路径 = user.dir的路径 + 构造路径
+
+##### 3.7.1.3 常用方法
+
+###### 3.7.1.3.1 获取文件和目录基本信息
+
+- `public String getName()`：获取名称
+- `public String getPath()`：获取路径
+- `public String getAbsolutePath()`：获取绝对路径
+- `public File getAbsoluteFile()`：获取绝对路径表示的文件
+- `public String getParent()`：获取上层文件目录路径。若无，返回null
+- `public long length()`：获取文件长度（即：字节数）。不能获取目录的长度。
+- `public long lastModified()`：获取最后一次的修改时间，毫秒值
+
+如果File对象代表的文件或目录存在，则File对象实例初始化时，就会用硬盘中对应文件或目录的属性信息（例如，时间、类型等）为File对象的属性赋值，否则除了路径和名称，File对象的其他属性将会保留默认值。
+
+![File类对象的构造器赋值](java//File类对象的构造器赋值.png)
+
+###### 3.7.1.3.2 列出目录的下一级
+
+- `public String[] list()`：返回一个String数组，表示该File目录中的所有子文件或目录。
+- `public File[] listFiles()`：返回一个File数组，表示该File目录中的所有的子文件或目录。
+
+###### 3.7.1.3.3 File类的重命名功能
+
+- `public boolean renameTo(File dest)`:把文件重命名为指定的文件路径。
+
+###### 3.7.1.3.4 判断功能的方法
+
+- `public boolean exists()`：此File表示的文件或目录是否实际存在。
+- `public boolean isDirectory()`：此File表示的是否为目录。
+- `public boolean isFile()`：此File表示的是否为文件。
+- `public boolean canRead()`：判断是否可读
+- `public boolean canWrite()`：判断是否可写
+- `public boolean isHidden()`：判断是否隐藏
+
+如果文件或目录不存在，那么exists()、isFile()和isDirectory()都是返回false
+
+###### 3.7.1.3.5 创建、删除功能
+
+- `public boolean createNewFile()`：创建文件。若文件存在，则不创建，返回false。
+- `public boolean mkdir()`：创建文件目录。如果此文件目录存在，就不创建了。如果此文件目录的上层目录不存在，也不创建。
+- `public boolean mkdirs()`：创建文件目录。如果上层文件目录不存在，一并创建。
+- `public boolean delete()`：删除文件或者文件夹
+
+删除注意事项：① Java中的删除不走回收站。② 要删除一个文件目录，请注意该文件目录内不能包含文件或者文件目录。
+
+#### 3.7.2 IO流原理及其分类
+
+##### 3.7.2.1 IO流原理
+
+Java程序中，对于数据的输入/输出操作以“流(stream)” 的方式进行，可以看做是一种数据的流动。
+
+I/O流中的I/O是Input/Output的缩写， I/O技术是非常实用的技术，用于处理设备之间的数据传输。如读/写文件，网络通讯等。
+
+- 输入input：读取外部数据（磁盘、光盘等存储设备的数据）到程序（内存）中。
+- 输出output：将程序（内存）数据输出到磁盘、光盘等存储设备中。
+
+##### 3.7.2.2 流的分类
+
+java.io包下提供了各种“流”类和接口，用以获取不同种类的数据，并通过标准的方法输入或输出数据。
+
+1. 按数据的流向不同分为：输入流和输出流。
+
+    - 输入流 ：把数据从其他设备上读取到内存中的流。
+
+        以InputStream、Reader结尾
+    - 输出流 ：把数据从内存 中写出到其他设备上的流。
+
+        以OutputStream、Writer结尾
+1. 按操作数据单位的不同分为：字节流（8bit）和字符流（16bit）。
+
+    - 字节流 ：以字节为单位，读写数据的流。
+
+        以InputStream、OutputStream结尾
+    - 字符流 ：以字符为单位，读写数据的流。
+        以Reader、Writer结尾
+
+1. 根据IO流的角色不同分为：节点流和处理流。
+
+    - 节点流：直接从数据源或目的地读写数据
+
+    - 处理流：不直接连接到数据源或目的地，而是“连接”在已存在的流（节点流或处理流）之上，通过对数据的处理为程序提供更为强大的读写功能。
+
+##### 3.7.2.3 流的API
+
+Java的IO流共涉及40多个类，实际上非常规则，都是从如下4个抽象基类派生的。
+
+|抽象基类|输入流|输出流|
+|:---:|:---:|:---:|
+|字节流|InputStream|OutputStream|
+|字符流|Reader|Writer|
+
+由这四个类派生出来的子类名称都是以其父类名作为子类名后缀。
+
+![流的API](java\\流的API.png)
+
+1. 常用的节点流：
+
+    - 文件流： FileInputStream、FileOutputStrean、FileReader、FileWriter
+    - 字节/字符数组流： ByteArrayInputStream、ByteArrayOutputStream、CharArrayReader、CharArrayWriter
+    - 对数组进行处理的节点流（对应的不再是文件，而是内存中的一个数组）。
+
+1. 常用处理流：
+
+    - 缓冲流：BufferedInputStream、BufferedOutputStream、BufferedReader、BufferedWriter
+
+        作用：增加缓冲功能，避免频繁读写硬盘，进而提升读写效率。
+    - 转换流：InputStreamReader、OutputStreamReader
+
+        作用：实现字节流和字符流之间的转换。
+    - 对象流：ObjectInputStream、ObjectOutputStream
+        作用：提供直接读写Java对象功能
+
+#### 3.7.3 节点流之一——FileReader\FileWriter
+
+##### 3.7.3.1 Reader与Writer
+
+Java提供一些字符流类，以字符为单位读写数据，专门用于处理文本文件。不能操作图片，视频等非文本文件。
+
+常见的文本文件有如下的格式：.txt、.java、.c、.cpp、.py等
+
+注意：.doc、.xls、.ppt这些都不是文本文件。
+
+###### 3.7.3.1.1 字符输入流：Reader
+
+java.io.Reader抽象类是表示用于读取字符流的所有类的父类，可以读取字符信息到内存中。它定义了字符输入流的基本共性功能方法。
+
+- `public int read()`： 从输入流读取一个字符。 虽然读取了一个字符，但是会自动提升为int类型。返回该字符的Unicode编码值。如果已经到达流末尾了，则返回-1。
+- `public int read(char[] cbuf)`： 从输入流中读取一些字符，并将它们存储到字符数组 cbuf中 。每次最多读取cbuf.length个字符。返回实际读取的字符个数。如果已经到达流末尾，没有数据可读，则返回-1。
+- `public int read(char[] cbuf,int off,int len)`：从输入流中读取一些字符，并将它们存储到字符数组 cbuf中，从cbuf[off]开始的位置存储。每次最多读取len个字符。返回实际读取的字符个数。如果已经到达流末尾，没有数据可读，则返回-1。
+- `public void close()`：关闭此流并释放与此流相关联的任何系统资源。
+
+注意：当完成流的操作时，必须调用close()方法，释放系统资源，否则会造成内存泄漏。
+
+##### 3.7.3.1.2 字符输出流：Writer
+
+java.io.Writer抽象类是表示用于写出字符流的所有类的超类，将指定的字符信息写出到目的地。它定义了字节输出流的基本共性功能方法。
+
+- `public void write(int c)` ：写出单个字符。
+- `public void write(char[] cbuf)`：写出字符数组。
+- `public void write(char[] cbuf, int off, int len)`：写出字符数组的某一部分。off：数组的开始索引；len：写出的字符个数。
+- `public void write(String str)`：写出字符串。
+- `public void write(String str, int off, int len)`：写出字符串的某一部分。off：字符串的开始索引；len：写出的字符个数。
+- `public void flush()`：刷新该流的缓冲。
+- `public void close()`：关闭此流。
+
+注意：当完成流的操作时，必须调用close()方法，释放系统资源，否则会造成内存泄漏。
+
+##### 3.7.3.2 FileReader 与 FileWriter
+
+###### 3.7.3.2.1 FileReader
+
+java.io.FileReader类用于读取字符文件，构造时使用系统默认的字符编码和默认字节缓冲区。
+
+- `FileReader(File file)`： 创建一个新的 FileReader ，给定要读取的File对象。
+- `FileReader(String fileName)`： 创建一个新的 FileReader ，给定要读取的文件的名称。
+
+###### 3.7.3.2.2 FileWriter
+
+java.io.FileWriter类用于写出字符到文件，构造时使用系统默认的字符编码和默认字节缓冲区。
+
+- `FileWriter(File file)`： 创建一个新的 FileWriter，给定要读取的File对象。
+- `FileWriter(String fileName)`： 创建一个新的 FileWriter，给定要读取的文件的名称。
+- `FileWriter(File file,boolean append)`： 创建一个新的 FileWriter，指明是否在现有文件末尾追加内容。
+
+###### 3.7.3.2.3 小结
+
+因为出现流资源的调用，为了避免内存泄漏，需要使用try-catch-finally处理异常
+
+对于输入流来说，File类的对象必须在物理磁盘上存在，否则执行就会报FileNotFoundException。如果传入的是一个目录，则会报IOException异常。
+
+对于输出流来说，File类的对象是可以不存在的。
+
+  1. 如果File类的对象不存在，则可以在输出的过程中，自动创建File类的对象
+
+  1. 如果File类的对象存在，
+
+        1. 如果调用FileWriter(File file)或FileWriter(File file,false)，输出时会新建File文件覆盖已有的文件
+
+        1. 如果调用FileWriter(File file,true)构造器，则在现有的文件末尾追加写出内容。
+
+#### 3.7.4 关于flush（刷新）
+
+因为内置缓冲区的原因，如果FileWriter不关闭输出流，无法写出字符到文件中。但是关闭的流对象，是无法继续写出数据的。如果我们既想写出数据，又想继续使用流，就需要flush() 方法了。
+
+flush() ：刷新缓冲区，流对象可以继续使用。
+
+close()：先刷新缓冲区，然后通知系统释放资源。流对象不可以再被使用了。
+
+注意：即便是flush()方法写出了数据，操作的最后还是要调用close方法，释放系统资源。
+
+#### 3.7.5 节点流之二——FileInputStream\FileOutputStream
+
+如果我们读取或写出的数据是非文本文件，则Reader、Writer就无能为力了，必须使用字节流。
+
+##### 3.7.5.1 InputStream和OutputStream
+
+###### 3.7.5.1.1 字节输入流：InputStream
+
+java.io.InputStream抽象类是表示字节输入流的所有类的超类，可以读取字节信息到内存中。它定义了字节输入流的基本共性功能方法。
+
+- `public int read()`： 从输入流读取一个字节。返回读取的字节值。虽然读取了一个字节，但是会自动提升为int类型。如果已经到达流末尾，没有数据可读，则返回-1。
+- `public int read(byte[] b)`： 从输入流中读取一些字节数，并将它们存储到字节数组 b中 。每次最多读取b.length个字节。返回实际读取的字节个数。如果已经到达流末尾，没有数据可读，则返回-1。
+- `public int read(byte[] b,int off,int len)`：从输入流中读取一些字节数，并将它们存储到字节数组 b中，从b[off]开始存储，每次最多读取len个字节 。返回实际读取的字节个数。如果已经到达流末尾，没有数据可读，则返回-1。
+- `public void close()`：关闭此输入流并释放与此流相关联的任何系统资源。
+
+说明：close()方法，当完成流的操作时，必须调用此方法，释放系统资源。
+
+###### 3.7.5.1.2 字节输出流：OutputStream
+
+java.io.OutputStream抽象类是表示字节输出流的所有类的超类，将指定的字节信息写出到目的地。它定义了字节输出流的基本共性功能方法。
+
+- `public void write(int b)`：将指定的字节输出流。虽然参数为int类型四个字节，但是只会保留一个字节的信息写出。
+- `public void write(byte[] b)`：将 b.length字节从指定的字节数组写入此输出流。
+- `public void write(byte[] b, int off, int len)`：从指定的字节数组写入 len字节，从偏移量 off开始输出到此输出流。
+- `public void flush()`：刷新此输出流并强制任何缓冲的输出字节被写出。
+- `public void close()`：关闭此输出流并释放与此流相关联的任何系统资源。
+
+说明：close()方法，当完成流的操作时，必须调用此方法，释放系统资源。
+
+##### 3.7.5.2 FileInputStream 与 FileOutputStream
+
+###### 3.7.5.2.1 FileInputStream
+
+java.io.FileInputStream类是文件输入流，从文件中读取字节。
+
+- `FileInputStream(File file)`： 通过打开与实际文件的连接来创建一个 FileInputStream ，该文件由文件系统中的 File对象 file命名。
+- `FileInputStream(String name)`： 通过打开与实际文件的连接来创建一个 FileInputStream ，该文件由文件系统中的路径名 name命名。
+
+###### 3.7.5.2.2 FileOutputStream
+
+java.io.FileOutputStream类是文件输出流，用于将数据写出到文件。
+
+- `public FileOutputStream(File file)`：创建文件输出流，写出由指定的 File对象表示的文件。
+- `public FileOutputStream(String name)`： 创建文件输出流，指定的名称为写出文件。
+- `public FileOutputStream(File file, boolean append)`： 创建文件输出流，指明是否在现有文件末尾追加内容。
+
+#### 3.7.6 处理流之一：缓冲流
+
+为了提高数据读写的速度，Java API提供了带缓冲功能的流类：缓冲流。
+
+缓冲流要“套接”在相应的节点流之上，根据数据操作单位可以把缓冲流分为：
+
+- 字节缓冲流：BufferedInputStream，BufferedOutputStream
+- 字符缓冲流：BufferedReader，BufferedWriter
+
+缓冲流的基本原理：在创建流对象时，内部会创建一个缓冲区数组（缺省使用8192个字节(8Kb)的缓冲区），通过缓冲区读写，减少系统IO次数，从而提高读写的效率。
+
+##### 3.7.6.1 构造器
+
+- `public BufferedInputStream(InputStream in)`：创建一个 新的字节型的缓冲输入流。
+- `public BufferedOutputStream(OutputStream out)`： 创建一个新的字节型的缓冲输出流。
+
+##### 3.7.6.2 字符缓冲流特有方法
+
+字符缓冲流的基本方法与普通字符流调用方式一致，不再阐述，我们来看它们具备的特有方法。
+
+- `BufferedReader：public String readLine()`: 读一行文字。
+- `BufferedWriter：public void newLine()`: 写一行行分隔符,由系统属性定义符号。
+
+说明：
+
+1. 涉及到嵌套的多个流时，如果都显式关闭的话，需要先关闭外层的流，再关闭内层的流
+2. 其实在开发中，只需要关闭最外层的流即可，因为在关闭外层流时，内层的流也会被关闭。
+
+#### 3.7.7 处理流之二：转换流
+
+作用：转换流是字节与字符间的桥梁
+![转换流](java//转换流.jpg)
+
+##### 3.7.7.1 InputStreamReader 与 OutputStreamWriter
+
+###### 3.7.7.1.1 InputStreamReader
+
+转换流java.io.InputStreamReader，是Reader的子类，是从字节流到字符流的桥梁。它读取字节，并使用指定的字符集将其解码为字符。它的字符集可以由名称指定，也可以接受平台的默认字符集。
+
+构造器
+
+- `InputStreamReader(InputStream in)`: 创建一个使用默认字符集的字符流。
+- `InputStreamReader(InputStream in, String charsetName)`: 创建一个指定字符集的字符流。
+
+###### 3.7.7.1.2 OutputStreamWriter
+
+转换流java.io.OutputStreamWriter ，是Writer的子类，是从字符流到字节流的桥梁。使用指定的字符集将字符编码为字节。它的字符集可以由名称指定，也可以接受平台的默认字符集。
+
+构造器
+
+- `OutputStreamWriter(OutputStream in)`: 创建一个使用默认字符集的字符流。
+- `OutputStreamWriter(OutputStream in,String charsetName)`: 创建一个指定字符集的字符流。
+
+#### 3.7.8 处理流之三/四：数据流、对象流
+
+对对象进行读写。
+
+##### 3.7.8.1 数据流：DataOutputStream、DataInputStream
+
+DataOutputStream：允许应用程序将基本数据类型、String类型的变量写入输出流中
+
+DataInputStream：允许应用程序以与机器无关的方式从底层输入流中读取基本数据类型、String类型的变量。
+
+对象流DataInputStream中的方法：
+
+`byte readByte()`
+`short readShort()`
+`int readInt()`
+`long readLong()`
+`float readFloat()`
+`double readDouble()`
+`char readChar()`
+`boolean readBoolean()`
+`String readUTF()`
+`void readFully(byte[] b)`
+
+对象流DataOutputStream中的方法：将上述的方法的read改为相应的write即可。
+
+数据流的弊端：只支持Java基本数据类型和字符串的读写，而不支持其它Java对象的类型。而ObjectOutputStream和ObjectInputStream既支持Java基本数据类型的数据读写，又支持Java对象的读写，所以重点介绍对象流ObjectOutputStream和ObjectInputStream。
+
+##### 3.7.8.2 对象流：ObjectOutputStream、ObjectInputStream
+
+ObjectOutputStream：将 Java 基本数据类型和对象写入字节输出流中。通过在流中使用文件可以实现Java各种基本数据类型的数据以及对象的持久存储。
+
+ObjectInputStream：ObjectInputStream 对以前使用 ObjectOutputStream 写出的基本数据类型的数据和对象进行读入操作，保存在内存中。
+
+说明：对象流的强大之处就是可以把Java中的对象写入到数据源中，也能把对象从数据源中还原回来。
+
+##### 3.7.8.3 对象流API
+
+###### 3.7.8.3.1 ObjectOutputStream中的构造器
+
+`public ObjectOutputStream(OutputStream out)`： 创建一个指定的ObjectOutputStream。
+
+###### 3.7.8.3.2 ObjectOutputStream中的方法
+
+- `public void writeBoolean(boolean val)`：写出一个 boolean 值。
+- `public void writeByte(int val)`：写出一个8位字节
+- `public void writeShort(int val)`：写出一个16位的 short 值
+- `public void writeChar(int val)`：写出一个16位的 char 值
+- `public void writeInt(int val)`：写出一个32位的 int 值
+- `public void writeLong(long val)`：写出一个64位的 long 值
+- `public void writeFloat(float val)`：写出一个32位的 float 值。
+- `public void writeDouble(double val)`：写出一个64位的 double 值
+- `public void writeUTF(String str)`：将表示长度信息的两个字节写入输出流，后跟字符串 s 中每个字符的 UTF-8 修改版表示形式。根据字符的值，将字符串 s 中每个字符转换成一个字节、两个字节或三个字节的字节组。注意，将 String 作为基本数据写入流中与将它作为 Object 写入流中明显不同。 如果 s 为 null，则抛出 NullPointerException。
+- `public void writeObject(Object obj)`：写出一个obj对象
+- `public void close()`：关闭此输出流并释放与此流相关联的任何系统资源
+
+###### 3.7.8.3.3 ObjectInputStream中的构造器
+
+`public ObjectInputStream(InputStream in)`： 创建一个指定的ObjectInputStream。
+
+###### 3.7.8.3.4 ObjectInputStream中的方法
+
+- `public boolean readBoolean()`：读取一个 boolean 值
+- `public byte readByte()`：读取一个 8 位的字节
+- `public short readShort()`：读取一个 16 位的 short 值
+- `public char readChar()`：读取一个 16 位的 char 值
+- `public int readInt()`：读取一个 32 位的 int 值
+- `public long readLong()`：读取一个 64 位的 long 值
+- `public float readFloat()`：读取一个 32 位的 float 值
+- `public double readDouble()`：读取一个 64 位的 double 值
+- `public String readUTF()`：读取 UTF-8 修改版格式的 String
+- `public void readObject(Object obj)`：读入一个obj对象
+- `public void close()`：关闭此输入流并释放与此流相关联的任何系统资源
+
+#### 3.7.9 对象序列化机制
+
+- 序列化过程：用一个字节序列可以表示一个对象，该字节序列包含该对象的类型和对象中存储的属性等信息。字节序列写出到文件之后，相当于文件中持久保存了一个对象的信息。
+- 反序列化过程：该字节序列还可以从文件中读取回来，重构对象，对它进行反序列化。对象的数据、对象的类型和对象中存储的数据信息，都可以用来在内存中创建对象。
+
+序列化机制的重要性：序列化是 RMI（Remote Method Invoke、远程方法调用）过程的参数和返回值都必须实现的机制，而 RMI 是 JavaEE 的基础。因此序列化机制是 JavaEE 平台的基础。
+
+##### 3.7.9.1 序列化的好处
+
+在于可将任何实现了Serializable接口的对象转化为字节数据，使其在保存和传输时可被还原。
+
+##### 3.7.9.2 实现原理
+
+- 序列化：用ObjectOutputStream类保存基本类型数据或对象的机制。方法为：
+`public final void writeObject (Object obj)`: 将指定的对象写出。
+- 反序列化：用ObjectInputStream类读取基本类型数据或对象的机制。方法为：
+`public final Object readObject ()`: 读取一个对象。
+
+##### 3.7.9.3 如何实现序列化机制
+
+如果需要让某个对象支持序列化机制，则必须让对象所属的类及其属性是可序列化的，为了让某个类是可序列化的，该类必须实现java.io.Serializable 接口。Serializable 是一个标记接口，不实现此接口的类将不会使任何状态序列化或反序列化，会抛出NotSerializableException 。
+
+如果对象的某个属性也是引用数据类型，那么如果该属性也要序列化的话，也要实现Serializable 接口
+
+该类的所有属性必须是可序列化的。如果有一个属性不需要可序列化的，则该属性必须注明是瞬态的，使用transient 关键字修饰。
+
+静态（static）变量的值不会序列化。因为静态变量的值不属于某个对象。
+
+##### 3.7.9.4 反序列化失败问题
+
+问题1：
+对于JVM可以反序列化对象，它必须是能够找到class文件的类。如果找不到该类的class文件，则抛出一个 ClassNotFoundException 异常。
+
+问题2：
+当JVM反序列化对象时，能找到class文件，但是class文件在序列化对象之后发生了修改，那么反序列化操作也会失败，抛出一个InvalidClassException异常。发生这个异常的原因如下：
+
+- 该类的序列版本号与从流中读取的类描述符的版本号不匹配
+- 该类包含未知数据类型
+
+解决办法：
+
+Serializable 接口给需要序列化的类，提供了一个序列版本号：serialVersionUID 。凡是实现 Serializable接口的类都应该有一个表示序列化版本标识符的静态变量：
+static final long serialVersionUID = 234242343243L; //它的值由程序员随意指定即可。
+
+serialVersionUID用来表明类的不同版本间的兼容性。简单来说，Java的序列化机制是通过在运行时判断类的serialVersionUID来验证版本一致性的。在进行反序列化时，JVM会把传来的字节流中的serialVersionUID与本地相应实体类的serialVersionUID进行比较，如果相同就认为是一致的，可以进行反序列化，否则就会出现序列化版本不一致的异常(InvalidCastException)。
+
+如果类没有显示定义这个静态常量，它的值是Java运行时环境根据类的内部细节自动生成的。若类的实例变量做了修改，serialVersionUID 可能发生变化。因此，建议显式声明。
+
+如果声明了serialVersionUID，即使在序列化完成之后修改了类导致类重新编译，则原来的数据也能正常反序列化，只是新增的字段值是默认值而已。
+
+#### 3.7.10 其他流
+
+##### 3.7.10.1 标准输入、输出流
+
+System.in和System.out分别代表了系统标准的输入和输出设备
+
+默认输入设备是：键盘，输出设备是：显示器
+
+System.in的类型是InputStream
+
+System.out的类型是PrintStream，其是OutputStream的子类FilterOutputStream 的子类
+
+重定向：通过System类的setIn，setOut方法对默认设备进行改变。
+
+- public static void setIn(InputStream in)
+- public static void setOut(PrintStream out)
+
+拓展：
+
+System类中有三个常量对象：System.out、System.in、System.err
+
+查看System类中这三个常量对象的声明：
+
+```java
+public final static InputStream in = null;
+public final static PrintStream out = null;
+public final static PrintStream err = null;
+```
+
+奇怪的是，
+
+- 这三个常量对象有final声明，但是却初始化为null。final声明的常量一旦赋值就不能修改，那么null不会空指针异常吗？
+- 这三个常量对象为什么要小写？final声明的常量按照命名规范不是应该大写吗？
+- 这三个常量的对象有set方法？final声明的常量不是不能修改值吗？set方法是如何修改它们的值的？
+
+final声明的常量，表示在Java的语法体系中它们的值是不能修改的，而这三个常量对象的值是由C/C++等系统函数进行初始化和修改值的，所以它们故意没有用大写，也有set方法。
+
+##### 3.7.10.2 打印流
+
+实现将基本数据类型的数据格式转化为字符串输出。
+
+打印流：PrintStream和PrintWriter
+
+提供了一系列重载的print()和println()方法，用于多种数据类型的输出。
+
+![print1](java//print方法1.png)
+![print2](java//print方法2.png)
+
+PrintStream和PrintWriter的输出不会抛出IOException异常
+
+PrintStream和PrintWriter有自动flush功能
+
+PrintStream 打印的所有字符都使用平台的默认字符编码转换为字节。在需要写入字符而不是写入字节的情况下，应该使用 PrintWriter 类。
+
+System.out返回的是PrintStream的实例
+
+###### 3.7.10.2 1 构造器
+
+- `PrintStream(File file)` ：创建具有指定文件且不带自动行刷新的新打印流。
+- `PrintStream(File file, String csn)`：创建具有指定文件名称和字符集且不带自动行刷新的新打印流。
+- `PrintStream(OutputStream out)`：创建新的打印流。
+- `PrintStream(OutputStream out, boolean autoFlush)`：创建新的打印流。 autoFlush如果为 true，则每当写入 byte 数组、调用其中一个 println 方法或写入换行符或字节 ('\n') 时都会刷新输出缓冲区。
+- `PrintStream(OutputStream out, boolean autoFlush, String encoding)`：创建新的打印流。
+- `PrintStream(String fileName)`：创建具有指定文件名称且不带自动行刷新的新打印流。
+- `PrintStream(String fileName, String csn)` ：创建具有指定文件名称和字符集且不带自动行刷新的新打印流。
+
+##### 3.7.10.3 Scanner类
+
+###### 3.7.10.3.1 构造方法
+
+- `Scanner(File source)`：构造一个新的 Scanner，它生成的值是从指定文件扫描的。
+- `Scanner(File source, String charsetName)`：构造一个新的 Scanner，它生成的值是从指定文件扫描的。
+- `Scanner(InputStream source)`：构造一个新的 Scanner，它生成的值是从指定的输入流扫描的。
+- `Scanner(InputStream source, String charsetName)`：构造一个新的 Scanner，它生成的值是从指定的输入流扫描的。
+
+###### 3.7.10.3.2 常用方法
+
+- `boolean hasNextXxx()`： 如果通过使用nextXxx()方法，此扫描器输入信息中的下一个标记可以解释为默认基数中的一个 Xxx 值，则返回 true。
+- `Xxx nextXxx()`： 将输入信息的下一个标记扫描为一个Xxx
+
+#### 3.7.11 apache-common包的使用
+
+##### 3.7.11.1 介绍
+
+IO技术开发中，代码量很大，而且代码的重复率较高，为此Apache软件基金会，开发了IO技术的工具类commonsIO，大大简化了IO开发。
+
+Apahce软件基金会属于第三方，（Oracle公司第一方，我们自己第二方，其他都是第三方）我们要使用第三方开发好的工具，需要添加jar包。
+
+##### 3.7.11.2 IOUtils类的使用
+
+- 静态方法：`IOUtils.copy(InputStream in,OutputStream out)`传递字节流，实现文件复制。
+- 静态方法：`IOUtils.closeQuietly(任意流对象)`悄悄的释放资源，自动处理close()方法抛出的异常。
+
+##### 3.7.11.3 FileUtils类的使用
+
+- 静态方法：`void copyDirectoryToDirectory(File src,File dest)`：整个目录的复制，自动进行递归遍历
+
+    参数:
+
+    src:要复制的文件夹路径
+
+    dest:要将文件夹粘贴到哪里去
+
+- 静态方法：`void writeStringToFile(File file,String content)`：将内容content写入到file中
+- 静态方法：`String readFileToString(File file)`：读取文件内容，并返回一个String
+- 静态方法：`void copyFile(File srcFile,File destFile)`：文件复制
+
 ### 3.8 网络编程
 
+#### 3.8.1 概述
+
+##### 3.8.1.1 架构
+
+C/S架构 ：全称为Client/Server结构，是指客户端和服务器结构。常见程序有QQ、美团app、360安全卫士等软件。
+
+B/S架构 ：全称为Browser/Server结构，是指浏览器和服务器结构。常见浏览器有IE、谷歌、火狐等。
+
+##### 3.8.1.2 网络基础
+
+计算机网络： 把分布在不同地理区域的计算机与专门的外部设备用通信线路互连成一个规模大、功能强的网络系统，从而使众多的计算机可以方便地互相传递信息、共享硬件、软件、数据信息等资源。
+
+网络编程的目的：直接或间接地通过网络协议与其它计算机实现数据交换，进行通讯。
+
+网络编程中有三个主要的问题：
+
+1. 问题1：如何准确地定位网络上一台或多台主机
+1. 问题2：如何定位主机上的特定的应用
+1. 问题3：找到主机后，如何可靠、高效地进行数据传输
+
+#### 3.8.2 网络通信要素
+
+通信双方地址
+
+1. IP
+1. 端口号
+
+一定的规则：不同的硬件、操作系统之间的通信，所有的这一切都需要一种规则。而我们就把这种规则称为协议，即网络通信协议。
+
+##### 3.8.2.1 通信要素之一：IP地址和域名
+
+###### 3.8.2.1.1 IP地址
+
+IP地址：指互联网协议地址（Internet Protocol Address），俗称IP。IP地址用来给网络中的一台计算机设备做唯一的编号。
+
+IP地址 = 网络地址 +主机地址
+网络地址：标识计算机或网络设备所在的网段
+主机地址：标识特定主机或网络设备
+
+分类一
+
+1. IPv4：
+
+    是一个32位的二进制数，通常被分为4个字节，表示成a.b.c.d 的形式，以**点分十进制**表示，例如192.168.65.100 。其中a、b、c、d都是0~255之间的十进制整数。
+
+    这种方式最多可以表示42亿个。其中，30亿都在北美，亚洲4亿，中国2.9亿。2011年初已经用尽。
+
+1. IPv6：
+
+    为了扩大地址空间，拟通过IPv6重新定义地址空间，采用128位地址长度，共16个字节，写成8个无符号整数，每个整数用四个十六进制位表示，数之间用冒号（：）分开。**冒号分十六进制**
+
+分类二：公网地址( 万维网使用）和 私有地址( 局域网使用）。192.168.开头的就是私有地址，范围即为192.168.0.0--192.168.255.255，专门为组织机构内部使用。
+
+常用命令：
+
+1. 查看本机IP地址，在控制台输入：
+    ipconfig
+1. 检查网络是否连通，在控制台输入：
+
+    ping 空格 IP地址
+
+    ping 220.181.57.216
+
+特殊的IP地址：
+
+1. 本地回环地址(hostAddress)：127.0.0.1
+
+1. 主机名(hostName)：localhost
+
+###### 3.8.2.2 域名
+
+Internet上的主机有两种方式表示地址：
+
+1. 域名(hostName)：www.atguigu.com
+1. IP 地址(hostAddress)：202.108.35.210
+
+域名解析：因为IP地址数字不便于记忆，因此出现了域名。域名容易记忆，当在连接网络时输入一个主机的域名后，**域名服务器**(DNS，Domain Name System，域名系统)负责将域名转化成IP地址，这样才能和主机建立连接。
+
+![DNS查询过程](java//DNS查询过程.png)
+
+1. 在浏览器中输入www . qq .com 域名，操作系统会先检查自己本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。
+1. 如果hosts里没有这个域名的映射，则查找本地DNS解析器缓存，是否有这个网址映射关系，如果有，直接返回，完成域名解析。
+1. 如果hosts与本地DNS解析器缓存都没有相应的网址映射关系，首先会找TCP/IP参数中设置的首选DNS服务器，在此我们叫它本地DNS服务器，此服务器收到查询时，如果要查询的域名，包含在本地配置区域资源中，则返回解析结果给客户机，完成域名解析，此解析具有权威性。
+1. 如果要查询的域名，不由本地DNS服务器区域解析，但该服务器已缓存了此网址映射关系，则调用这个IP地址映射，完成域名解析，此解析不具有权威性。
+1. 如果本地DNS服务器本地区域文件与缓存解析都失效，则根据本地DNS服务器的设置（是否设置转发器）进行查询，如果未用转发模式，本地DNS就把请求发至13台根DNS，根DNS服务器收到请求后会判断这个域名(.com)是谁来授权管理，并会返回一个负责该顶级域名服务器的一个IP。本地DNS服务器收到IP信息后，将会联系负责.com域的这台服务器。这台负责.com域的服务器收到请求后，如果自己无法解析，它就会找一个管理.com域的下一级DNS服务器地址<http://qq.com>给本地DNS服务器。当本地DNS服务器收到这个地址后，就会找<http://qq.com>域服务器，重复上面的动作，进行查询，直至找到<www.qq.com>主机。
+1. 如果用的是转发模式，此DNS服务器就会把请求转发至上一级DNS服务器，由上一级服务器进行解析，上一级服务器如果不能解析，或找根DNS或把转请求转至上上级，以此循环。不管是本地DNS服务器用是是转发，还是根提示，最后都是把结果返回给本地DNS服务器，由此DNS服务器再返回给客户机。
+
+##### 3.8.2.2 通信要素二：端口号
+
+网络的通信，本质上是两个进程（应用程序）的通信。每台计算机都有很多的进程，那么在网络通信时，如何区分这些进程呢？
+
+如果说IP地址可以唯一标识网络中的设备，那么端口号就可以唯一标识设备中的进程（应用程序）。
+
+不同的进程，设置不同的端口号。
+
+端口号：用两个字节表示的整数，它的取值范围是0~65535。
+
+1. 公认端口：0~1023。被预先定义的服务通信占用，如：HTTP（80），FTP（21），Telnet（23）
+
+1. 注册端口：1024~49151。分配给用户进程或应用程序。如：Tomcat（8080），MySQL（3306），Oracle（1521）。
+
+1. 动态/ 私有端口：49152~65535。
+
+如果端口号被另外一个服务或应用所占用，会导致当前程序启动失败。
+
+##### 3.8.2.3 通信要素三：网络通信协议
+
+###### 3.8.2.3.1 概述
+
+网络通信协议：在计算机网络中，这些连接和通信的规则被称为网络通信协议，它对数据的传输格式、传输速率、传输步骤、出错控制等做了统一规定，通信双方必须同时遵守才能完成数据交换。
+
+TCP/IP协议： 传输控制协议/因特网互联协议( Transmission Control Protocol/Internet Protocol)，TCP/IP 以其两个主要协议：传输控制协议(TCP)和网络互联协议(IP)而得名，实际上是一组协议，包括多个具有不同功能且互为关联的协议。是Internet最基本、最广泛的协议。
+
+TCP/IP协议中的四层介绍：
+
+1. 应用层：应用层决定了向用户提供应用服务时通信的活动。主要协议有：HTTP协议、FTP协议、SNMP（简单网络管理协议）、SMTP（简单邮件传输协议）和POP3（Post Office Protocol 3的简称,即邮局协议的第3个版）等。
+1. 传输层：主要使网络程序进行通信，在进行网络通信时，可以采用TCP协议，也可以采用UDP协议。TCP（Transmission Control Protocol）协议，即传输控制协议，是一种面向连接的、可靠的、基于字节流的传输层通信协议。UDP(User Datagram Protocol，用户数据报协议)：是一个无连接的传输层协议、提供面向事务的简单不可靠的信息传送服务。
+1. 网络层：网络层是整个TCP/IP协议的核心，支持网间互连的数据通信。它主要用于将传输的数据进行分组，将分组数据发送到目标计算机或者网络。而IP协议是一种非常重要的协议。IP（internet protocal）又称为互联网协议。IP的责任就是把数据从源传送到目的地。它在源地址和目的地址之间传送一种称之为数据包的东西，它还提供对数据大小的重新组装功能，以适应不同网络对包大小的要求。
+1. 物理+数据链路层：链路层是用于定义物理传输通道，通常是对某些网络连接设备的驱动协议，例如针对光纤、网线提供的驱动。
+
+![TCPIP四层](java//TCPIP四层.png)
+
+###### 3.8.2.3.2 谈传输层协议：TCP与UDP协议
+
+通信的协议还是比较复杂的，java.net 包中包含的类和接口，它们提供低层次的通信细节。我们可以直接使用这些类和接口，来专注于网络程序开发，而不用考虑通信的细节。
+java.net 包中提供了两种常见的网络协议的支持：
+
+- UDP：用户数据报协议(User Datagram Protocol)。
+- TCP：传输控制协议 (Transmission Control Protocol)。
+
+**TCP协议**：
+
+TCP协议进行通信的两个应用进程：客户端、服务端。
+使用TCP协议前，须先建立TCP连接，形成基于字节流的传输数据通道
+
+传输前，采用“三次握手”方式，点对点通信，是可靠的
+
+TCP协议使用重发机制，当一个通信实体发送一个消息给另一个通信实体后，需要收到另一个通信实体确认信息，如果没有收到另一个通信实体确认信息，则会再次重复刚才发送的消息。
+
+- 在连接中可进行大数据量的传输
+- 传输完毕，需释放已建立的连接，效率低
+
+**UDP协议**：
+
+UDP协议进行通信的两个应用进程：发送端、接收端。
+将数据、源、目的封装成数据包（传输的基本单位），不需要建立连接。发送不管对方是否准备好，接收方收到也不确认，不能保证数据的完整性，故是不可靠的。
+
+- 每个数据报的大小限制在64K内
+- 发送数据结束时无需释放资源，开销小，通信效率高
+
+**三次握手**：
+
+TCP协议中，在发送数据的准备阶段，客户端与服务器之间的三次交互，以保证连接的可靠。
+
+- 第一次握手，客户端向服务器端发起TCP连接的请求
+- 第二次握手，服务器端发送针对客户端TCP连接请求的确认
+- 第三次握手，客户端发送确认的确认
+
+**四次挥手**：
+
+TCP协议中，在发送数据结束后，释放连接时需要经过四次挥手。
+
+- 第一次挥手：客户端向服务器端提出结束连接，让服务器做最后的准备工作。此时，客户端处于半关闭状态，即表示不再向服务器发送数据了，但是还可以接受数据。
+- 第二次挥手：服务器接收到客户端释放连接的请求后，会将最后的数据发给客户端。并告知上层的应用进程不再接收数据。
+- 第三次挥手：服务器发送完数据后，会给客户端发送一个释放连接的报文。那么客户端接收后就知道可以正式释放连接了。
+- 第四次挥手：客户端接收到服务器最后的释放连接报文后，要回复一个彻底断开的报文。这样服务器收到后才会彻底释放连接。这里客户端，发送完最后的报文后，会等待2MSL，因为有可能服务器没有收到最后的报文，那么服务器迟迟没收到，就会再次给客户端发送释放连接的报文，此时客户端在等待时间范围内接收到，会重新发送最后的报文，并重新计时。如果等待2MSL后，没有收到，那么彻底断开。
+
+#### 3.8.3 网络编程API
+
+##### 3.8.3.1 InetAddress类
+
+InetAddress类主要表示IP地址，两个子类：Inet4Address、Inet6Address。
+
+InetAddress 类没有提供公共的构造器，而是提供了如下几个静态方法来**获取InetAddress实例**
+
+- `public static InetAddress getLocalHost()`
+- `public static InetAddress getByName(String host)`
+- `public static InetAddress getByAddress(byte[] addr)`
+
+InetAddress 提供了如下几个**常用方法**
+
+- `public String getHostAddress()`：返回 IP 地址字符串（以文本表现形式）
+- `public String getHostName()`：获取此 IP 地址的主机名
+- `public boolean isReachable(int timeout)`：测试是否可以达到该地址
+
+##### 3.8.3.2 Socket类
+
+网络上具有唯一标识的IP地址和端口号组合在一起构成唯一能识别的标识符**套接字（Socket）**。
+
+利用套接字(Socket)开发网络应用程序早已被广泛的采用，以至于成为事实上的标准。网络通信其实就是Socket间的通信。
+
+通信的两端都要有Socket，是两台机器间通信的端点。
+Socket允许程序把网络连接当成一个流，数据在两个Socket间通过IO传输。
+
+一般主动发起通信的应用程序属客户端，等待通信请求的为服务端。
+
+Socket分类：
+
+- 流套接字（stream socket）：使用TCP提供可依赖的字节流服务
+- ServerSocket：此类实现TCP服务器套接字。服务器套接字等待请求通过网络传入。
+- Socket：此类实现客户端套接字（也可以就叫“套接字”）。套接字是两台机器间通信的端点。
+- 数据报套接字（datagram socket）：使用UDP提供“尽力而为”的数据报服务
+- DatagramSocket：此类表示用来发送和接收UDP数据报包的套接字。
+
+##### 3.8.3.3 Socket相关类API
+
+###### 3.8.3.3.1 ServerSocket类
+
+ServerSocket类的构造方法：
+
+- `ServerSocket(int port)`：创建绑定到特定端口的服务器套接字。
+
+ServerSocket类的常用方法：
+
+- Socket accept()`：侦听并接受到此套接字的连接。
+
+###### 3.8.3.3.2 Socket类
+
+Socket类的常用构造方法：
+
+- `public Socket(InetAddress address,int port)`：创建一个流套接字并将其连接到指定 IP 地址的指定端口号。
+- `public Socket(String host,int port)`：创建一个流套接字并将其连接到指定主机上的指定端口号。
+Socket类的常用方法：
+- `public InputStream getInputStream()`：返回此套接字的输入流，可以用于接收消息
+- `public OutputStream getOutputStream()`：返回此套接字的输出流，可以用于发送消息
+- `public InetAddress getInetAddress()`：此套接字连接到的远程 IP 地址；如果套接字是未连接的，则返回 null。
+- `public InetAddress getLocalAddress()`：获取套接字绑定的本地地址。
+- `public int getPort()`：此套接字连接到的远程端口号；如果尚未连接套接字，则返回 0。
+- `public int getLocalPort()`：返回此套接字绑定到的本地端口。如果尚未绑定套接字，则返回 -1。
+- `public void close()`：关闭此套接字。套接字被关闭后，便不可在以后的网络连接中使用（即无法重新连接或重新绑定）。需要创建新的套接字对象。 关闭此套接字也将会关闭该套接字的 InputStream 和 OutputStream。
+- `public void shutdownInput()`：如果在套接字上调用 shutdownInput() 后从套接字输入流读取内容，则流将返回 EOF（文件结束符）。 即不能在从此套接字的输入流中接收任何数据。
+- `public void shutdownOutput()`：禁用此套接字的输出流。对于 TCP 套接字，任何以前写入的数据都将被发送，并且后跟 TCP 的正常连接终止序列。 如果在套接字上调用 shutdownOutput() 后写入套接字输出流，则该流将抛出 IOException。 即不能通过此套接字的输出流发送任何数据。
+
+注意：先后调用Socket的shutdownInput()和shutdownOutput()方法，仅仅关闭了输入流和输出流，并不等于调用Socket的close()方法。在通信结束后，仍然要调用Scoket的close()方法，因为只有该方法才会释放Socket占用的资源，比如占用的本地端口号等。
+
+###### 3.8.3.3.3 DatagramSocket类
+
+DatagramSocket 类的常用方法：
+
+- `public DatagramSocket(int port)`创建数据报套接字并将其绑定到本地主机上的指定端口。套接字将被绑定到通配符地址，IP 地址由内核来选择。
+- `public DatagramSocket(int port,InetAddress laddr)`创建数据报套接字，将其绑定到指定的本地地址。本地端口必须在 0 到 65535 之间（包括两者）。如果 IP 地址为 0.0.0.0，套接字将被绑定到通配符地址，IP 地址由内核选择。
+- `public void close()`关闭此数据报套接字。
+- `public void send(DatagramPacket p)`从此套接字发送数据报包。DatagramPacket 包含的信息指示：将要发送的数据、其长度、远程主机的 IP 地址和远程主机的端口号。
+- `public void receive(DatagramPacket p)`从此套接字接收数据报包。当此方法返回时，DatagramPacket 的缓冲区填充了接收的数据。数据报包也包含发送方的 IP 地址和发送方机器上的端口号。 此方法在接收到数据报前一直阻塞。数据报包对象的 length 字段包含所接收信息的长度。如果信息比包的长度长，该信息将被截短。
+- `public InetAddress getLocalAddress()`获取套接字绑定的本地地址。
+- `public int getLocalPort()`返回此套接字绑定的本地主机上的端口号。
+- `public InetAddress getInetAddress()`返回此套接字连接的地址。如果套接字未连接，则返回 null。
+- `public int getPort()`返回此套接字的端口。如果套接字未连接，则返回 -1。
+
+###### 3.8.3.3.4 DatagramPacket类
+
+DatagramPacket类的常用方法：
+
+- `public DatagramPacket(byte[] buf,int length)`构造 DatagramPacket，用来接收长度为 length 的数据包。 length 参数必须小于等于 buf.length。
+- `public DatagramPacket(byte[] buf,int length,InetAddress address,int port)`构造数据报包，用来将长度为 length 的包发送到指定主机上的指定端口号。length 参数必须小于等于 buf.length。
+- `public InetAddress getAddress()`返回某台机器的 IP 地址，此数据报将要发往该机器或者是从该机器接收到的。
+- `public int getPort()`返回某台远程主机的端口号，此数据报将要发往该主机或者是从该主机接收到的。
+- `public byte[] getData()`返回数据缓冲区。接收到的或将要发送的数据从缓冲区中的偏移量 offset 处开始，持续 length 长度。
+- `public int getLength()`返回将要发送或接收到的数据的长度。
+
+#### 3.8.4 TCP网络编程
+
+##### 3.8.4.1 通信模型
+
+Java语言的基于套接字TCP编程分为服务端编程和客户端编程，其通信模型如图所示：
+![通信模型](java//通信模型.png)
+
+##### 3.8.4.2 开发步骤
+
+客户端程序包含以下四个基本的步骤 ：
+
+1. 创建 Socket ：根据指定服务端的 IP 地址或端口号构造 Socket 类对象。若服务器端响应，则建立客户端到服务器的通信线路。若连接失败，会出现异常。
+1. 打开连接到 Socket 的输入/ 出流： 使用 getInputStream()方法获得输入流，使用getOutputStream()方法获得输出流，进行数据传输
+1. 按照一定的协议对 Socket 进行读/ 写操作：通过输入流读取服务器放入线路的信息（但不能读取自己放入线路的信息），通过输出流将信息写入线路。
+1. 关闭 Socket ：断开客户端到服务器的连接，释放线路
+
+服务器端程序包含以下四个基本的 步骤：
+
+1. 调用 ServerSocket(int port) ：创建一个服务器端套接字，并绑定到指定端口上。用于监听客户端的请求。
+1. 调用 accept() ：监听连接请求，如果客户端请求连接，则接受连接，返回通信套接字对象。
+1. 调用 该Socket 类对象的 getOutputStream() 和 getInputStream () ：获取输出流和输入流，开始网络数据的发送和接收。
+1. 关闭Socket 对象：客户端访问结束，关闭通信套接字。
+
+演示多个客户端与服务器之间的多次通信：
+
+- 通常情况下，服务器不应该只接受一个客户端请求，而应该不断地接受来自客户端的所有请求，所以Java程序通常会通过循环，不断地调用ServerSocket的accept()方法。
+
+- 如果服务器端要“同时”处理多个客户端的请求，因此服务器端需要为每一个客户端单独分配一个线程来处理，否则无法实现“同时”。
+
+```java
+1、服务器端示例代码
+package com.atguigu.tcp.many;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+    public static void main(String[] args) throws IOException {
+        // 1、准备一个ServerSocket
+        ServerSocket server = new ServerSocket(8888);
+        System.out.println("等待连接...");
+
+        int count = 0;
+        while(true){
+            // 2、监听一个客户端的连接
+            Socket socket = server.accept();
+            System.out.println("第" + ++count + "个客户端"+socket.getInetAddress().getHostAddress()+"连接成功！！");
+
+            ClientHandlerThread ct = new ClientHandlerThread(socket);
+            ct.start();
+        }
+
+        //这里没有关闭server，永远监听
+    }
+    static class ClientHandlerThread extends Thread{
+        private Socket socket;
+        private String ip;
+
+        public ClientHandlerThread(Socket socket) {
+            super();
+            this.socket = socket;
+            ip = socket.getInetAddress().getHostAddress();
+        }
+
+        public void run(){
+            try{
+                //（1）获取输入流，用来接收该客户端发送给服务器的数据
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                //（2）获取输出流，用来发送数据给该客户端
+                PrintStream ps = new PrintStream(socket.getOutputStream());
+                String str;
+                // （3）接收数据
+                while ((str = br.readLine()) != null) {
+                    //（4）反转
+                    StringBuilder word = new StringBuilder(str);
+                    word.reverse();
+
+                    //（5）返回给客户端
+                    ps.println(word);
+                }
+                System.out.println("客户端" + ip+"正常退出");
+            }catch(Exception  e){
+                System.out.println("客户端" + ip+"意外退出");
+            }finally{
+                try {
+                    //（6）断开连接
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+2、客户端示例代码
+package com.atguigu.tcp.many;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Client {
+    public static void main(String[] args) throws Exception {
+        // 1、准备Socket，连接服务器，需要指定服务器的IP地址和端口号
+        Socket socket = new Socket("127.0.0.1", 8888);
+
+        // 2、获取输出流，用来发送数据给服务器
+        OutputStream out = socket.getOutputStream();
+        PrintStream ps = new PrintStream(out);
+
+        // 3、获取输入流，用来接收服务器发送给该客户端的数据
+        InputStream input = socket.getInputStream();
+        BufferedReader br;
+        if(args!= null && args.length>0) {
+            String encoding = args[0];
+            br = new BufferedReader(new InputStreamReader(input,encoding));
+        }else{
+            br = new BufferedReader(new InputStreamReader(input));
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        while(true){
+            System.out.println("输入发送给服务器的单词或成语：");
+            String message = scanner.nextLine();
+            if(message.equals("stop")){
+                socket.shutdownOutput();
+                break;
+            }
+
+            // 4、 发送数据
+            ps.println(message);
+            // 接收数据
+            String feedback  = br.readLine();
+            System.out.println("从服务器收到的反馈是：" + feedback);
+        }
+
+        //5、关闭socket，断开与服务器的连接
+        scanner.close();
+        socket.close();
+    }
+}
+
+```
+
+聊天室
+
+```java
+服务端：
+package com.atguigu.tcp;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+public class TestChatServer {
+    //这个集合用来存储所有在线的客户端
+    static ArrayList<Socket> online = new  ArrayList<Socket>();
+
+    public static void main(String[] args)throws Exception {
+        //1、启动服务器，绑定端口号
+        ServerSocket server = new ServerSocket(8989);
+
+        //2、接收n多的客户端同时连接
+        while(true){
+            Socket accept = server.accept();
+
+            online.add(accept);//把新连接的客户端添加到online列表中
+
+            MessageHandler mh = new MessageHandler(accept);
+            mh.start();//
+        }
+    }
+
+    static class MessageHandler extends Thread{
+        private Socket socket;
+        private String ip;
+
+        public MessageHandler(Socket socket) {
+            super();
+            this.socket = socket;
+        }
+
+        public void run(){
+            try {
+                ip = socket.getInetAddress().getHostAddress();
+
+                //插入：给其他客户端转发“我上线了”
+                sendToOther(ip+"上线了");
+
+                //(1)接收该客户端的发送的消息
+                InputStream input = socket.getInputStream();
+                InputStreamReader reader = new InputStreamReader(input);
+                BufferedReader br = new BufferedReader(reader);
+                
+                String str;
+                while((str = br.readLine())!=null){
+                    //(2)给其他在线客户端转发
+                    sendToOther(ip+":"+str);
+                }
+
+                sendToOther(ip+"下线了");
+            } catch (IOException e) {
+                try {
+                    sendToOther(ip+"掉线了");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }finally{
+                //从在线人员中移除我
+                online.remove(socket);
+                        }
+        }
+        
+        //封装一个方法：给其他客户端转发xxx消息
+        public void sendToOther(String message) throws IOException{
+            //遍历所有的在线客户端，一一转发
+            for (Socket on : online) {
+                OutputStream every = on.getOutputStream();
+                //为什么用PrintStream？目的用它的println方法，按行打印
+                PrintStream ps = new PrintStream(every);
+                
+                ps.println(message);
+            }
+        }
+    }
+}
+
+客户端：
+package com.atguigu.tcp;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class TestChatClient {
+    public static void main(String[] args)throws Exception {
+        //1、连接服务器
+        Socket socket = new Socket("127.0.0.1",8989);
+        
+        //2、开启两个线程
+        //(1)一个线程负责看别人聊，即接收服务器转发的消息
+        Receive receive = new Receive(socket);
+        receive.start();
+        
+        //(2)一个线程负责发送自己的话
+        Send send = new Send(socket);
+        send.start();
+        
+        send.join();//等我发送线程结束了，才结束整个程序
+        
+        socket.close();
+    }
+}
+class Send extends Thread{
+    private Socket socket;
+    
+    public Send(Socket socket) {
+        super();
+        this.socket = socket;
+    }
+
+    public void run(){
+        try {
+            OutputStream outputStream = socket.getOutputStream();
+            //按行打印
+            PrintStream ps = new PrintStream(outputStream);
+            
+            Scanner input = new Scanner(System.in);
+            
+            //从键盘不断的输入自己的话，给服务器发送，由服务器给其他人转发
+            while(true){
+                System.out.print("自己的话：");
+                String str = input.nextLine();
+                if("bye".equals(str)){
+                    break;
+                }
+                ps.println(str);
+            }
+            
+            input.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+}
+class Receive extends Thread{
+    private Socket socket;
+    
+    public Receive(Socket socket) {
+        super();
+        this.socket = socket;
+    }
+    
+    public void run(){
+        try {
+            InputStream inputStream = socket.getInputStream();
+            Scanner input = new Scanner(inputStream);
+            
+            while(input.hasNextLine()){
+                String line = input.nextLine();
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+
+#### 3.8.5 UDP网络编程
+
+UDP(User Datagram Protocol，用户数据报协议)：是一个无连接的传输层协议、提供面向事务的简单不可靠的信息传送服务，类似于短信。
+
+##### 3.8.5.1 通信模型
+
+UDP协议是一种面向非连接的协议，面向非连接指的是在正式通信前不必与对方先建立连接，不管对方状态就直接发送，至于对方是否可以接收到这些数据内容，UDP协议无法控制，因此说，UDP协议是一种不可靠的协议。无连接的好处就是快，省内存空间和流量，因为维护连接需要创建大量的数据结构。UDP会尽最大努力交付数据，但不保证可靠交付，没有TCP的确认机制、重传机制，如果因为网络原因没有传送到对端，UDP也不会给应用层返回错误信息。
+
+UDP协议是面向数据报文的信息传送服务。UDP在发送端没有缓冲区，对于应用层交付下来的报文在添加了首部之后就直接交付于ip层，不会进行合并，也不会进行拆分，而是一次交付一个完整的报文。比如我们要发送100个字节的报文，我们调用一次send()方法就会发送100字节，接收方也需要用receive()方法一次性接收100字节，不能使用循环每次获取10个字节，获取十次这样的做法。
+
+UDP协议没有拥塞控制，所以当网络出现的拥塞不会导致主机发送数据的速率降低。虽然UDP的接收端有缓冲区，但是这个缓冲区只负责接收，并不会保证UDP报文的到达顺序是否和发送的顺序一致。因为网络传输的时候，由于网络拥塞的存在是很大的可能导致先发的报文比后发的报文晚到达。如果此时缓冲区满了，后面到达的报文将直接被丢弃。这个对实时应用来说很重要，比如：视频通话、直播等应用。
+
+因此UDP适用于一次只传送少量数据、对可靠性要求不高的应用环境，数据报大小限制在64K以下。
+
+**类 DatagramSocket 和 DatagramPacket 实现了基于 UDP 协议网络程序。**
+
+UDP数据报通过数据报套接字 DatagramSocket 发送和接收，系统不保证 UDP数据报一定能够安全送到目的地，也不能确定什么时候可以抵达。
+
+DatagramPacket 对象封装了UDP数据报，在数据报中包含了发送端的IP地址和端口号以及接收端的IP地址和端口号。
+UDP协议中每个数据报都给出了完整的地址信息，因此无须建立发送方和接收方的连接。如同发快递包裹一样。
+
+##### 3.8.5.2 开发步骤
+
+发送端程序包含以下四个基本的步骤：
+
+1. 创建DatagramSocket ：默认使用系统随机分配端口号。
+1. 创建DatagramPacket：将要发送的数据用字节数组表示，并指定要发送的数据长度，接收方的IP地址和端口号。
+1. 调用 该DatagramSocket 类对象的 send方法 ：发送数据报DatagramPacket对象。
+1. 关闭DatagramSocket 对象：发送端程序结束，关闭通信套接字。
+
+接收端程序包含以下四个基本的步骤 ：
+
+1. 创建DatagramSocket ：指定监听的端口号。
+1. 创建DatagramPacket：指定接收数据用的字节数组，起到临时数据缓冲区的效果，并指定最大可以接收的数据长度。
+1. 调用 该DatagramSocket 类对象的receive方法 ：接收数据报DatagramPacket对象。。
+1. 关闭DatagramSocket ：接收端程序结束，关闭通信套接字。
+
+基于UDP协议的网络编程仍然需要在通信实例的两端各建立一个Socket，但这两个Socket之间并没有虚拟链路，这两个Socket只是发送、接收数据报的对象，Java提供了DatagramSocket对象作为基于UDP协议的Socket，使用DatagramPacket代表DatagramSocket发送、接收的数据报。
+
+```java
+发送端：
+package com.atguigu.udp;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.ArrayList;
+
+public class Send {
+
+    public static void main(String[] args)throws Exception {
+//1、建立发送端的DatagramSocket
+        DatagramSocket ds = new DatagramSocket();
+
+        //要发送的数据
+        ArrayList<String> all = new ArrayList<String>();
+        all.add("尚硅谷让天下没有难学的技术！");
+        all.add("学高端前沿的IT技术来尚硅谷！");
+        all.add("尚硅谷让你的梦想变得更具体！");
+        all.add("尚硅谷让你的努力更有价值！");
+
+        //接收方的IP地址
+        InetAddress ip = InetAddress.getByName("127.0.0.1");
+        //接收方的监听端口号
+        int port = 9999;
+        //发送多个数据报
+        for (int i = 0; i < all.size(); i++) {
+//2、建立数据包DatagramPacket
+            byte[] data = all.get(i).getBytes();
+            DatagramPacket dp = new DatagramPacket(data, 0, data.length, ip, port);
+//3、调用Socket的发送方法
+            ds.send(dp);
+        }
+
+//4、关闭Socket
+        ds.close();
+    }
+}
+发送端：
+package com.atguigu.udp;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+public class Receive {
+    public static void main(String[] args) throws Exception {
+//1、建立接收端的DatagramSocket，需要指定本端的监听端口号
+        DatagramSocket ds = new DatagramSocket(9999);
+        //一直监听数据
+        while(true){
+            //2、建立数据包DatagramPacket
+            byte[] buffer = new byte[1024*64];
+            DatagramPacket dp = new DatagramPacket(buffer,buffer.length);
+
+            //3、调用Socket的接收方法
+            ds.receive(dp);
+
+            //4、拆封数据
+            String str = new String(dp.getData(),0,dp.getLength());
+            System.out.println(str);
+        }
+//        ds.close();
+    }
+}
+
+```
+
+#### 3.8.6 URL编程
+
+##### 3.8.6.1 URL类
+
+URL(Uniform Resource Locator)：统一资源定位符，它表示 Internet 上某一资源的地址。
+
+通过 URL 我们可以访问 Internet 上的各种网络资源，比如最常见的 www，ftp 站点。浏览器通过解析给定的 URL 可以在网络上查找相应的文件或其他资源。
+
+URL的基本结构由5部分组成：
+
+`<传输协议>://<主机名>:<端口号>/<文件名>#片段名?参数列表`
+
+例如:<http://192.168.1.100:8080/helloworld/index.jsp#a?username=shkstart&password=123>
+
+- 片段名：即锚点，例如看小说，直接定位到章节
+- 参数列表格式：参数名=参数值&参数名=参数值....
+
+为了表示URL，java.net 中实现了**类 URL**。我们可以通过下面的**构造器**来初始化一个 URL 对象：
+
+1. `public URL (String spec)`：通过一个表示URL地址的字符串可以构造一个URL对象。
+
+    例如：
+    URL url = new URL("<http://www.atguigu.com/>");
+1. `public URL(URL context, String spec)`：通过基 URL 和相对 URL 构造一个 URL 对象。
+
+    例如：
+    URL downloadUrl = new URL(url, “download.html")
+1. `public URL(String protocol, String host, String file)`;
+
+    例如：
+    URL url = new URL("http", "www.atguigu.com", “download. html");
+1. `public URL(String protocol, String host, int port, String file)`;
+
+    例如:
+    URL gamelan = new URL("http", "www.atguigu.com", 80, “download.html");
+
+URL类的构造器都声明抛出非运行时异常，必须要对这一异常进行处理，通常是用 try-catch 语句进行捕获。
+
+##### 3.8.6.2 URL类常用方法
+
+一个URL对象生成后，其属性是不能被改变的，但可以通过它给定的方法来获取这些属性：
+
+- `public String getProtocol( )`获取该URL的协议名
+- `public String getHost( )`获取该URL的主机名
+- `public String getPort( )`获取该URL的端口号
+- `public String getPath( )`获取该URL的文件路径
+- `public String getFile( )`获取该URL的文件名
+- `public String getQuery( )`获取该URL的查询名
+
+##### 3.8.6.3 针对HTTP协议的URLConnection类
+
+URL的方法 openStream()：能从网络上读取数据
+
+若希望输出数据，例如向服务器端的 CGI （公共网关接口-Common Gateway Interface-的简称，是用户浏览器和服务器端的应用程序进行连接的接口）程序发送一些数据，则必须先与URL建立连接，然后才能对其进行读写，此时需要使用 URLConnection 。
+
+URLConnection：表示到URL所引用的远程对象的连接。当与一个URL建立连接时，首先要在一个 URL 对象上通过方法 openConnection() 生成对应的 URLConnection 对象。如果连接过程失败，将产生IOException.
+
+URL netchinaren = new URL ("<http://www.atguigu.com/index.shtml>");
+
+URLConnectonn u = netchinaren.openConnection( );
+
+通过URLConnection对象获取的输入流和输出流，即可以与现有的CGI程序进行交互。
+
+- `public Object getContent( ) throws IOException`：获取内容本身
+- `public int getContentLength( )`：内容有多大
+- `public String getContentType( )`：内容是什么类型
+- `public long getDate( )`：服务器响应的时间
+- `public long getLastModified( )`：文件最后修改时间
+- `public InputStream getInputStream ( ) throws IOException`：获取输入流 → 用来读数据
+- `public OutputSteram getOutputStream( )throws IOException`：获取输出流 → 用来写数据
+
+#### 3.8.7 小结
+
+位于网络中的计算机具有唯一的IP地址，这样不同的主机可以互相区分。
+
+客户端－服务器是一种最常见的网络应用程序模型。服务器是一个为其客户端提供某种特定服务的硬件或软件。客户机是一个用户应用程序，用于访问某台服务器提供的服务。端口号是对一个服务的访问场所，它用于区分同一物理计算机上的多个服务。套接字用于连接客户端和服务器，客户端和服务器之间的每个通信会话使用一个不同的套接字。
+
+TCP协议用于实现面向连接的会话。
+
+Java 中有关网络方面的功能都定义在 java.net 程序包中。Java 用 InetAddress 对象表示 IP 地址，该对象里有两个字段：主机名(String) 和 IP 地址(int)。
+
+类 Socket 和 ServerSocket 实现了基于TCP协议的客户端－服务器程序。Socket是客户端和服务器之间的一个连接，连接创建的细节被隐藏了。这个连接提供了一个安全的数据传输通道，这是因为 TCP 协议可以解决数据在传送过程中的丢失、损坏、重复、乱序以及网络拥挤等问题，它保证数据可靠的传送。
+
+类 URL 和 URLConnection 提供了最高级网络应用。URL 的网络资源的位置来同一表示 Internet 上各种网络资源。通过URL对象可以创建当前应用程序和 URL 表示的网络资源之间的连接，这样当前程序就可以读取网络资源数据，或者把自己的数据传送到网络上去。
+
 ### 3.9 反射机制
+
+#### 3.9.1 概述
+
+##### 3.9.1.1 起源
+
+Reflection（反射）是被视为动态语言的关键，反射机制允许程序在运行期间借助于Reflection API取得任何类的内部信息，并能直接操作任意对象的内部属性及方法。
+
+加载完类之后，在堆内存的方法区中就产生了一个Class类型的对象（一个类只有一个Class对象），这个对象就包含了完整的类的结构信息。我们可以通过这个对象看到类的结构。这个对象就像一面镜子，透过这个镜子看到类的结构，所以，我们形象的称之为：反射。
+
+##### 3.9.1.2 作用
+
+Java反射机制提供的功能：
+
+- 在运行时判断任意一个对象所属的类
+- 在运行时构造任意一个类的对象
+- 在运行时判断任意一个类所具有的成员变量和方法
+- 在运行时获取泛型信息
+- 在运行时调用任意一个对象的成员变量和方法
+- 在运行时处理注解
+- 生成动态代理
+
+##### 3.9.1.3 反射相关的主要API
+
+- java.lang.Class：代表一个类
+- java.lang.reflect.Method：代表类的方法
+- java.lang.reflect.Field：代表类的成员变量
+- java.lang.reflect.Constructor：代表类的构造器
+
+##### 3.9.1.4 反射的优缺点
+
+优点：
+
+- 提高了Java程序的灵活性和扩展性，降低了耦合性，提高自适应能力
+- 允许程序创建和控制任何类的对象，无需提前硬编码目标类
+
+缺点：
+
+- 反射的性能较低。
+- 反射机制主要应用在对灵活性和扩展性要求很高的系统框架上
+- 反射会模糊程序内部逻辑，可读性较差。
+
+#### 3.9.2 理解Class类并获取Class实例
+
+要想解剖一个类，必须先要获取到该类的Class对象。而剖析一个类或用反射解决具体的问题就是使用相关API:
+
+- java.lang.Class
+- java.lang.reflect.*
+
+所以，Class对象是反射的根源。
+
+##### 3.9.2.1 理论上
+
+在Object类中定义了以下的方法，此方法将被所有子类继承：
+`public final Class getClass()`
+以上的方法返回值的类型是一个Class类，此类是Java反射的源头，实际上所谓反射从程序的运行结果来看也很好理解，即：可以通过对象反射求出类的名称。
+
+- Class本身也是一个类
+- Class 对象只能由系统建立对象
+- 一个加载的类在 JVM 中只会有一个Class实例
+- 一个Class对象对应的是一个加载到JVM中的一个.class文件
+- 每个类的实例都会记得自己是由哪个 Class 实例所生成
+- 通过Class可以完整地得到一个类中的所有被加载的结构
+- Class类是Reflection的根源，针对任何你想动态加载、运行的类，唯有先获得相应的Class对象
+
+##### 3.9.2.2 内存上
+
+![Class内存结构](java//Class内存结构.png)
+上图中字符串常量池在JDK6中存储在方法区；JDK7及以后，存储在堆空间。
+
+##### 3.9.2.3 获取Class类的实例(四种方法)
+
+- 方式1：要求编译期间已知类型
+
+    前提：若已知具体的类，通过类的class属性获取，该方法最为安全可靠，程序性能最高
+
+    实例：
+    Class clazz = String.class;
+
+- 方式2：获取对象的运行时类型
+
+    前提：已知某个类的实例，调用该实例的getClass()方法获取Class对象
+
+    实例：
+    Class clazz = "www.atguigu.com".getClass();
+
+- 方式3：可以获取编译期间未知的类型
+
+    前提：已知一个类的全类名，且该类在类路径下，可通过Class类的静态方法forName()获取，可能抛出ClassNotFoundException
+
+    实例：
+    Class clazz = Class.forName("java.lang.String");
+
+##### 3.9.2.4 哪些类型可以有Class对象
+
+简言之，所有Java类型！
+
+1. class：外部类，成员(成员内部类，静态内部类)，局部内部类，匿名内部类
+1. interface：接口
+1. []：数组
+1. enum：枚举
+1. annotation：注解@interface
+1. primitive type：基本数据类型
+1. void
+
+##### 3.9.2.5 Class类的常用方法
+
+- `static Class forName(String name)`返回指定类名 name 的 Class 对象
+- `Object newInstance()`调用缺省构造函数，返回该Class对象的一个实例
+- `getName()`返回此Class对象所表示的实体（类、接口、数组类、基本类型或void）名称
+- `Class getSuperClass()`返回当前Class对象的父类的Class对象
+- `Class [] getInterfaces()`获取当前Class对象的接口
+- `ClassLoader getClassLoader()`返回该类的类加载器
+- `Class getSuperclass()`返回表示此Class所表示的实体的超类的Class
+- `Constructor[] getConstructors()`返回一个包含某些Constructor对象的数组
+- `Field[] getDeclaredFields()`返回Field对象的一个数组
+- `Method getMethod(String name,Class … paramTypes)`返回一个Method对象，此对象的形参类型为paramType
+
+#### 3.9.3 类的加载与ClassLoader的理解
+
+##### 3.9.3.1 类的生命周期
+
+类在内存中完整的生命周期：加载-->使用-->卸载。其中加载过程又分为：装载、链接、初始化三个阶段。
+
+![类的生命周期](java//类的生命周期.png)
+
+##### 3.9.3.2 类的加载过程
+
+当程序主动使用某个类时，如果该类还未被加载到内存中，系统会通过装载、链接、初始化三个步骤来对该类进行初始化。如果没有意外，JVM将会连续完成这三个步骤，所以有时也把这三个步骤统称为类加载。
+
+![类加载过程](java//类加载过程.png)
+
+1. 装载（Loading）
+
+    将类的class文件读入内存，并为之创建一个java.lang.Class对象。此过程由类加载器完成
+1. 链接（Linking）
+
+    1. 验证Verify：确保加载的类信息符合JVM规范，例如：以cafebabe开头，没有安全方面的问题。
+    1. 准备Prepare：正式为类变量（static）分配内存并设置类变量默认初始值的阶段，这些内存都将在方法区中进行分配。
+    1. 解析Resolve：虚拟机常量池内的符号引用（常量名）替换为直接引用（地址）的过程。
+1. 初始化（Initialization）
+
+    执行类构造器\<clinit>()方法的过程。类构造器\<clinit>()方法是由编译期自动收集类中所有类变量的赋值动作和静态代码块中的语句合并产生的。（类构造器是构造类信息的，不是构造该类对象的构造器）。
+
+    当初始化一个类的时候，如果发现其父类还没有进行初始化，则需要先触发其父类的初始化。
+
+    虚拟机会保证一个类的\<clinit>()方法在多线程环境中被正确加锁和同步。
+
+##### 3.9.3.3 类加载器（classloader)
+
+![类加载器](java//类加载器.png)
+
+###### 3.9.3.3.1 类加载器的作用
+
+将class文件字节码内容加载到内存中，并将这些静态数据转换成方法区的运行时数据结构，然后在堆中生成一个代表这个类的java.lang.Class对象，作为方法区中类数据的访问入口。
+
+类缓存：标准的JavaSE类加载器可以按要求查找类，但一旦某个类被加载到类加载器中，它将维持加载（缓存）一段时间。不过JVM垃圾回收机制可以回收这些Class对象。
+
+###### 3.9.3.3.2 类加载器的分类(JDK8为例)
+
+JVM支持两种类型的类加载器，分别为引导类加载器（Bootstrap ClassLoader）和自定义类加载器（User-Defined ClassLoader）。
+
+从概念上来讲，自定义类加载器一般指的是程序中由开发人员自定义的一类类加载器，但是Java虚拟机规范却没有这么定义，而是将所有派生于抽象类ClassLoader的类加载器都划分为自定义类加载器。无论类加载器的类型如何划分，在程序中我们最常见的类加载器结构主要是如下情况：
+
+![类加载器分类](java//类加载器分类.png)
+
+1. 启动类加载器（引导类加载器，Bootstrap ClassLoader）
+
+    - 这个类加载使用C/C++语言实现的，嵌套在JVM内部。获取它的对象时往往返回null
+    - 它用来加载Java的核心库（JAVA_HOME/jre/lib/rt.jar或sun.boot.class.path路径下的内容）。用于提供JVM自身需要的类。
+    - 并不继承自java.lang.ClassLoader，没有父加载器。
+    - 出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun等开头的类
+    - 加载扩展类和应用程序类加载器，并指定为他们的父类加载器。
+1. 扩展类加载器（Extension ClassLoader）
+
+    - Java语言编写，由sun.misc.Launcher$ExtClassLoader实现。
+    - 继承于ClassLoader类
+    - 父类加载器为启动类加载器
+    - 从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre/lib/ext子目录下加载类库。如果用户创建的JAR放在此目录下，也会自动由扩展类加载器加载。
+1. 应用程序类加载器（系统类加载器，AppClassLoader）
+
+    - java语言编写，由sun.misc.Launcher$AppClassLoader实现
+    - 继承于ClassLoader类
+    - 父类加载器为扩展类加载器
+    - 它负责加载环境变量classpath或系统属性 java.class.path 指定路径下的类库
+    - 应用程序中的类加载器默认是系统类加载器。
+    - 它是用户自定义类加载器的默认父加载器
+    - 通过ClassLoader的getSystemClassLoader()方法可以获取到该类加载器
+1. 用户自定义类加载器（了解）
+
+    - 在Java的日常应用程序开发中，类的加载几乎是由上述3种类加载器相互配合执行的。在必要时，我们还可以自定义类加载器，来定制类的加载方式。
+    - 体现Java语言强大生命力和巨大魅力的关键因素之一便是，Java开发者可以自定义类加载器来实现类库的动态加载，加载源可以是本地的JAR包，也可以是网络上的远程资源。
+    - 同时，自定义加载器能够实现应用隔离，例如 Tomcat，Spring等中间件和组件框架都在内部实现了自定义的加载器，并通过自定义加载器隔离不同的组件模块。这种机制比C/C++程序要好太多，想不修改C/C++程序就能为其新增功能，几乎是不可能的，仅仅一个兼容性便能阻挡住所有美好的设想。
+    - 自定义类加载器通常需要继承于ClassLoader。
+
+###### 3.9.3.3.3 查看某个类的类加载器对象
+
+1. 获取默认的系统类加载器
+
+    ClassLoader classloader = ClassLoader.getSystemClassLoader();
+1. 查看某个类是哪个类加载器加载的
+
+    ClassLoader classloader = Class.forName("exer2.ClassloaderDemo").getClassLoader();
+
+    //如果是根加载器加载的类，则会得到null
+    ClassLoader classloader1 = Class.forName("java.lang.Object").getClassLoader();
+1. 获取某个类加载器的父加载器
+
+    ClassLoader parentClassloader = classloader.getParent();
+
+###### 3.9.3.3.4  使用ClassLoader获取流
+
+关于类加载器的一个主要方法：
+
+getResourceAsStream(String str):获取类路径下的指定文件的输入流
+
+#### 3.9.4 反射的基本应用
+
+##### 3.9.4.1 关于setAccessible方法的使用
+
+Method和Field、Constructor对象都有setAccessible()方法。
+
+setAccessible启动和禁用访问安全检查的开关。
+
+参数值为true则指示反射的对象在使用时应该取消Java语言访问检查。
+
+提高反射的效率。如果代码中必须用反射，而该句代码需要频繁的被调用，那么请设置为true。
+
+使得原本无法访问的私有成员也可以访问
+
+参数值为false则指示反射的对象应该实施Java语言访问检查。
+
+##### 3.9.4.2 创建运行时类的对象
+
+这是反射机制应用最多的地方。创建运行时类的对象有两种方式：
+
+1. 直接调用Class对象的newInstance()方法
+
+    要求：
+    1. 类必须有一个无参数的构造器。
+    1. 类的构造器的访问权限需要足够。
+
+    步骤：
+    1. 获取该类型的Class对象
+    1. 调用Class对象的newInstance()方法创建对象
+
+1. 通过获取构造器对象来进行实例化
+
+    步骤：
+    1. 通过Class类的getDeclaredConstructor(Class … parameterTypes)取得本类的指定形参类型的构造器
+    1. 向构造器的形参中传递一个对象数组进去，里面包含了构造器中所需的各个参数。
+    1. 通过Constructor实例化对象。
+
+如果构造器的权限修饰符修饰的范围不可见，也可以调用setAccessible(true)
+
+##### 3.9.4.3 获取运行时类的完整结构
+
+###### 3.9.4.3.1 相关API
+
+1. 实现的全部接口
+
+    `public Class<?>[] getInterfaces()`
+    确定此对象所表示的类或接口实现的接口。
+
+1. 所继承的父类
+
+    `public Class<? Super T> getSuperclass()`
+    返回表示此 Class 所表示的实体（类、接口、基本类型）的父类的 Class。
+
+1. 全部的构造器
+
+    `public Constructor<T>[] getConstructors()`
+    返回此 Class 对象所表示的类的所有public构造方法。
+
+    `public Constructor<T>[] getDeclaredConstructors()`
+    返回此 Class 对象表示的类声明的所有构造方法。
+
+    Constructor类中：
+
+    `public int getModifiers();`
+    取得修饰符:
+
+    `public String getName();`
+    取得方法名称:
+
+    `public Class<?>[] getParameterTypes();`
+    取得参数的类型：
+
+1. 全部的方法
+
+    `public Method[] getDeclaredMethods()`
+    返回此Class对象所表示的类或接口的全部方法
+
+    `public Method[] getMethods()`
+    返回此Class对象所表示的类或接口的public的方法
+
+    Method类中：
+
+    `public Class<?> getReturnType()`
+    取得全部的返回值
+
+    `public Class<?>[] getParameterTypes()`
+    取得全部的参数
+
+    `public int getModifiers()`
+    取得修饰符
+
+    `public Class<?>[] getExceptionTypes()`
+    取得异常信息
+
+1. 全部的Field
+
+    `public Field[] getFields()`
+    返回此Class对象所表示的类或接口的public的Field。
+
+    `public Field[] getDeclaredFields()`
+    返回此Class对象所表示的类或接口的全部Field。
+
+    Field方法中：
+
+    `public int getModifiers()`
+    以整数形式返回此Field的修饰符
+
+    `public Class<?> getType()`
+    得到Field的属性类型
+
+    `public String getName()`
+    返回Field的名称。
+
+1. Annotation相关
+
+    `get Annotation(Class<T> annotationClass)`
+    `getDeclaredAnnotations()`
+
+1. 泛型相关
+
+    获取父类泛型类型：
+    `Type getGenericSuperclass()`
+
+    泛型类型：
+    `ParameterizedType`
+
+    获取实际的泛型类型参数数组：
+    `getActualTypeArguments()`
+
+1. 类所在的包
+    `Package getPackage()`
+
+1. 内部类外部类
+
+    `public Class<?>[] getClasses()`：返回所有公共内部类和内部接口。包括从超类继承的公共类和接口成员以及该类声明的公共类和接口成员。
+
+    `public Class<?>[] getDeclaredClasses()`：返回 Class 对象的一个数组，这些对象反映声明为此 Class 对象所表示的类的成员的所有类和接口。包括该类所声明的公共、保护、默认（包）访问及私有类和接口，但不包括继承的类和接口。
+
+    `public Class<?> getDeclaringClass()`：如果此 Class 对象所表示的类或接口是一个内部类或内部接口，则返回它的外部类或外部接口，否则返回null。
+
+    `Class<?> getEnclosingClass()`：返回某个内部类的外部类
+
+##### 3.9.4.4 调用运行时类的指定结构
+
+###### 3.9.4.4.1 调用指定的属性
+
+在反射机制中，可以直接通过Field类操作类中的属性，通过Field类提供的set()和get()方法就可以完成设置和取得属性内容的操作。
+
+1. 获取该类型的Class对象
+
+    `Class clazz = Class.forName("包.类名");`
+1. 获取属性对象
+
+    `Field field = clazz.getDeclaredField("属性名");`
+1. 如果属性的权限修饰符不是public，那么需要设置属性可访问
+
+    `field.setAccessible(true);`
+1. 创建实例对象：如果操作的是非静态属性，需要创建实例对象
+
+    `Object obj = clazz.newInstance(); //有公共的无参构造`
+
+    `Object obj = 构造器对象.newInstance(实参...);//通过特定构造器对象创建实例对象`
+1. 设置指定对象obj上此Field的属性内容
+
+    `field.set(obj,"属性值");`
+
+    如果操作静态变量，那么实例对象可以省略，用null表示
+1. 取得指定对象obj上此Field的属性内容
+
+    `Object value = field.get(obj);`
+
+    如果操作静态变量，那么实例对象可以省略，用null表示
+
+###### 3.9.4.4.2 调用指定的方法
+
+1. 获取该类型的Class对象
+
+    `Class clazz = Class.forName("包.类名");`
+1. 获取方法对象
+
+    `Method method = clazz.getDeclaredMethod("方法名",方法的形参类型列表);`
+1. 创建实例对象
+
+    `Object obj = clazz.newInstance();`
+1. 调用方法
+
+    `Object result = method.invoke(obj, 方法的实参值列表);`
+
+如果方法的权限修饰符修饰的范围不可见，也可以调用setAccessible(true)
+
+如果方法是静态方法，实例对象也可以省略，用null代替
+
+##### 3.9.4.5 读取注解信息
+
+一个完整的注解应该包含三个部分： （1）声明 （2）使用 （3）读取
+
+###### 3.9.4.5.1 声明
+
+```java
+import java.lang.annotation.*;
+
+@Inherited
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Table {
+    String value();
+}
+-------------------------
+import java.lang.annotation.*;
+
+@Inherited
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Column {
+    String columnName();
+    String columnType();
+}
+
+```
+
+- 自定义注解可以通过四个元注解@Retention,@Target，@Inherited,@Documented，分别说明它的声明周期，使用位置，是否被继承，是否被生成到API文档中。
+
+- Annotation 的成员在 Annotation 定义中以无参数有返回值的抽象方法的形式来声明，我们又称为配置参数。返回值类型只能是八种基本数据类型、String类型、Class类型、enum类型、Annotation类型、以上所有类型的数组
+
+- 可以使用 default 关键字为抽象方法指定默认返回值
+
+- 如果定义的注解含有抽象方法，那么使用时必须指定返回值，除非它有默认值。格式是“方法名 = 返回值”，如果只有一个抽象方法需要赋值，且方法名为value，可以省略“value=”，所以如果注解只有一个抽象方法成员，建议使用方法名value。
+
+###### 3.9.4.5.2 使用
+
+```java
+@Table("t_stu")
+public class Student {
+    @Column(columnName = "sid",columnType = "int")
+    private int id;
+    @Column(columnName = "sname",columnType = "varchar(20)")
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+}
+
+```
+
+###### 3.9.4.5.3 读取
+
+自定义注解必须配上注解的信息处理流程才有意义。
+
+我们自己定义的注解，只能使用反射的代码读取。所以自定义注解的声明周期必须是RetentionPolicy.RUNTIME。
+
+```java
+import java.lang.reflect.Field;
+
+public class TestAnnotation {
+    public static void main(String[] args) {
+        Class studentClass = Student.class;
+        Table tableAnnotation = (Table) studentClass.getAnnotation(Table.class);
+        String tableName = "";
+        if(tableAnnotation != null){
+            tableName = tableAnnotation.value();
+        }
+
+        Field[] declaredFields = studentClass.getDeclaredFields();
+        String[] columns = new String[declaredFields.length];
+        int index = 0;
+        for (Field declaredField : declaredFields) {
+            Column column = declaredField.getAnnotation(Column.class);
+            if(column!= null) {
+                columns[index++] = column.columnName();
+            }
+        }
+        
+        String sql = "select ";
+        for (int i=0; i<index; i++) {
+            sql += columns[i];
+            if(i<index-1){
+                sql += ",";
+            }
+        }
+        sql += " from " + tableName;
+        System.out.println("sql = " + sql);
+    }
+}
+```
 
 ### 3.10 JDK8-17新特性
 
 ## 常用类
 
-### java.util.Scanner 读取输入
+### 1 java.util.Scanner 读取输入
 
 1. 导包（找）
    `import java.util.Scanner;`在类定义前
@@ -4485,7 +6328,9 @@ c.add(new Object()); // 编译时错误
 1. 释放资源
     sc.close();
 
-### java.util.Random 获取随机数
+用nextLine()，才能接收空格。
+
+### 2 java.util.Random 获取随机数
 
 1. 导包
     `import java.util.Random;`
@@ -4498,7 +6343,7 @@ c.add(new Object()); // 编译时错误
 
 用自带的Math.random(),Math.random()返回[0~1)double类型。种子默认时间，不能更改。
 
-### java.util.Array 数组工具类
+### 3 java.util.Array 数组工具类
 
 java.util.Arrays类，即操作数组的工具类。包括了用来操作数组的各种方法。
 
@@ -4537,7 +6382,7 @@ java.util.Arrays类，即操作数组的工具类。包括了用来操作数组�
 - `static void fill(int[] a, int fromIndex, int toIndex, int val)`：将a数组[fromIndex,toIndex)部分填充为val值
 - `static void fill(Object[] a, int fromIndex, int toIndex, Object val)`：将a数组[fromIndex,toIndex)部分填充为val对象
 
-### Object类的getClass()与拓展
+### 4 Object类的getClass()与拓展
 
 所有对象都能调用，返回对象真正new出来的本体。
 
@@ -4546,6 +6391,14 @@ java.util.Arrays类，即操作数组的工具类。包括了用来操作数组�
 |对象.getClass()|拿到类的本体对象|Class<Student\>|
 |getClass().getName()|全类名 (包名 + 类名)|com.test.Student|
 |getClass().getSimpleName()|只拿简单类名，不要包名|Student|
+
+### 5 java.lang.Character
+
+- `public static boolean isUpperCase(char ch)`：是否大写
+- `public static boolean isLowerCase(char ch)`：
+是否小写
+- `public static char toUpperCase(char ch)`：转大写
+- `public static char toLowerCase(char ch)`：转小写
 
 ## 琐碎
 
@@ -4689,3 +6542,18 @@ Hashtable和Vector集合一样,在jdk1.2版本之后被更先进的集合(HashMa
 
 Hashtable的子类Properties（配置文件）依然活跃在历史舞台
 Properties集合是一个唯一和IO流相结合的集合
+
+### 11 相对路径与绝对路径
+
+- 绝对路径：从盘符开始的路径，这是一个完整的路径。
+- 相对路径：相对于项目目录的路径，这是一个便捷的路径，开发中经常使用。
+
+IDEA中，main中的文件的相对路径，是相对于"当前工程"
+
+IDEA中，单元测试方法中的文件的相对路径，是相对于"当前module"
+
+### 12 三层架构
+
+- 数据访问层（Dao / Mapper）：和数据库交互
+- 业务逻辑层（Service）：核心业务、规则、判断
+- 表现层（Controller / 控制层）：接收请求、返回结果，和前端交互
